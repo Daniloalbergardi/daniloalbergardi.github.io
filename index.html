@@ -10,92 +10,71 @@
 	
 </head>
 <body>	
-	<form class="cardForm" style="padding: 10px;" autocomplete="off" novalidate>
+	<div class="container">
+		<h1>Criador de URL para campanha</h1>
+		<p class="sub-title">Preencha os campos obrigatórios (marcados com *), ao preencher, a URL completa da campanha será gerado. 
+		</pclass= >
+		<label class="note">Nota: o URL gerado é atualizado automaticamente à medida que você faz alterações.</label>
+		<form class="cardForm" style="padding: 10px;" autocomplete="off" novalidate>
 
-	<div class="cardDiv">
-		<input type="hidden" id="C00" class="cardNum" value="" maxlength="1" />
-		<p class="title-input">
-			<span>URL do website</span>
-			<input type="text" id="C01" class="cardNum" value="" maxlength="100" autofocus placeholder=""/>
-		</p>
-		<p class="title-input">
-			<span>Origem da campanha</span>
-			<input type="text" id="C02" class="cardNum" value="" maxlength="100" placeholder=""/>
-		</p>	
+		<div class="cardDiv">
+			<input type="hidden" id="C00" class="cardNum" value="" maxlength="1" />
+			<p class="title-input">
+				<label for="C01">URL do website</label>
+				<input type="text" id="C01" class="cardNum" value="" maxlength="100" autofocus placeholder=""/>
+			</p>
+			<p class="title-input">
+				<label for="C02">Origem da campanha</label>
+				<input type="text" id="C02" class="cardNum" value="" maxlength="100" placeholder=""/>
+			</p>	
 
-		<p class="title-input">
-			<span>Meio da campanha</span>
-			<input type="text" id="C03" class="cardNum" value="" maxlength="100" placeholder="" />
-		</p>
-		<p class="title-input">
-			<span>Nome da campanha</span>
-			<input type="text" id="C04" class="cardNum" value="" maxlength="100" placeholder="" />&nbsp;&nbsp;
-		</p>
+			<p class="title-input">
+				<label for="C03">Meio da campanha</label>
+				<input type="text" id="C03" class="cardNum" value="" maxlength="100" placeholder="" />
+			</p>
+			<p class="title-input">
+				<label for="C04">Nome da campanha</label>
+				<input type="text" id="C04" class="cardNum" value="" maxlength="100" placeholder="" />&nbsp;&nbsp;
+			</p>
+		</div>
+		<div>
+			<p class="title-input">
+				<label>A url da sua campanha</label>
+				<input type="text" id="cNum" class="cardNum" value="" maxlength="100" style="width: 100%" disabled/>
+			</p>
+			<input type="hidden" id="cStatus" class="cardNum" value="" maxlength="100" />
+		</div>
+		<button class="cardReset btn-link" type="reset" value="Reset"><u>Resetar link</u></button>
+		</form>
+
 	</div>
-	<div>
-		<p class="title-input">
-			<span>A url da sua campanha</span>
-			<input type="text" id="cNum" class="cardNum" value="" maxlength="100" style="width: 100%" disabled/>
-		</p>
-		<input type="hidden" id="cStatus" class="cardNum" value="" maxlength="100" />
-	</div>
-	<button class="cardReset btn-link" type="reset" value="Reset"><u>Resetar link</u></button>
-	</form>
-	<script>
-		$("input[id^=C]").keyup(function(e) {
-			var str = "";
-			$("#C01").each(function(index) {
-				str = str + $(this).val()
-			});
+	<footer>	
+		<script>	
+			$("input[id^=C]").keyup(function(e) {
+				var str = "";
+				$("#C01").each(function(index) {
+					str = str + $(this).val()
+				});
 
-			$("#C02").each(function(index) {
-				var c02 = $("C02").html();
-				str = str + "/?utm_source=" + $(this).val();
+				$("#C02").each(function(index) {
+					var c02 = $("C02").html();
+					str = str + "/?utm_source=" + $(this).val();
 
-			});
+				});
 
-			$("#C03").each(function(index) {
+				$("#C03").each(function(index) {
+					
+					str = str + "&utm_medium="+ $(this).val() + "&utm_campaign=";
+				});
 				
-				str = str + "&utm_medium="+ $(this).val() + "&utm_campaign=";
-			});
-			
-			$("#C04").each(function(index) {
-				
-				str = str + $(this).val()
-			});
+				$("#C04").each(function(index) {
+					
+					str = str + $(this).val()
+				});
 
-			$("#cNum").val(str);
-		});
-
-		// $("input[id^=C]").keyup(function(e) {
-		// 	var str = "";
-		// 	$("input[id^=C]").each(function(index) {
-		// 		str = str + $(this).val() 
-		// 	});
-			
-		// 	$("#cNum").val(str);
-		// });
-
-		
-		
-		// $("input[id^=C]").keyup(function(e) {
-		// 	var str = "";
-		// 	$("input[id^=C]").each(function(index) {
-		// 		str = str + $(this).val() 
-		// 	});
-		// 	// cont = 1;
-		// 	// if(cont=1){
-		// 	// 	str = str + "/?";
-		// 	// 	cont = 1+1;
-		// 	// }
-		// 	// if(cont=2){{
-		// 	// 	str = str + "utm_source=";
-		// 	// 	cont = 1+1;
-		// 	// }
-			
-			
-		// 	$("#cNum").val(str);
-		// });
-	</script>
+				$("#cNum").val(str);
+			});	
+		</script>
+	</footer>
 </body>
 </html>

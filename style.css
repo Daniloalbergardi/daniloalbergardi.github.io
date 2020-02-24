@@ -1,4 +1,29 @@
+body {
+    background: #3d3d3d;
+    font: 12px 'Lucida Grande', Arial, sans-serif;
+    color: aliceblue;
+}
+
+
+.container{
+    margin: 0 auto 0 auto;
+    padding: 0 0.938em 0 0.938em;
+    max-width: 1140px;
+}
+
 .title-input{
     font-weight: bold;
     margin-right: 10px;
+    font-size: 14px;
+
 }
+
+.sub-title{
+    font-size: 14px;
+
+}
+
+.cardNum{
+    width: 100%;
+}
+
