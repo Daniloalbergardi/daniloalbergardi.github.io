@@ -72,7 +72,7 @@ body {
 
 .cardReset{
     height: 40px;
-    width: 105px;
+    width: 120px;
     border-radius: 2px; 
     margin-bottom: 30px;
 }
@@ -81,18 +81,56 @@ body {
     color: red;
 }
 
-.block-content{
+.block-content1{
     display: flex;
     width: 50%;
     float: left;   
+}
+
+/* .block-content1{
+    float: left;
+    max-width: 33%;  
+    
+} */
+
+.block-content2{
+    display: inherit;
+    margin: 0 33% 0 11%;  
+}
+
+.block-content3{
+    float: right;
+    width: 33%;  
+    margin-top: -252px;
 }
 
 .clear{
     clear: both;
 }
 
+/* .ad-block-300x250{
+    background-color:#ff2;
+    border: 1px solid black;
+    float: left;
+} */
+.ad-block-300x250{
+    background-color:#ff2;
+    border: 1px solid black;
+    height: 250px;
+    max-height: 250px;
+    width: 300px;
+    max-width: 300px;
+}
+
+.ad-vertical-265x600{
+    background-color:#ff2;
+    border: 1px solid black;
+    height: 600px;
+    width: 265px;
+}
+
 @media (max-width: 1023px) {
-    .block-content {
+    .block-content1 {
         display: block;
         width: 100%;
     }
