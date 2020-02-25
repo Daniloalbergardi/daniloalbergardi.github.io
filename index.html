@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8"/>
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
-	<title>Título da Página</title>
+	<title>Criador de URL para campanha - TOOLS FOR YOU</title>
 	<link href="style.css" rel="stylesheet"/>
 	<script src="script.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -11,42 +11,111 @@
 </head>
 <body>	
 	<div class="container">
-		<h1>Criador de URL para campanha</h1>
-		<p class="sub-title">Preencha os campos obrigatórios (marcados com *), ao preencher, a URL completa da campanha será gerado. 
-		</pclass= >
-		<label class="note">Nota: o URL gerado é atualizado automaticamente à medida que você faz alterações.</label>
-		<form class="cardForm" style="padding: 10px;" autocomplete="off" novalidate>
+		<div class="logo">
+			<a href="/">
 
-		<div class="cardDiv">
-			<input type="hidden" id="C00" class="cardNum" value="" maxlength="1" />
-			<p class="title-input">
-				<label for="C01">URL do website</label>
-				<input type="text" id="C01" class="cardNum" value="" maxlength="100" autofocus placeholder=""/>
-			</p>
-			<p class="title-input">
-				<label for="C02">Origem da campanha</label>
-				<input type="text" id="C02" class="cardNum" value="" maxlength="100" placeholder=""/>
-			</p>	
+				<img class="img-logo" src="img/tools-for-you.png" alt="Logo Tools For You">
+			</a>
+			<p class="credits">Created by Danilo Albergardi</p>
 
-			<p class="title-input">
-				<label for="C03">Meio da campanha</label>
-				<input type="text" id="C03" class="cardNum" value="" maxlength="100" placeholder="" />
-			</p>
-			<p class="title-input">
-				<label for="C04">Nome da campanha</label>
-				<input type="text" id="C04" class="cardNum" value="" maxlength="100" placeholder="" />&nbsp;&nbsp;
-			</p>
 		</div>
-		<div>
-			<p class="title-input">
-				<label>A url da sua campanha</label>
-				<input type="text" id="cNum" class="cardNum" value="" maxlength="100" style="width: 100%" disabled/>
-			</p>
-			<input type="hidden" id="cStatus" class="cardNum" value="" maxlength="100" />
+		<h1 class="title">Criador de URL (com utm) para campanha de publicidade</h1 class="sub-title"> 
+		<h2 class="title">Informe os parâmetros de campanha personalizados para gerar a URL.</h2>
+		<p class="sub-title">Construa uma URL rastreável através das UTMs para que o Google Analytics e outras ferramentas possam rastrear o comportamento da sua campanha. Quando os usuários acessar sua URL com estes parâmetros, a ferramenta de web analytics registra e transforma dados em relatórios sobre a campanha de referência.</p>
+		<p class="description-title">Você pode criar URLs com a ferramenta abaixo, basta adicionar as informações referente a sua campanha:</p class="description-title">
+			
+		<p class="description-title">Preencha os campos obrigatórios (marcados com <span class="option-required"> *</span>), ao preencher, a URL completa da campanha será gerado. 
+		</p>
+		
+		
+		<div class="ads1">
+			<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Newproject1 -->
+			<ins class="adsbygoogle"
+				style="display:inline-block;width:728px;height:90px"
+				data-ad-client="ca-pub-6753564810765099"
+				data-ad-slot="2664239248"></ins>
+			<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
 		</div>
-		<button class="cardReset btn-link" type="reset" value="Reset"><u>Resetar link</u></button>
-		</form>
+		<div class="block-content">
+			<form class="cardForm" autocomplete="off" novalidate>
 
+				<div class="cardDiv">
+					<input type="hidden" id="C00" class="cardNum" value="" maxlength="1" />
+					<p class="title-input">
+						<label for="C01">URL do website</label><span class="option-required"> *</span>
+						<input type="text" id="C01" class="cardNum" autofocus required/>
+						<span class="card-info">URL completa do site (Ex. https://www.example.com)</span>
+					</p>
+					<p class="title-input">
+						<label for="C02">Origem da campanha</label><span class="option-required"> *</span>
+						<input type="text" id="C02" class="cardNum" required/>
+						<span class="card-info">Referência (Ex. google, facebook, newsletter, youtube)</span>
+
+					</p>	
+	
+					<p class="title-input">
+						<label for="C03">Meio da campanha</label><span class="option-required"> *</span>
+						<input type="text" id="C03" class="cardNum" required/>
+						<span class="card-info">Ação (Ex. cpc, clique_banner, email)</span>
+					</p>
+					<p class="title-input">
+						<label for="C04">Nome da campanha</label><span class="option-required"> *</span>
+						<input type="text" id="C04" class="cardNum" required/>
+						<span class="card-info">Produto, código promocional ou slogan (Ex. black_friday, promocao_abril)</span>
+					</p>
+					<p class="title-input">
+						<label for="C05">Termo da campanha</label>
+						<input type="text" id="C05" class="cardNum"/>
+						<span class="card-info">Palavras-chaves pagas</span>
+
+					</p>
+					<p class="title-input">
+						<label for="C06">Conteúdo da campanha</label>
+						<input type="text" id="C06" class="cardNum"/>
+						<span class="card-info">Utilizado para diferenciar anúcios</span>&nbsp;&nbsp;
+
+					</p>
+				</div>
+				<div>
+
+					<p class="title-input">
+						<label>A url da sua campanha</label>
+						<textarea type="text" id="cNum-resulturl" class="cardNum-result" disabled></textarea>
+
+					</p>
+					
+				</div>
+				<input type="hidden" id="cStatus" class="cardNum"/>
+				<button class="cardReset btn-link" type="reset" value="Reset">
+					<span class="icon"></span>Resetar url</button>
+			</form>
+		</div>
+		
+		<div class="block-content">
+			
+		</div>
+		<div class="clear"></div>
+		<label class="note">Nota: </label>
+		<ul>
+			<li>O URL gerado é atualizado automaticamente à medida que você faz alterações.</li>
+			<li>Não utilizar caracteres especiais e espaço entre palavras</li>
+		</ul>
+		<!-- <button onclick="copycontent()">Copy text</button> -->
+		
+		<div class="ads3">
+			<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Newproject1 -->
+			<ins class="adsbygoogle"
+				style="display:inline-block;width:728px;height:90px"
+				data-ad-client="ca-pub-6753564810765099"
+				data-ad-slot="2664239248"></ins>
+			<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+		</div>
 	</div>
 	<footer>	
 		<script>	
@@ -57,23 +126,61 @@
 				});
 
 				$("#C02").each(function(index) {
-					var c02 = $("C02").html();
-					str = str + "/?utm_source=" + $(this).val();
+					var element = $(this);
+                	if (element.val() == ""){
+					} else{
+						str = str + "/?utm_source=" + $(this).val();
+					}
+					
 
 				});
 
 				$("#C03").each(function(index) {
-					
-					str = str + "&utm_medium="+ $(this).val() + "&utm_campaign=";
+					var element = $(this);
+                	if (element.val() == ""){
+					} else{
+						str = str + "&utm_medium="+ $(this).val();
+					}
 				});
 				
 				$("#C04").each(function(index) {
-					
-					str = str + $(this).val()
+					var element = $(this);
+                	if (element.val() == ""){
+					} else{
+						str = str + "&utm_campaign=" + $(this).val()
+					}
 				});
 
-				$("#cNum").val(str);
+				$("#C05").each(function(index) {
+					var element = $(this);
+                	if (element.val() == ""){
+					} else{
+						str = str + "&utm_term=" + $(this).val()
+					}
+				});
+
+				$("#C06").each(function(index) {
+					var element = $(this);
+                	if (element.val() == ""){
+					} else{
+						str = str + "&utm_content=" + $(this).val()
+					}
+				});
+
+
+				$("#cNum-resulturl").val(str);
 			});	
+
+			
+			function copycontent() {
+			var copyText = document.getElementById("cNum-resulturl");
+			copyText.select();
+			copyText.setSelectionRange(0, 99999); 
+			document.execCommand("copy");
+
+			alert("O texto foi copiado");
+			}
+
 		</script>
 	</footer>
 </body>

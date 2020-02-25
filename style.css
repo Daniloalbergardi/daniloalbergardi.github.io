@@ -4,7 +4,20 @@ body {
     color: aliceblue;
 }
 
-
+.logo{
+    text-align: center;
+}
+.img-logo{
+    height: 90px;
+    width: 126px;
+}
+.title{
+    text-align: center;
+}
+.credits{
+    color: #565656;
+    text-align: center;
+}
 .container{
     margin: 0 auto 0 auto;
     padding: 0 0.938em 0 0.938em;
@@ -23,7 +36,64 @@ body {
 
 }
 
-.cardNum{
+.description-title{
+    font-size: 14px;
+
+}
+.cardForm{
     width: 100%;
 }
 
+.cardNum{
+    width: 100%;
+    display: block;
+    border-radius: 3px;
+    padding: 4px;
+    margin-bottom: 10px;
+
+
+}
+
+.card-info{
+    font-size: 13px;
+    color: #a1a1a1;
+    margin-bottom: 30px;
+
+}
+
+.cardNum-result{
+    width: 100%;
+    display: block;
+    border-radius: 3px;
+    padding: 4px;
+    margin-bottom: 25px;
+    height: 80px;
+}
+
+.cardReset{
+    height: 40px;
+    width: 105px;
+    border-radius: 2px; 
+    margin-bottom: 30px;
+}
+
+.option-required{
+    color: red;
+}
+
+.block-content{
+    display: flex;
+    width: 50%;
+    float: left;   
+}
+
+.clear{
+    clear: both;
+}
+
+@media (max-width: 1023px) {
+    .block-content {
+        display: block;
+        width: 100%;
+    }
+}
