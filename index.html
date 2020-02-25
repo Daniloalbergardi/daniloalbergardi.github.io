@@ -8,7 +8,7 @@
 
 	<title>Criador de URL para campanha - TOOLS FOR YOU</title>
 	<link href="style.css" rel="stylesheet"/>
-	<script type="text/javascript" src="js/bioep.min.js"></script>
+	<script src="js/bioep.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<!-- Google Tag Manager -->
 		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -17,7 +17,7 @@
 		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer','GTM-N76ZTQS');</script>
 	<!-- End Google Tag Manager -->
-	<script type="text/javascript">
+	<script>
 		// bioEp.init({
 		// 	html: '<p class="titulo-q">Psiu, Clique em um anúncio para nos ajudar a melhorar o sistema</p></div><button class="botao_contato" type="submit" id="bio_ep_close" name="accept_click_ads" style=" /* padding: 30px; */ border-radius: 3px; height: 52px; width: 28%; left: unset; text-align: unset; position: unset; font-size: 0.8em; margin-bottom: 5px;">Vou clicar</button><p class="titulo-q" style=" font-size: 18px !important;margin: 15px !important;">Obrigado!</p><p class="titulo-q" style=" font-size: 16px !important; margin: 1px !important;">Quantos mais cliques, mais nos ajuda!</p>',
 		// 	css: '.box-q{margin: 20px 0 0 0;}.comentario{width: 85%; margin: 20px 0 0 0;border: 1px solid #ded4d4;}.btn_q{width: 100%;height: 65px;}.botao_contato{margin: 15px 0 0 0 !important;float: none !important;}.titulo-q{font-size: 19px !important;margin: 18px;font-weight: bold;}#bio_ep{width: 400px; height: 230px; color: #333; background-color: #fafafa; text-align: center;}#bio_ep_bg{opacity: 0.7!important;}#bio_ep_close{padding: 2px 0 0 0;}' +
@@ -46,10 +46,10 @@
 			<p class="credits">Created by Danilo Albergardi</p>
 
 		</div>
-		<h1 class="title">Criador de URL (com utm) para campanha de publicidade</h1 class="sub-title"> 
+		<h1 class="title">Criador de URL (com utm) para campanha de publicidade</h1> 
 		<h2 class="title">Informe os parâmetros de campanha personalizados para gerar a URL.</h2>
 		<p class="sub-title">Construa uma URL rastreável através das UTMs para que o Google Analytics e outras ferramentas possam rastrear o comportamento da sua campanha. Quando os usuários acessarem sua URL com estes parâmetros, a ferramenta de web analytics registrará e transformará dados em relatórios sobre a campanha de referência.</p>
-		<p class="description-title">Você pode criar URLs com a ferramenta abaixo, basta adicionar as informações referente a sua campanha:</p class="description-title">
+		<p class="description-title">Você pode criar URLs com a ferramenta abaixo, basta adicionar as informações referente a sua campanha:</p>
 			
 		<p class="description-title">Preencha os campos obrigatórios (marcados com <span class="option-required"> *</span>), ao preencher, a URL completa da campanha será gerada. 
 		</p>
@@ -61,7 +61,7 @@
 			<form class="cardForm" autocomplete="off" novalidate>
 
 				<div class="cardDiv">
-					<input type="hidden" id="C00" class="cardNum" value="" maxlength="1" />
+					<input type="hidden" id="C00" class="cardNum" value=""/>
 					<p class="title-input">
 						<label for="C01">URL do website</label><span class="option-required"> *</span>
 						<input type="text" id="C01" class="cardNum" autofocus required/>
@@ -101,7 +101,7 @@
 
 					<p class="title-input">
 						<label>A url da sua campanha</label>
-						<textarea type="text" id="cNum-resulturl" class="cardNum-result" disabled></textarea>
+						<textarea id="cNum-resulturl" class="cardNum-result" disabled></textarea>
 
 					</p>
 					
