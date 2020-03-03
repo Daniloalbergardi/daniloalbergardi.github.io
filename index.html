@@ -68,6 +68,11 @@
 						<span class="card-info">URL completa do site (Ex. https://www.example.com)</span>
 					</p>
 					<p class="title-input">
+						<label for="C04">Nome da campanha</label><span class="option-required"> *</span>
+						<input type="text" id="C04" class="cardNum" required/>
+						<span class="card-info">Produto, código promocional ou slogan (Ex. black_friday, PromocaoVerao2023)</span>
+					</p>
+					<p class="title-input">
 						<label for="C02">Origem da campanha</label><span class="option-required"> *</span>
 						<input type="text" id="C02" class="cardNum" required/>
 						<span class="card-info">Referência (Ex. google, facebook, newsletter, youtube)</span>
@@ -77,17 +82,13 @@
 					<p class="title-input">
 						<label for="C03">Meio da campanha</label><span class="option-required"> *</span>
 						<input type="text" id="C03" class="cardNum" required/>
-						<span class="card-info">Ação (Ex. cpc, clique_banner, email)</span>
+						<span class="card-info">Ação (Ex. cpc, clique_banner, feed)</span>
 					</p>
-					<p class="title-input">
-						<label for="C04">Nome da campanha</label><span class="option-required"> *</span>
-						<input type="text" id="C04" class="cardNum" required/>
-						<span class="card-info">Produto, código promocional ou slogan (Ex. black_friday, promocao_abril)</span>
-					</p>
+					
 					<p class="title-input">
 						<label for="C05">Termo da campanha</label>
 						<input type="text" id="C05" class="cardNum"/>
-						<span class="card-info">Palavras-chaves pagas</span>
+						<span class="card-info">Palavra-chave para diferenciar conversão</span>
 
 					</p>
 					<p class="title-input">
@@ -136,6 +137,17 @@
 		<!-- <div class="ads3">
 			
 		</div> -->
+		<br/><br/>
+		<h2 class="title">Entendo um pouco mais sobre parâmetros UTM</h2>
+		<br/>
+		<p class="sub-title">Os parâmetros de utam fazem presente em nosso dia a dia podemos encontra-los ao acessar alguma promoção, link compartilhado por alguma empresa e outras situação, as utem são extensões adicionadas no final de links para identificar a origem do tráfego que está sendo enviado ao seu website. Quando é utilizado os links rastreáveis em suas ações de marketing, a sua ferramenta de Analíticas conseguirá gerar relatórios valiosos para você conseguir tomar ação específica por campanha e identificar o Retorno do Investimento (ROI) de cada ação.</p>
+		<p class="sub-title">Para você montar sua url corretamente, vamos explicar a importância de cada parâmetro:</p>
+		<p class="sub-title"><strong>Nome da campanha (utm_campaign):</strong> Também conhecido como Campaign, é o identificador da campanha, será esse nome que constará em seus relatórios do Google Analytics e onde futuramente será usado para comparar com o desempenho de outras campanhas. Normalmente é preenchido com o nome próprio da campanha. Por exemplo: PromoInverno2021, black_Friday, PromocaoVerao2023.</p>
+		<p class="sub-title"><strong>Origem da campanha (utm_source):</strong> Também conhecido como Source, é responsável por determinar a fonte do tráfego (visitante / conversão). Normalmente é preenchido com o nome do website, onde o link foi usado ou rede social. Por exemplo: Google, Facebook, Newsletter, E-mail, Youtube.</p>
+		<p class="sub-title"><strong>Meio da campanha (utm_medium):</strong> Também conhecido como Medium, determina o meio ou local que foi compartilhado o link, pois a url pode ser compartilhada em diferentes fontes, esse valor não se altera sozinho, então você precisa gerar um link para cada local. Por exemplo: Feed, CPC, Clique_Banner, Feed.</p>
+		<p class="sub-title"><strong>Termo da campanha (utm_term):</strong> Também conhecido como Term, é um item opcional, usado para diferenciar palavras-chaves em diferentes anúncios pagos de pesquisa como o Google Ads e Bing. É interessante utilizar termos diferentes pois em situações os anúncios tem campanhas, canais e meios iguais, porém os termos diferenciam pela palavra-chave que o anúncio foi exibido e converteu. Por exemplo: Banner300x320, search.</p>
+		<p class="sub-title">Conteúdo da campanha (utm_content): Também conhecido como Content, é um item opcional, ajuda a especificar o conteúdo do link, geralmente quando o conteúdo é semelhante mas para públicos diferentes, formato diferente de anúncio ou testes A/B. É interessante utilizar pois em situações que os parâmetros campaign, source e medium sejam iguais, o conteúdo fica responsável por diferenciar os formatos como vídeos, banners ou links de pesquisa.</p>
+		<br/><br/><br/><br/>
 	</div>
 	<footer>	
 		<script>	
@@ -145,11 +157,19 @@
 					str = str + $(this).val()
 				});
 
+				$("#C04").each(function(index) {
+					var element = $(this);
+                	if (element.val() == ""){
+					} else{
+						str = str + "/?&utm_campaign=" + $(this).val()
+					}
+				});
+
 				$("#C02").each(function(index) {
 					var element = $(this);
                 	if (element.val() == ""){
 					} else{
-						str = str + "/?utm_source=" + $(this).val();
+						str = str + "&utm_source=" + $(this).val();
 					}
 					
 
@@ -163,13 +183,7 @@
 					}
 				});
 				
-				$("#C04").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_campaign=" + $(this).val()
-					}
-				});
+				
 
 				$("#C05").each(function(index) {
 					var element = $(this);
