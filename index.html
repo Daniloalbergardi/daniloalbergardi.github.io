@@ -72,59 +72,56 @@
 
 		</div>
 		<div class="block-content1">
-			<form class="cardForm" autocomplete="off" novalidate>
+			<div class="cardDiv">
+				<input type="hidden" id="C00" class="cardNum" value=""/>
+				<p class="title-input">
+					<label for="C01">URL do website</label><span class="option-required"> *</span>
+					<input type="text" id="C01" class="cardNum" autofocus required/>
+					<span class="card-info">URL completa do site (Ex. https://www.example.com)</span>
+				</p>
+				<p class="title-input">
+					<label for="C04">Nome da campanha</label><span class="option-required"> *</span>
+					<input type="text" id="C04" class="cardNum" required/>
+					<span class="card-info">Produto, código promocional ou slogan (Ex. black_friday, PromocaoVerao2023)</span>
+				</p>
+				<p class="title-input">
+					<label for="C02">Origem da campanha</label><span class="option-required"> *</span>
+					<input type="text" id="C02" class="cardNum" required/>
+					<span class="card-info">Referência (Ex. google, facebook, newsletter, youtube)</span>
 
-				<div class="cardDiv">
-					<input type="hidden" id="C00" class="cardNum" value=""/>
-					<p class="title-input">
-						<label for="C01">URL do website</label><span class="option-required"> *</span>
-						<input type="text" id="C01" class="cardNum" autofocus required/>
-						<span class="card-info">URL completa do site (Ex. https://www.example.com)</span>
-					</p>
-					<p class="title-input">
-						<label for="C04">Nome da campanha</label><span class="option-required"> *</span>
-						<input type="text" id="C04" class="cardNum" required/>
-						<span class="card-info">Produto, código promocional ou slogan (Ex. black_friday, PromocaoVerao2023)</span>
-					</p>
-					<p class="title-input">
-						<label for="C02">Origem da campanha</label><span class="option-required"> *</span>
-						<input type="text" id="C02" class="cardNum" required/>
-						<span class="card-info">Referência (Ex. google, facebook, newsletter, youtube)</span>
+				</p>	
 
-					</p>	
-	
-					<p class="title-input">
-						<label for="C03">Meio da campanha</label><span class="option-required"> *</span>
-						<input type="text" id="C03" class="cardNum" required/>
-						<span class="card-info">Ação (Ex. cpc, clique_banner, feed)</span>
-					</p>
-					
-					<p class="title-input">
-						<label for="C05">Termo da campanha</label>
-						<input type="text" id="C05" class="cardNum"/>
-						<span class="card-info">Palavra-chave para diferenciar conversão</span>
+				<p class="title-input">
+					<label for="C03">Meio da campanha</label><span class="option-required"> *</span>
+					<input type="text" id="C03" class="cardNum" required/>
+					<span class="card-info">Ação (Ex. cpc, clique_banner, feed)</span>
+				</p>
+				
+				<p class="title-input">
+					<label for="C05">Termo da campanha</label>
+					<input type="text" id="C05" class="cardNum"/>
+					<span class="card-info">Palavra-chave para diferenciar conversão</span>
 
-					</p>
-					<p class="title-input">
-						<label for="C06">Conteúdo da campanha</label>
-						<input type="text" id="C06" class="cardNum"/>
-						<span class="card-info">Utilizado para diferenciar anúcios</span>&nbsp;&nbsp;
+				</p>
+				<p class="title-input">
+					<label for="C06">Conteúdo da campanha</label>
+					<input type="text" id="C06" class="cardNum"/>
+					<span class="card-info">Utilizado para diferenciar anúcios</span>&nbsp;&nbsp;
 
-					</p>
-				</div>
-				<div>
+				</p>
+			</div>
+			<div>
 
-					<p class="title-input">
-						<label>A url da sua campanha</label>
-						<textarea id="cNum-resulturl" class="cardNum-result" disabled></textarea>
+				<p class="title-input">
+					<label>A url da sua campanha</label>
+					<textarea id="cNum-resulturl" class="cardNum-result" disabled></textarea>
 
-					</p>
-					
-				</div>
-				<input type="hidden" id="cStatus" class="cardNum"/>
-				<button class="cardReset btn" id="clean-form" type="reset" value="Reset">
-					<span class="icon"></span>Limpar campos</button>
-			</form>
+				</p>
+				
+			</div>
+			<input type="hidden" id="cStatus" class="cardNum"/>
+			<button class="cardReset btn" id="clean-form" type="reset" value="Reset">
+				<span class="icon"></span>Limpar campos</button>
 		</div>
 		<!-- <div class="clear"></div> -->
 		<!-- <div class="block-content2">
