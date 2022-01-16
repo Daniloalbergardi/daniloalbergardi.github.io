@@ -8,7 +8,7 @@
 
 	<title>Gerar link Whatsapp | Chamar conversa no Whatsapp sem adicionar - Tools For You</title>
 	<link href="css/style.css" rel="stylesheet"/>
-	<script src="js/script.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="js/script.js"></script>
 	<script src="js/bioep.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<!-- Google Tag Manager -->
@@ -43,7 +43,8 @@
 		<header>
 			<div class="logo">
 				<a href="/"><img class="img-logo" src="img/tools-for-you.png" alt="Logo Tools For You"></a>
-				<p class="credits">Created by Danilo Albergardi</p>
+				<p class="credits">Created by Danilo Albergardi | feat. Meriéli Manzano
+				</p>
 	
 			</div>
 	
@@ -65,7 +66,7 @@
 
 			<p class="title-input">
 				<label for="C01">Número de telefone</label><span class="option-required"> *</span>
-				<input type="text" id="C01" class="cardNum" autofocus />
+				<input type="text" id="C01" value="55" class="cardNum" autofocus />
 				<span class="card-info">(Ex. Digitar somente números. Exemplo +55 (11) 99855-3521</span>
 			</p>
 			<p class="title-input">
@@ -100,9 +101,14 @@
 				<button class="btn" name="generate-link" onclick="generatelink()" type="button">Gerar link</button>
 				<p>Link para usar em disposito celular/tablets e aplicativos mobile</p>
 				<textarea id="link-mobile" class="cardNum-result" disabled></textarea>
+				<div id="acesso-1"> </div>
+				
+
 
 				<p>Link para usar em computadores/notebooks</p>
 				<textarea id="link-desktop" class="cardNum-result" disabled></textarea>
+				<div id="acesso-2"> </div>
+
 
 				<p>Código de instalação do botão flutuante</p>
 				<textarea id="code-button" class="cardNum-result" disabled></textarea>
