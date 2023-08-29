@@ -3,6 +3,7 @@ function generatelink() {
 				
     var message = document.getElementById('C04').value;
     var phone = document.getElementById('C01').value;
+    var phone = "+55" + phone;
     // Remover caracteres especiais, o segundo é para remover o espaço
     phone = phone.replace(/[^\w\s]/gi, '');
     phone = phone.replace(/\s/g, '');
@@ -54,6 +55,23 @@ function generatelink() {
         document.getElementById("code-button").innerHTML = generatehtml;      
 
     }
+
+
+    function copyText(button, content) {
+        // Get the text field
+        var copyText = document.getElementById("myInput");
+      
+        // Select the text field
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+      
+         // Copy the text inside the text field
+        navigator.clipboard.writeText(copyText.value);
+      
+        // Alert the copied text
+        alert("Copied the text: " + copyText.value);
+      }
+      
     
     function inserelink(button, link){
         button.addEventListener('click', function(event){
@@ -70,8 +88,8 @@ function generatelink() {
     else{
         const btn1 = document.getElementById("acesso-1")
         const btn2 = document.getElementById("acesso-2")
-        btn1.innerHTML = '<a id="btnacesso-1" rel="external" href="" target="_blank"><button class="btn">Acessar mobile</button></a>';
-        btn2.innerHTML = '<a id="btnacesso-2" rel="external" href="" target="_blank"><button class="btn">Acessar desktop</button></a>';
+        btn1.innerHTML = '<a id="btnacesso-1" rel="external" href="" target="_blank"><button class="btn">Mobile</button></a>';
+        btn2.innerHTML = '<a id="btnacesso-2" rel="external" href="" target="_blank"><button class="btn">Desktop</button></a>';
         inserelink(btn1, linkmobile)
         inserelink(btn2, linkdesktop)
         // document.getElementById("acesso-2").innerHTML = "<a id='btnacesso-1'class='btn' type='button' onclick='window.location.href='www.google.com.br''>Acessar desktop</a>";
