@@ -103,6 +103,23 @@
 			}
 		}
 
+		#quiz-container {
+            position: relative;
+        }
+
+        #floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+
 
     </style>
 </head>
@@ -127,6 +144,7 @@
     <div id="result-message-alerta"></div>
 
     <div id="score"></div>
+	<button id="floating-btn" onclick="checkAnswer()">Enviar Resposta</button>
 </div>
 
 <script>
@@ -5328,20 +5346,24 @@
                 userScore++;
                 document.getElementById('result-message-acertou').innerHTML = 'Você acertou!';
                 document.getElementById('submit-resposta').style.display = 'none';
+				window.scrollBy(800, 1300);
             } else {
                 document.getElementById('result-message-errou').innerHTML = 'Você errou. A resposta correta é: ' +
                     questions[currentQuestionIndex].options[correctAnswer - 1];
                 document.getElementById('submit-resposta').style.display = 'none';
+				window.scrollBy(800, 1300);
 
             }
 
             document.getElementById('next-question-btn').style.display = 'block';
         } else {
             document.getElementById('result-message-alerta').innerHTML = 'Por favor, escolha uma resposta.';
+			window.scrollBy(800, 1300);
         }
     }
 
     function loadNextQuestion() {
+		window.scrollBy(800, -1300);
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             loadQuestion();
