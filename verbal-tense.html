@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teste seu conhecimento em tempos verbais em inglês</title>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,30 +47,31 @@
             font-weight: 600;
             color: #037103;
             margin-top: 20px;
-            font-size: 20px;
+            font-size: 15px;
             background-color: #bdedbd;
             text-align: center;
-            padding: 2px;
+            padding: 6px;
         }
 
         #result-message-errou{
             font-weight: 600;
             color: #710303;
             margin-top: 20px;
-            font-size: 20px;
+            font-size: 15px;
             background-color: #edbdbd;
             text-align: center;
-            padding: 2px;
+            padding: 5px;
         } 
 
         #result-message-alerta{
             font-weight: 600;
             color: #9c6808;
             margin-top: 20px;
-            font-size: 20px;
+            font-size: 15px;
             background-color: #deb082;
             text-align: center;
-            padding: 2px;
+            padding: 5px;
+            display: none;
         }
 
         #next-question-btn {
@@ -125,7 +127,7 @@
 
         #floating-btn {
             position: fixed;
-            bottom: 20px;
+            bottom: 113px;
             right: 20px;
             padding: 10px;
             background-color: #3498db;
@@ -133,11 +135,13 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 70px;
+            border-radius: 15px;
         }
         #floating-btn2 {
             position: fixed;
-            bottom: 60px;
-            right: 24px;
+            bottom: 183px;
+            right: 20px;
             padding: 10px;
             background-color: #696969;
             color: white;
@@ -145,8 +149,17 @@
             border-radius: 5px;
             cursor: pointer;
             display: none;
+            width: 70px;
+            border-radius: 15px;
         }
 
+        .options li:nth-child(odd) {
+            background-color: #f2f2f2; /* Cor de fundo para as linhas ímpares */
+        }
+
+        .options li:nth-child(even) {
+            background-color: #ffffff; /* Cor de fundo para as linhas pares */
+        }
 
 
     </style>
@@ -165,16 +178,16 @@
             <!-- Opções serão preenchidas dinamicamente com JavaScript -->
         </ul>
     
-        <button id="submit-resposta" onclick="checkAnswer()">Enviar Resposta</button>
+        <button id="submit-resposta" onclick="checkAnswer()">Send Reply</button>
     
-        <button id="next-question-btn" onclick="loadNextQuestion()">Ir para Próxima</button>
+        <button id="next-question-btn" onclick="loadNextQuestion()">Next</button>
     
         <div id="result-message-acertou"></div>
         <div id="result-message-errou"></div>
         <div id="result-message-alerta"></div>
     
-        <button id="floating-btn" onclick="checkAnswer()">Enviar Resposta</button>
-        <button id="floating-btn2" onclick="loadNextQuestion()">Ir para Próxima</button>
+        <button id="floating-btn" onclick="checkAnswer()">Send Reply</button>
+        <button id="floating-btn2" onclick="loadNextQuestion()">Next</button>
     </div>
     
     <script>
@@ -349,7 +362,7 @@
 
             {
                 question: "Are they traveling to Paris next week?",
-                correctAnswer: 3
+                correctAnswer: 6
 
             },
 
@@ -367,7 +380,7 @@
 
             {
                 question: "Is she attending the conference tomorrow?",
-                correctAnswer: 3
+                correctAnswer: 6
 
             },
 
@@ -403,7 +416,7 @@
 
             {
                 question: "Is he meeting with the client later?",
-                correctAnswer: 3
+                correctAnswer: 6
 
             },
 
@@ -1150,30 +1163,30 @@
     
 
         var options = [
-            "Simple Present (Positive)",
-            "Simple Present (Negative)",
-            "Simple Present (Interrogative)",
-            "Present Continuous (Positive)",
-            "Present Continuous (Negative)",
-            "Present Continuous (Interrogative)",
-            "Present Perfect (Positive)",
-            "Present Perfect (Negative)",
-            "Present Perfect (Interrogative)",
-            "Simple Past (Positive)",
-            "Simple Past (Negative)",
-            "Simple Past (Interrogative)",
-            "Past Continuous (Positive)",
-            "Past Continuous (Negative)",
-            "Past Continuous (Interrogative)",
-            "Simple Future (Positive)",
-            "Simple Future (Negative)",
-            "Simple Future (Interrogative)",
-            "Future Continuous (Positive)",
-            "Future Continuous (Negative)",
-            "Future Continuous (Interrogative)",
-            "Modal Verb (Positive)",
-            "Modal Verb (Negative)",
-            "Modal Verb (Interrogative)",
+            " 1 - Simple Present (Positive)",
+            " 2 - Simple Present (Negative)",
+            " 3 - Simple Present (Interrogative)",
+            " 4 - Present Continuous (Positive)",
+            " 5 - Present Continuous (Negative)",
+            " 6 - Present Continuous (Interrogative)",
+            " 7 - Present Perfect (Positive)",
+            " 8 - Present Perfect (Negative)",
+            " 9 - Present Perfect (Interrogative)",
+            " 10 - Simple Past (Positive)",
+            " 11 - Simple Past (Negative)",
+            " 12 - Simple Past (Interrogative)",
+            " 13 - Past Continuous (Positive)",
+            " 14 - Past Continuous (Negative)",
+            " 15 - Past Continuous (Interrogative)",
+            " 16 - Simple Future (Positive)",
+            " 17 - Simple Future (Negative)",
+            " 18 - Simple Future (Interrogative)",
+            " 19 - Future Continuous (Positive)",
+            " 20 - Future Continuous (Negative)",
+            " 21 - Future Continuous (Interrogative)",
+            " 22 - Modal Verb (Positive)",
+            " 23 - Modal Verb (Negative)",
+            " 24 - Modal Verb (Interrogative)",
             // Adicione mais opções conforme necessário
         ];
     
@@ -1229,25 +1242,33 @@
                     userScore++;
                     document.getElementById('result-message-acertou').innerHTML = 'Você acertou!';
                     document.getElementById('submit-resposta').style.display = 'none';
-                    window.scrollBy(800, 1800);
+                    // window.scrollBy(800, 1300);
+                    window.scrollTo(0, document.body.scrollHeight);
+
+                    
                 } else {
                     document.getElementById('result-message-errou').innerHTML = 'Você errou. A resposta correta é: ' +
                         options[correctAnswer - 1];
                     document.getElementById('submit-resposta').style.display = 'none';
-                    window.scrollBy(800, 1800);
+                    // window.scrollBy(800, 1300);
+                    window.scrollTo(0, document.body.scrollHeight);
+
                 }
     
                 document.getElementById('next-question-btn').style.display = 'block';
                 document.getElementById('floating-btn2').style.display = 'block';
                 
             } else {
+                document.getElementById('result-message-alerta').style.display = 'block';
                 document.getElementById('result-message-alerta').innerHTML = 'Por favor, escolha uma resposta.';
-                window.scrollBy(800, 1800);
+                // window.scrollBy(800, 1300);
+                window.scrollTo(0, document.body.scrollHeight);
+
             }
         }
     
         function loadNextQuestion() {
-            window.scrollBy(800, -1800);
+            window.scrollBy(800, -1300);
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
                 loadQuestion();
@@ -1279,6 +1300,7 @@
         };
     </script>
     
+    <p class="credits" style="font-size:8px; color: #565656; text-align: center;">Created by Danilo Albergardi</p>
     </body>
     
     
