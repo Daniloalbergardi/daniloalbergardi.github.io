@@ -1,233 +1,198 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-	<meta charset="utf-8"/>
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
-	<meta name="keywords" content="utm, gerador utm, utm campaign, google utm">
-	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gerador de URL UTM — Tools For You</title>
+<meta name="description" content="Crie URLs com parâmetros UTM (source, medium, campaign, term, content) com validação e cópia rápida." />
+<meta name="theme-color" content="#0f172a" />
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#0b1222; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --card:#111827; --ring:#1e293b;
+    --ok:#22c55e; --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+    color:var(--fg); background:linear-gradient(180deg,#0b1222,#0f172a);
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:radial-gradient(75% 75% at 50% 30%, #38bdf855 0%, #38bdf822 60%, transparent 100%), #0b1222;
+    border:1px solid #1f2937; box-shadow:0 10px 30px #000a; font-size:24px
+  }
+  nav{background:#0b1222;border:1px solid var(--ring);border-radius:14px;padding:8px 10px}
+  nav a{color:var(--fg);text-decoration:none;padding:10px 12px;border-radius:10px;display:inline-block;font-weight:600}
+  nav a:hover{background:#0f172a}
 
-	<title>Gerar URL utm para campanha - Tools For You</title>
-	<link href="css/style.css" rel="stylesheet"/>
-	<script src="js/script.js"></script>
-	<script src="js/bioep.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<!-- Google Tag Manager -->
-		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-N76ZTQS');</script>
-	<!-- End Google Tag Manager -->
-	<script>
-		// bioEp.init({
-		// 	html: '<p class="titulo-q">Psiu, Clique em um anúncio para nos ajudar a melhorar o sistema</p></div><button class="botao_contato" type="submit" id="bio_ep_close" name="accept_click_ads" style=" /* padding: 30px; */ border-radius: 3px; height: 52px; width: 28%; left: unset; text-align: unset; position: unset; font-size: 0.8em; margin-bottom: 5px;">Vou clicar</button><p class="titulo-q" style=" font-size: 18px !important;margin: 15px !important;">Obrigado!</p><p class="titulo-q" style=" font-size: 16px !important; margin: 1px !important;">Quantos mais cliques, mais nos ajuda!</p>',
-		// 	css: '.box-q{margin: 20px 0 0 0;}.comentario{width: 85%; margin: 20px 0 0 0;border: 1px solid #ded4d4;}.btn_q{width: 100%;height: 65px;}.botao_contato{margin: 15px 0 0 0 !important;float: none !important;}.titulo-q{font-size: 19px !important;margin: 18px;font-weight: bold;}#bio_ep{width: 400px; height: 230px; color: #333; background-color: #fafafa; text-align: center;}#bio_ep_bg{opacity: 0.7!important;}#bio_ep_close{padding: 2px 0 0 0;}' +
-		// 	'#bio_ep_content {padding: 24px 0 0 0; font-family: "Titillium Web";}' +
-		// 	'#bio_ep_content span:nth-child(2) {display: block; color: #f21b1b; font-size: 32px; font-weight: 600;}' +
-		// 	'#bio_ep_content span:nth-child(3) {display: block; font-size: 16px;}' +
-		// 	'#bio_ep_content span:nth-child(4) {display: block; margin: -5px 0 0 0; font-size: 16px; font-weight: 600;}' +
-		// 	'.bio_btn {display: inline-block; margin: 18px 0 0 0; padding: 7px; color: #fff; font-size: 14px; font-weight: 600; background-color: #70bb39; border: 1px solid #47ad0b; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; border-radius: 0; text-decoration: none;}',
-		// 	fonts: ['//fonts.googleapis.com/css?family=Titillium+Web:300,400,600'],
-		// 	cookieExp: 0
-		// });
-	</script>
-	<script data-ad-client="ca-pub-6753564810765099" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  .grid{display:grid;gap:16px}
+  @media (min-width:900px){ .grid-2{grid-template-columns:1.1fr .9fr} }
 
+  .card{
+    background:linear-gradient(180deg,#0f172a,#0b1222); border:1px solid #1e293b; border-radius:18px;
+    padding:18px; box-shadow:0 10px 30px #0007; display:flex;flex-direction:column;gap:12px
+  }
+  label{font-size:.95rem;color:var(--muted)}
+  input[type="text"], textarea{
+    width:100%; background:#0b1222; border:1px solid #1f2937; color:var(--fg);
+    padding:10px 12px; border-radius:12px; outline:2px solid transparent
+  }
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{
+    appearance:none; border:1px solid #1f2937; background:#0b1222; color:var(--fg);
+    padding:10px 14px; border-radius:14px; cursor:pointer; font-weight:700
+  }
+  .btn:hover{border-color:#2a3a52}
+  .btn-primary{background:linear-gradient(180deg,#38bdf8,#0ea5e9); border-color:#38bdf8; color:#001018}
+  .btn-ok{background:linear-gradient(180deg,#22c55e,#16a34a); border-color:#22c55e; color:#00180a}
+  .hint{font-size:.9rem;color:var(--muted)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .out{min-height:44px;background:#0b1222;border:1px solid #1f2937;border-radius:12px;padding:12px;white-space:nowrap;overflow:auto}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#0b1222;border:1px solid #1f2937;color:var(--muted);font-size:.85rem}
+  footer{margin-top:18px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style>
 </head>
-<body>	
-	<!-- Google Tag Manager (noscript) -->
-		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N76ZTQS"
-		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-	<!-- End Google Tag Manager (noscript) -->
-	<div class="container">
-		<header>
-			<div class="logo">
-				<a href="/"><img class="img-logo" src="img/tools-for-you.png" alt="Logo Tools For You"></a>
-				<p class="credits">Created by Danilo Albergardi</p>
-	
-			</div>
-	
-			<nav class="navegation" id="menu-main">
-				<ul class="menu-main">
-					<li>
-						<a href="/">Página Principal</a>
-						<a href="/gerador-de-url-para-campanha.html">Gerador URL utm para campanha</a>
-						<!-- <a href="/gerador-de-url-utm-campanha-ads">Gerador URL utm para campanha</a> -->
-						<a href="/gerador-de-link-whatsapp.html">Gerador de link Whatsapp</a>
-					</li>
-				</ul>
-			</nav>
-		</header>
-		<h1 class="title">Criador de URL (com utm) para campanha de publicidade</h1> 
-		<h2 class="title">Informe os parâmetros de campanha personalizados para gerar a URL.</h2>
-		<p class="sub-title">Construa uma URL rastreável através das UTMs para que o Google Analytics e outras ferramentas possam rastrear o comportamento da sua campanha. Quando os usuários acessarem sua URL com estes parâmetros, a ferramenta de web analytics registrará e transformará dados em relatórios sobre a campanha de referência.</p>
-		<p class="description-title">Você pode criar URLs com a ferramenta abaixo, basta adicionar as informações referente a sua campanha:</p>
-			
-		<p class="description-title">Preencha os campos obrigatórios (marcados com <span class="option-required"> *</span>), ao preencher, a URL completa da campanha será gerada. 
-		</p>
-		
-		
-		<div class="ads1">
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">🎯</div>
+        <div>
+          <h1 style="margin:0;font-size:1.2rem">Gerador de URL UTM</h1>
+          <div class="hint">Crie URLs rastreáveis sem perder parâmetros existentes.</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Início</a>
+        <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+        <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
+        <a href="relax-and-breathe.html">Relax & Breathe</a>
+        <a href="verbal-tense.html">Verbal Tense</a>
+      </nav>
+    </header>
 
+    <section class="grid grid-2">
+      <div class="card">
+        <div>
+          <label for="base">URL do website <span class="pill mono">ex.: https://www.exemplo.com/produto</span></label>
+          <input id="base" type="text" placeholder="https://www.seusite.com/pagina" autofocus />
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:240px">
+            <label for="campaign">utm_campaign *</label>
+            <input id="campaign" type="text" placeholder="black_friday, promo_verao_2025" />
+          </div>
+          <div style="flex:1;min-width:200px">
+            <label for="source">utm_source *</label>
+            <input id="source" type="text" placeholder="google, facebook, newsletter" />
+          </div>
+          <div style="flex:1;min-width:200px">
+            <label for="medium">utm_medium *</label>
+            <input id="medium" type="text" placeholder="cpc, banner, email, feed" />
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:200px">
+            <label for="term">utm_term (opcional)</label>
+            <input id="term" type="text" placeholder="palavra-chave / variação" />
+          </div>
+          <div style="flex:1;min-width:200px">
+            <label for="content">utm_content (opcional)</label>
+            <input id="content" type="text" placeholder="criativo_a, video_30s, banner_300x250" />
+          </div>
+        </div>
 
-		</div>
-		<div class="block-content1">
-			<div class="cardDiv">
-				<input type="hidden" id="C00" class="cardNum" value=""/>
-				<p class="title-input">
-					<label for="C01">URL do website</label><span class="option-required"> *</span>
-					<input type="text" id="C01" class="cardNum" autofocus required/>
-					<span class="card-info">URL completa do site (Ex. https://www.example.com)</span>
-				</p>
-				<p class="title-input">
-					<label for="C04">Nome da campanha</label><span class="option-required"> *</span>
-					<input type="text" id="C04" class="cardNum" required/>
-					<span class="card-info">Produto, código promocional ou slogan (Ex. black_friday, PromocaoVerao2023)</span>
-				</p>
-				<p class="title-input">
-					<label for="C02">Origem da campanha</label><span class="option-required"> *</span>
-					<input type="text" id="C02" class="cardNum" required/>
-					<span class="card-info">Referência (Ex. google, facebook, newsletter, youtube)</span>
+        <div class="row">
+          <button class="btn btn-primary" id="build">Gerar URL</button>
+          <button class="btn" id="reset">Limpar</button>
+        </div>
 
-				</p>	
+        <div>
+          <div class="row" style="align-items:center;justify-content:space-between;">
+            <div class="pill mono">Resultado</div>
+            <div class="row" style="gap:8px">
+              <button class="btn btn-ok" id="open">Abrir</button>
+              <button class="btn" id="copy">Copiar</button>
+            </div>
+          </div>
+          <div id="out" class="out mono" tabindex="0"></div>
+          <div class="hint">A URL é construída preservando parâmetros já existentes.</div>
+        </div>
+      </div>
 
-				<p class="title-input">
-					<label for="C03">Meio da campanha</label><span class="option-required"> *</span>
-					<input type="text" id="C03" class="cardNum" required/>
-					<span class="card-info">Ação (Ex. cpc, clique_banner, feed)</span>
-				</p>
-				
-				<p class="title-input">
-					<label for="C05">Termo da campanha</label>
-					<input type="text" id="C05" class="cardNum"/>
-					<span class="card-info">Palavra-chave para diferenciar conversão</span>
+      <div class="card">
+        <div style="font-weight:700">Dicas rápidas</div>
+        <ul class="hint" style="padding-left:18px;line-height:1.6">
+          <li>Prefira <b>snake_case</b> ou <b>kebab-case</b> sem espaços.</li>
+          <li>Mantenha convenções: ex. <code>utm_source=google</code>, <code>utm_medium=cpc</code>.</li>
+          <li>Crie um link por canal/meio para relatórios limpos.</li>
+          <li>Evite caracteres especiais; use letras/números/_/-.</li>
+        </ul>
+        <div class="hint">Se a URL base não tiver protocolo, tentaremos usar <b>https://</b>.</div>
+      </div>
+    </section>
 
-				</p>
-				<p class="title-input">
-					<label for="C06">Conteúdo da campanha</label>
-					<input type="text" id="C06" class="cardNum"/>
-					<span class="card-info">Utilizado para diferenciar anúcios</span>&nbsp;&nbsp;
+    <footer>
+      <div>© <span id="y"></span> Danilo Oliveira Albergardi</div>
+      <div class="hint">100% estático • GitHub Pages</div>
+    </footer>
+  </div>
 
-				</p>
-			</div>
-			<div>
+<script>
+  const $ = id => document.getElementById(id);
+  const els = { base:$('base'), campaign:$('campaign'), source:$('source'), medium:$('medium'), term:$('term'), content:$('content'),
+                build:$('build'), reset:$('reset'), out:$('out'), open:$('open'), copy:$('copy') };
 
-				<p class="title-input">
-					<label>A url da sua campanha</label>
-					<textarea id="cNum-resulturl" class="cardNum-result" disabled></textarea>
+  function slug(x){ return (x||'').trim().replace(/\s+/g,'_').replace(/[^\w\-\.]/g,'').toLowerCase(); }
+  function safeURL(u){
+    try{ return new URL(u); }
+    catch(_){
+      if(!/^https?:\/\//i.test(u)) return new URL('https://' + u);
+      throw _;
+    }
+  }
+  function build(){
+    const base = els.base.value.trim();
+    const req = ['campaign','source','medium'];
+    for(const k of req){ if(!els[k].value.trim()){ alert('Preencha os campos obrigatórios (campaign, source, medium).'); return; } }
 
-				</p>
-				
-			</div>
-			<input type="hidden" id="cStatus" class="cardNum"/>
-			<button class="cardReset btn" id="clean-form" type="reset" value="Reset">
-				<span class="icon"></span>Limpar campos</button>
-		</div>
-		<!-- <div class="clear"></div> -->
-		<!-- <div class="block-content2">
-	
-			<div class="ad-block-300x250">
-			
-			</div>
-		</div> -->
-		<!-- <div class="clear"></div> -->
-		<!-- <div class="block-content3">
-			<div class="ad-vertical-265x600">
-				
-			</div>
-		</div> -->
+    let url;
+    try{ url = safeURL(base); }catch{ alert('URL inválida.'); return; }
 
-		<div class="clear"></div>
-		<label class="note">Nota: </label>
-		<ul>
-			<li>O URL gerado é atualizado automaticamente à medida que você faz alterações.</li>
-			<li>Não utilizar caracteres especiais e espaço entre palavras</li>
-		</ul>
-		<!-- <button onclick="copycontent()">Copy text</button> -->
+    const params = url.searchParams;
+    params.set('utm_campaign', slug(els.campaign.value));
+    params.set('utm_source',   slug(els.source.value));
+    params.set('utm_medium',   slug(els.medium.value));
+    const term = slug(els.term.value); if(term) params.set('utm_term', term); else params.delete('utm_term');
+    const content = slug(els.content.value); if(content) params.set('utm_content', content); else params.delete('utm_content');
 
-		<br/><br/>
-		<h2 class="title">Entendo um pouco mais sobre parâmetros UTM</h2>
-		<br/>
-		<p class="sub-title">Os parâmetros de utam fazem presente em nosso dia a dia podemos encontra-los ao acessar alguma promoção, link compartilhado por alguma empresa e outras situação, as utem são extensões adicionadas no final de links para identificar a origem do tráfego que está sendo enviado ao seu website. Quando é utilizado os links rastreáveis em suas ações de marketing, a sua ferramenta de Analíticas conseguirá gerar relatórios valiosos para você conseguir tomar ação específica por campanha e identificar o Retorno do Investimento (ROI) de cada ação.</p>
-		<p class="sub-title">Para você montar sua url corretamente, vamos explicar a importância de cada parâmetro:</p>
-		<ul>
-			<li><p class="sub-title"><strong>Nome da campanha (utm_campaign):</strong> Também conhecido como Campaign, é o identificador da campanha, será esse nome que constará em seus relatórios do Google Analytics e onde futuramente será usado para comparar com o desempenho de outras campanhas. Normalmente é preenchido com o nome próprio da campanha. Por exemplo: PromoInverno2021, black_Friday, PromocaoVerao2023.</p></li>
-			<li><p class="sub-title"><strong>Origem da campanha (utm_source):</strong> Também conhecido como Source, é responsável por determinar a fonte do tráfego (visitante / conversão). Normalmente é preenchido com o nome do website, onde o link foi usado ou rede social. Por exemplo: Google, Facebook, Newsletter, E-mail, Youtube.</p></li>
-			<li><p class="sub-title"><strong>Meio da campanha (utm_medium):</strong> Também conhecido como Medium, determina o meio ou local que foi compartilhado o link, pois a url pode ser compartilhada em diferentes fontes, esse valor não se altera sozinho, então você precisa gerar um link para cada local. Por exemplo: Feed, CPC, Clique_Banner, Feed.</p></li>
-			<li><p class="sub-title"><strong>Termo da campanha (utm_term):</strong> Também conhecido como Term, é um item opcional, usado para diferenciar palavras-chaves em diferentes anúncios pagos de pesquisa como o Google Ads e Bing. É interessante utilizar termos diferentes pois em situações os anúncios tem campanhas, canais e meios iguais, porém os termos diferenciam pela palavra-chave que o anúncio foi exibido e converteu. Por exemplo: Banner300x320, search.</p></li>
-			<li><p class="sub-title">Conteúdo da campanha (utm_content): Também conhecido como Content, é um item opcional, ajuda a especificar o conteúdo do link, geralmente quando o conteúdo é semelhante mas para públicos diferentes, formato diferente de anúncio ou testes A/B. É interessante utilizar pois em situações que os parâmetros campaign, source e medium sejam iguais, o conteúdo fica responsável por diferenciar os formatos como vídeos, banners ou links de pesquisa.</p></li>
-		</ul>
-		
-		<br/><br/><br/><br/>
+    const final = url.toString();
+    els.out.textContent = final;
+    return final;
+  }
+  function copy(txt){
+    navigator.clipboard?.writeText(txt).then(()=>alert('Copiado!')).catch(()=>{
+      const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);
+      ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Copiado!');
+    });
+  }
 
-	</div>
-	<footer>	
-		<script>	
-			$("input[id^=C]").keyup(function(e) {
-				var str = "";
-				$("#C01").each(function(index) {
-					str = str + $(this).val()
-				});
+  els.build.addEventListener('click', ()=>build());
+  els.reset.addEventListener('click', ()=>{
+    ['campaign','source','medium','term','content'].forEach(k=>els[k].value=''); els.out.textContent='';
+  });
+  els.open.addEventListener('click', ()=>{ const u=build(); if(u) window.open(u,'_blank') });
+  els.copy.addEventListener('click', ()=>{ if(els.out.textContent) copy(els.out.textContent) });
+  document.getElementById('y').textContent = new Date().getFullYear();
 
-				$("#C04").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "/?&utm_campaign=" + $(this).val()
-					}
-				});
-
-				$("#C02").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_source=" + $(this).val();
-					}
-					
-
-				});
-
-				$("#C03").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_medium="+ $(this).val();
-					}
-				});
-				
-				
-
-				$("#C05").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_term=" + $(this).val()
-					}
-				});
-
-				$("#C06").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_content=" + $(this).val()
-					}
-				});
-
-
-				$("#cNum-resulturl").val(str);
-			});	
-
-			
-			function copycontent() {
-			var copyText = document.getElementById("cNum-resulturl");
-			copyText.select();
-			copyText.setSelectionRange(0, 99999); 
-			document.execCommand("copy");
-
-			alert("O texto foi copiado");
-			}
-			
-		</script>
-	</footer>
+  // live update on typing
+  ['base','campaign','source','medium','term','content'].forEach(id=>{
+    $(id).addEventListener('input', ()=>{ if(els.out.textContent) build(); });
+  });
+</script>
 </body>
 </html>

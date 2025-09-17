@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Relax & Breathe – lembrete de respiração</title>
+  <style>
+    :root{
+      --bg:#0f172a; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --card:#111827;
+      --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444; --ring:#334155;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+      background:linear-gradient(180deg,#0b1222 0%, #0f172a 100%);
+      color:var(--fg); display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .app{width:100%; max-width:980px; display:grid; gap:16px}
+    .header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap
+    }
+    .title{display:flex; align-items:center; gap:12px}
+    .logo{
+      width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+      background:radial-gradient(75% 75% at 50% 30%, #38bdf855 0%, #38bdf822 60%, transparent 100%), #0b1222;
+      border:1px solid #1f2937; box-shadow:0 10px 30px #000a;
+      font-size:24px
+    }
+    .title h1{font-size:1.25rem; margin:0}
+    .card{
+      background:linear-gradient(180deg,#0f172a 0%, #0b1222 100%);
+      border:1px solid #1e293b; border-radius:18px; padding:16px;
+      box-shadow:0 10px 30px #0007
+    }
+    .grid{display:grid; gap:12px}
+    @media (min-width:900px){
+      .grid-2{grid-template-columns:1.2fr 0.8fr}
+    }
+    .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .row > * {min-width:0}
+    label{font-size:.9rem; color:var(--muted)}
+    input[type="text"]{width:100%}
+    input[type="text"], select{
+      background:#0b1222; border:1px solid #1f2937; color:var(--fg);
+      padding:10px 12px; border-radius:12px; outline:2px solid transparent
+    }
+    input[type="number"]{
+      width:110px; background:#0b1222; border:1px solid #1f2937; color:var(--fg);
+      padding:8px 10px; border-radius:10px; text-align:center
+    }
+    input[type="range"]{width:100%}
+    .btn{
+      appearance:none; border:1px solid #1f2937; background:#0b1222; color:var(--fg);
+      padding:10px 14px; border-radius:14px; cursor:pointer; font-weight:600;
+      transition:.15s transform ease, .2s background ease, .2s border-color ease;
+      outline:2px solid transparent
+    }
+    .btn:hover{transform:translateY(-1px); border-color:#2a3a52}
+    .btn:active{transform:translateY(0)}
+    .btn-primary{background:linear-gradient(180deg,#38bdf8, #0ea5e9); border-color:#38bdf8; color:#001018}
+    .btn-ok{background:linear-gradient(180deg,#22c55e,#16a34a); border-color:#22c55e; color:#00180a}
+    .btn-warn{background:linear-gradient(180deg,#f59e0b,#d97706); border-color:#f59e0b; color:#1a0d00}
+    .btn-ghost{background:#0b1222}
+    .muted{color:var(--muted)}
+    .switch{display:inline-flex; align-items:center; gap:10px}
+    .switch input{transform:scale(1.1)}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+      background:#0b1222; border:1px solid #1f2937; color:var(--muted); font-size:.85rem
+    }
+    .status{
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px
+    }
+    .countdown{font-variant-numeric:tabular-nums; font-weight:700}
+    .breath{
+      height:240px; display:grid; place-items:center; position:relative
+    }
+    .bubble{
+      width:140px;height:140px;border-radius:50%;
+      background:radial-gradient(circle at 35% 30%, #38bdf8 0%, #155e75 45%, #0b1222 100%);
+      border:1px solid #1f2937; box-shadow:inset 0 0 40px #000a, 0 16px 60px #0008;
+      animation:breath var(--cycle,6s) ease-in-out infinite;
+    }
+    @keyframes breath{
+      0%{transform:scale(0.9)} 50%{transform:scale(1.08)} 100%{transform:scale(0.9)}
+    }
+    .hint{font-size:.9rem; color:var(--muted)}
+    .footer{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+    .link{color:#7dd3fc; text-decoration:none; border-bottom:1px dashed #7dd3fc22}
+    .kbd{background:#111827; border:1px solid #1f2937; padding:2px 6px; border-radius:6px; font-size:.85rem}
+    .row-group{display:grid; gap:10px}
+    .mini{font-size:.85rem}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="header">
+      <div class="title">
+        <div class="logo" aria-hidden="true">🫁</div>
+        <h1>Relax & Breathe <span class="muted mini">— lembrete de respiração / mandíbula</span></h1>
+      </div>
+      <div class="pill">
+        <span>Criado por Danilo Oliveira Albergardi</span>
+      </div>
+    </div>
+
+    <section class="grid grid-2">
+      <!-- CONTROLS -->
+      <div class="card grid">
+        <div class="row status">
+          <div>
+            <div class="muted mini">Status</div>
+            <div id="statusText" class="">Pronto</div>
+          </div>
+          <div>
+            <div class="muted mini">Próximo em</div>
+            <div id="countdown" class="countdown">--:--</div>
+          </div>
+        </div>
+
+        <div class="row" style="gap:12px; flex-wrap:wrap">
+          <button id="startBtn" class="btn btn-primary">▶️ Iniciar</button>
+          <button id="stopBtn" class="btn btn-ghost">⏹️ Parar</button>
+          <button id="skipBtn" class="btn btn-warn">⏭️ Pular p/ próximo</button>
+          <button id="testBtn" class="btn btn-ok">🔊 Testar agora</button>
+        </div>
+
+        <div class="row-group">
+          <label for="phrase">Frase (TTS)</label>
+          <input id="phrase" type="text" placeholder='Ex.: "Relax and breathe"' />
+        </div>
+
+        <div class="row" style="gap:16px">
+          <div style="flex:1">
+            <label>Intervalo (min): <span id="intervalVal" class="pill">10.0</span></label>
+            <input id="interval" type="range" min="0.25" max="60" step="0.25" />
+          </div>
+          <div style="width:160px">
+            <label for="startDelay">Atraso inicial (s)</label>
+            <input id="startDelay" type="number" min="0" step="1" />
+          </div>
+          <div style="width:170px">
+            <label for="reps">Repetições</label>
+            <input id="reps" type="number" min="0" step="1" />
+            <div class="hint mini">0 = infinito</div>
+          </div>
+        </div>
+
+        <div class="row" style="gap:16px">
+          <div style="flex:1">
+            <label>Volume: <span id="volVal" class="pill">80%</span></label>
+            <input id="volume" type="range" min="0" max="100" step="1" />
+          </div>
+          <div style="flex:1">
+            <label for="voice">Voz (TTS)</label>
+            <select id="voice"></select>
+          </div>
+        </div>
+
+        <div class="row" style="gap:16px">
+          <div style="flex:1">
+            <label>Velocidade (rate): <span id="rateVal" class="pill">1.00</span></label>
+            <input id="rate" type="range" min="0.6" max="1.4" step="0.01" />
+          </div>
+          <div style="flex:1">
+            <label>Tom (pitch): <span id="pitchVal" class="pill">1.00</span></label>
+            <input id="pitch" type="range" min="0.6" max="1.4" step="0.01" />
+          </div>
+        </div>
+
+        <div class="row" style="gap:20px">
+          <label class="switch"><input id="useTTS" type="checkbox" /> Usar TTS (texto)</label>
+          <label class="switch"><input id="useBeep" type="checkbox" /> Beep curto</label>
+          <label class="switch"><input id="useVibration" type="checkbox" /> Vibrar no celular</label>
+          <label class="switch"><input id="blinkTitle" type="checkbox" /> Piscar título</label>
+        </div>
+
+        <div class="row" style="gap:16px">
+          <div style="flex:1">
+            <label for="audioFile">Ou use um arquivo de áudio (.mp3/.wav)</label>
+            <input id="audioFile" type="file" accept="audio/*" />
+            <div class="hint mini">Se enviar um arquivo, ele será usado no lugar do TTS. Nada é enviado ao servidor.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISUAL + INFO -->
+      <div class="card grid">
+        <div class="breath">
+          <div class="bubble" id="bubble" aria-hidden="true"></div>
+        </div>
+        <div class="row" style="gap:16px">
+          <div style="flex:1">
+            <label>Duração do ciclo visual (s): <span id="cycleVal" class="pill">6</span></label>
+            <input id="cycle" type="range" min="3" max="12" step="1" />
+          </div>
+          <div style="flex:1">
+            <label for="langHint">Dica</label>
+            <div id="langHint" class="hint">Clique em <b>Iniciar</b> para dar a permissão de áudio no seu navegador.</div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="muted mini">
+            Atalhos: <span class="kbd">S</span> iniciar/parar • <span class="kbd">N</span> pular • <span class="kbd">T</span> testar
+          </span>
+          <span class="muted mini">Suporta: TTS, arquivo local, vibração (mobile).</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ----- State & Elements -----
+    const els = {
+      status: byId('statusText'),
+      countdown: byId('countdown'),
+      startBtn: byId('startBtn'),
+      stopBtn: byId('stopBtn'),
+      skipBtn: byId('skipBtn'),
+      testBtn: byId('testBtn'),
+      phrase: byId('phrase'),
+      interval: byId('interval'),
+      intervalVal: byId('intervalVal'),
+      startDelay: byId('startDelay'),
+      reps: byId('reps'),
+      volume: byId('volume'),
+      volVal: byId('volVal'),
+      voice: byId('voice'),
+      rate: byId('rate'),
+      rateVal: byId('rateVal'),
+      pitch: byId('pitch'),
+      pitchVal: byId('pitchVal'),
+      useTTS: byId('useTTS'),
+      useBeep: byId('useBeep'),
+      useVibration: byId('useVibration'),
+      blinkTitle: byId('blinkTitle'),
+      audioFile: byId('audioFile'),
+      bubble: byId('bubble'),
+      cycle: byId('cycle'),
+      cycleVal: byId('cycleVal'),
+    };
+
+    let isRunning = false;
+    let nextAt = 0;
+    let timerId = null;
+    let tickId = null;
+    let repsDone = 0;
+    let totalReps = 0;
+    let audioURL = null;
+    let originalTitle = document.title;
+
+    // ----- Storage helpers -----
+    const KEY = 'relax_breathe_v1';
+    function save(){
+      const data = {
+        phrase: els.phrase.value,
+        interval: parseFloat(els.interval.value),
+        startDelay: parseInt(els.startDelay.value||'0',10),
+        reps: parseInt(els.reps.value||'0',10),
+        volume: parseInt(els.volume.value,10),
+        rate: parseFloat(els.rate.value),
+        pitch: parseFloat(els.pitch.value),
+        voiceURI: els.voice.value || '',
+        useTTS: els.useTTS.checked,
+        useBeep: els.useBeep.checked,
+        useVibration: els.useVibration.checked,
+        blinkTitle: els.blinkTitle.checked,
+        cycle: parseInt(els.cycle.value,10)
+      };
+      localStorage.setItem(KEY, JSON.stringify(data));
+    }
+    function load(){
+      const d = JSON.parse(localStorage.getItem(KEY) || '{}');
+      els.phrase.value = d.phrase ?? 'Relax and breathe';
+      els.interval.value = d.interval ?? 10;
+      els.intervalVal.textContent = (d.interval ?? 10).toFixed(2);
+      els.startDelay.value = d.startDelay ?? 0;
+      els.reps.value = d.reps ?? 0;
+      els.volume.value = d.volume ?? 80;
+      els.volVal.textContent = (d.volume ?? 80) + '%';
+      els.rate.value = d.rate ?? 1;
+      els.rateVal.textContent = (d.rate ?? 1).toFixed(2);
+      els.pitch.value = d.pitch ?? 1;
+      els.pitchVal.textContent = (d.pitch ?? 1).toFixed(2);
+      els.useTTS.checked = d.useTTS ?? true;
+      els.useBeep.checked = d.useBeep ?? false;
+      els.useVibration.checked = d.useVibration ?? false;
+      els.blinkTitle.checked = d.blinkTitle ?? false;
+      els.cycle.value = d.cycle ?? 6;
+      els.cycleVal.textContent = d.cycle ?? 6;
+      setCycle(d.cycle ?? 6);
+    }
+
+    // ----- UI helpers -----
+    function byId(id){return document.getElementById(id)}
+    function setStatus(txt){els.status.textContent = txt}
+    function fmtTime(ms){
+      if(ms<=0) return '00:00';
+      const s = Math.ceil(ms/1000);
+      const m = Math.floor(s/60);
+      const r = s%60;
+      return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`;
+    }
+    function setCycle(sec){
+      els.bubble.style.setProperty('--cycle', `${sec}s`);
+    }
+
+    // ----- Audio: TTS / File / Beep -----
+    let voices = [];
+    function loadVoices(){
+      voices = window.speechSynthesis.getVoices();
+      const langPrefer = navigator.language || 'pt-BR';
+      els.voice.innerHTML = '';
+      const optNone = document.createElement('option');
+      optNone.value = ''; optNone.textContent = 'Automática';
+      els.voice.appendChild(optNone);
+      voices.forEach(v=>{
+        const o=document.createElement('option');
+        o.value=v.voiceURI; o.textContent=`${v.name} — ${v.lang}${v.default?' (padrão)':''}`;
+        els.voice.appendChild(o);
+      });
+      // Restore saved voice if exists
+      const saved = JSON.parse(localStorage.getItem(KEY)||'{}').voiceURI || '';
+      if(saved){ els.voice.value = saved; }
+      else{
+        // pick a voice matching user language if available
+        const match = voices.find(v=>v.lang.startsWith(langPrefer));
+        if(match) els.voice.value = match.voiceURI;
+      }
+    }
+    if('speechSynthesis' in window){
+      speechSynthesis.onvoiceschanged = loadVoices;
+      // sometimes voices are ready immediately
+      setTimeout(loadVoices, 100);
+    }
+
+    function speakOnce({text, volume, rate, pitch, voiceURI}){
+      return new Promise((resolve,reject)=>{
+        if(!('speechSynthesis' in window)){
+          return reject(new Error('TTS não suportado'));
+        }
+        const u = new SpeechSynthesisUtterance(text);
+        u.volume = Math.max(0, Math.min(1, volume));
+        u.rate = rate; u.pitch = pitch;
+        if(voiceURI){
+          const v = voices.find(v=>v.voiceURI===voiceURI);
+          if(v) u.voice = v;
+        }
+        u.onend = resolve;
+        u.onerror = (e)=>reject(e.error || e);
+        // Some mobile browsers require active context after user gesture; Start button handles this.
+        speechSynthesis.cancel(); // reset any queued utterances
+        speechSynthesis.speak(u);
+      });
+    }
+
+    function playFile(url, volume){
+      return new Promise((resolve,reject)=>{
+        const a = new Audio(url);
+        a.volume = Math.max(0, Math.min(1, volume));
+        a.addEventListener('ended', resolve, {once:true});
+        a.addEventListener('error', ()=>reject(new Error('Falha ao reproduzir áudio.')), {once:true});
+        a.play().catch(reject);
+      });
+    }
+
+    function beepShort(){
+      try{
+        const ctx = new (window.AudioContext||window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = 880;
+        g.gain.setValueAtTime(0.001, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        o.connect(g).connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.18);
+      }catch(e){}
+    }
+
+    // ----- Core loop -----
+    async function doPrompt(){
+      setStatus('Falando…');
+      const vol = parseInt(els.volume.value,10)/100;
+      // beep / vibração opcionais (junto com fala/áudio)
+      if(els.useBeep.checked) beepShort();
+      if(els.useVibration.checked && 'vibrate' in navigator){ navigator.vibrate([50,50,50]); }
+      try{
+        if(audioURL){
+          await playFile(audioURL, vol);
+        }else if(els.useTTS.checked){
+          const text = els.phrase.value.trim() || 'Relax and breathe';
+          await speakOnce({
+            text, volume: vol, rate: parseFloat(els.rate.value), pitch: parseFloat(els.pitch.value),
+            voiceURI: els.voice.value
+          });
+        }else{
+          // fallback: apenas beep se não usar TTS e sem arquivo
+          await new Promise(r=>setTimeout(r, 200));
+        }
+      }catch(err){
+        console.warn(err);
+      }
+      setStatus('Concluído ✓');
+    }
+
+    function scheduleNext(delaySec){
+      clearTimeout(timerId); clearInterval(tickId);
+      nextAt = Date.now() + delaySec*1000;
+      timerId = setTimeout(async ()=>{
+        if(!isRunning) return;
+        if(els.blinkTitle.checked){ blink(true); }
+        await doPrompt();
+        if(els.blinkTitle.checked){ blink(false); }
+
+        repsDone++;
+        if(totalReps>0 && repsDone>=totalReps){
+          stop();
+          return;
+        }
+        // agendar próximo
+        const intervalMin = parseFloat(els.interval.value);
+        scheduleNext(intervalMin*60);
+      }, delaySec*1000);
+
+      tickId = setInterval(()=>{
+        const ms = nextAt - Date.now();
+        els.countdown.textContent = fmtTime(ms);
+      }, 200);
+    }
+
+    function start(){
+      if(isRunning) return;
+      isRunning = true;
+      repsDone = 0;
+      totalReps = parseInt(els.reps.value||'0',10);
+      setStatus('Agendado…');
+      const delay = parseInt(els.startDelay.value||'0',10);
+      scheduleNext(Math.max(0, delay));
+      document.body.classList.add('running');
+    }
+
+    function stop(){
+      isRunning = false;
+      clearTimeout(timerId); clearInterval(tickId);
+      els.countdown.textContent = '--:--';
+      setStatus('Parado');
+      blink(false);
+      document.body.classList.remove('running');
+    }
+
+    function skip(){
+      if(!isRunning){ doPrompt(); return; }
+      scheduleNext(0);
+    }
+
+    // Blink title while firing prompt
+    let blinkTimer = null; let showingAlert = false;
+    function blink(on){
+      clearInterval(blinkTimer);
+      if(!on){ document.title = originalTitle; showingAlert=false; return; }
+      showingAlert=true;
+      blinkTimer = setInterval(()=>{
+        document.title = (document.title===originalTitle) ? '🔔 Respire agora' : originalTitle;
+      }, 600);
+    }
+
+    // ----- Events -----
+    els.interval.addEventListener('input', ()=>{
+      els.intervalVal.textContent = parseFloat(els.interval.value).toFixed(2); save();
+    });
+    els.volume.addEventListener('input', ()=>{ els.volVal.textContent = els.volume.value+'%'; save(); });
+    els.rate.addEventListener('input', ()=>{ els.rateVal.textContent = parseFloat(els.rate.value).toFixed(2); save(); });
+    els.pitch.addEventListener('input', ()=>{ els.pitchVal.textContent = parseFloat(els.pitch.value).toFixed(2); save(); });
+    els.useTTS.addEventListener('change', save);
+    els.useBeep.addEventListener('change', save);
+    els.useVibration.addEventListener('change', save);
+    els.blinkTitle.addEventListener('change', save);
+    els.startDelay.addEventListener('change', save);
+    els.reps.addEventListener('change', save);
+    els.phrase.addEventListener('change', save);
+    els.voice.addEventListener('change', save);
+    els.cycle.addEventListener('input', ()=>{ els.cycleVal.textContent = els.cycle.value; setCycle(els.cycle.value); save(); });
+
+    els.audioFile.addEventListener('change', ()=>{
+      if(audioURL){ URL.revokeObjectURL(audioURL); audioURL=null; }
+      const f = els.audioFile.files?.[0];
+      if(f){
+        audioURL = URL.createObjectURL(f);
+        els.useTTS.checked = false; // prioriza arquivo
+        save();
+        setStatus('Áudio carregado: ' + f.name);
+      }else{
+        setStatus('Pronto');
+      }
+    });
+
+    els.startBtn.addEventListener('click', start);
+    els.stopBtn.addEventListener('click', stop);
+    els.skipBtn.addEventListener('click', skip);
+    els.testBtn.addEventListener('click', async ()=>{
+      setStatus('Teste…'); await doPrompt(); setStatus('Pronto'); 
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='t'){ e.preventDefault(); els.testBtn.click(); }
+      if(e.key.toLowerCase()==='n'){ e.preventDefault(); els.skipBtn.click(); }
+      if(e.key.toLowerCase()==='s'){ e.preventDefault(); isRunning ? stop() : start(); }
+    });
+
+    // Init
+    load();
+    if(!('speechSynthesis' in window)){
+      byId('langHint').innerHTML = 'Seu navegador não suporta TTS. Use um arquivo de áudio (.mp3) no campo acima.';
+    }
+
+    // iOS/Safari tip
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden && isRunning && els.blinkTitle.checked){ document.title='🔔 Respire agora'; }
+      else if(!showingAlert){ document.title=originalTitle; }
+    });
+  </script>
+</body>
+</html>

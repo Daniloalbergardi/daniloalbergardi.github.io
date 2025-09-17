@@ -1,150 +1,264 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-	<meta charset="utf-8"/>
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
-	<meta name="keywords" content="utm, gerador utm, utm campaign, google utm">
-	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gerador de Link WhatsApp — Tools For You</title>
+<meta name="description" content="Crie links do WhatsApp com número e mensagem pré-preenchida, e gere um botão flutuante para seu site." />
+<meta name="theme-color" content="#0f172a" />
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#0b1222; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --card:#111827; --ring:#1e293b;
+    --ok:#22c55e; --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+    color:var(--fg); background:linear-gradient(180deg,#0b1222,#0f172a);
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:radial-gradient(75% 75% at 50% 30%, #38bdf855 0%, #38bdf822 60%, transparent 100%), #0b1222;
+    border:1px solid #1f2937; box-shadow:0 10px 30px #000a; font-size:24px
+  }
+  nav{background:#0b1222;border:1px solid var(--ring);border-radius:14px;padding:8px 10px}
+  nav a{color:var(--fg);text-decoration:none;padding:10px 12px;border-radius:10px;display:inline-block;font-weight:600}
+  nav a:hover{background:#0f172a}
+  /* destaque do item ativo (igual ao index) */
+  nav a[aria-current="page"]{background:#0f172a; outline:1px solid #223146}
 
-	<title>Gerar link Whatsapp | Chamar conversa no Whatsapp sem adicionar - Tools For You</title>
-	<link href="css/style.css" rel="stylesheet"/>
-	<script type="text/javascript" charset="UTF-8" src="js/script.js"></script>
-	<script src="js/bioep.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<!-- Google Tag Manager -->
-		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-N76ZTQS');</script>
-	<!-- End Google Tag Manager -->
-	<script data-ad-client="ca-pub-6753564810765099" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-
+  .grid{display:grid;gap:16px}
+  @media (min-width:900px){ .grid-2{grid-template-columns:1fr 1fr} }
+  .card{
+    background:linear-gradient(180deg,#0f172a,#0b1222); border:1px solid #1e293b; border-radius:18px;
+    padding:18px; box-shadow:0 10px 30px #0007; display:flex;flex-direction:column;gap:12px
+  }
+  label{font-size:.95rem;color:var(--muted)}
+  input[type="text"], input[type="tel"], textarea, select{
+    width:100%; background:#0b1222; border:1px solid #1f2937; color:var(--fg);
+    padding:10px 12px; border-radius:12px; outline:2px solid transparent
+  }
+  textarea{min-height:92px;resize:vertical}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#0b1222;border:1px solid #1f2937;color:var(--muted);font-size:.85rem}
+  .btn{
+    appearance:none; border:1px solid #1f2937; background:#0b1222; color:var(--fg);
+    padding:10px 14px; border-radius:14px; cursor:pointer; font-weight:700
+  }
+  .btn:hover{border-color:#2a3a52}
+  .btn-primary{background:linear-gradient(180deg,#38bdf8,#0ea5e9); border-color:#38bdf8; color:#001018}
+  .btn-ok{background:linear-gradient(180deg,#22c55e,#16a34a); border-color:#22c55e; color:#00180a}
+  .muted{color:var(--muted)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .out{min-height:44px}
+  .radio{display:flex;gap:14px;align-items:center}
+  .codebox{
+    font-size:.9rem; line-height:1.35; white-space:pre-wrap; word-break:break-word;
+    background:#0b1222;border:1px solid #1f2937;border-radius:12px;padding:12px
+  }
+  .preview{
+    display:grid; place-items:center; height:140px; border:1px dashed #223146; border-radius:12px; background:#0b1222
+  }
+  .wa-icon{
+    width:60px;height:60px;border-radius:50%; display:grid; place-items:center;
+    background:#25D366; color:#001; box-shadow:0 2px 6px #0008; font-size:34px
+  }
+  footer{margin-top:18px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .hint{font-size:.9rem;color:var(--muted)}
+</style>
 </head>
-<body>	
-	<!-- Google Tag Manager (noscript) -->
-		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N76ZTQS"
-		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-	<!-- End Google Tag Manager (noscript) -->
-	<div class="container">
-		<header>
-			<div class="logo">
-				<a href="/"><img class="img-logo" src="img/tools-for-you.png" alt="Logo Tools For You"></a>
-				<p class="credits">Created by Danilo Albergardi
-				</p>
-	
-			</div>
-	
-			<nav class="navegation" id="menu-main">
-				<ul class="menu-main">
-					<li>
-						<a href="/">Página Principal</a>
-						<a href="/gerador-de-url-para-campanha.html">Gerador URL utm para campanha</a>
-						<!-- <a href="/gerador-de-url-utm-campanha-ads">Gerador URL utm para campanha</a> -->
-						<a href="/gerador-de-link-whatsapp.html">Gerador de link Whatsapp</a>
-					</li>
-				</ul>
-			</nav>
-		</header>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">💬</div>
+        <div>
+          <h1 style="margin:0;font-size:1.2rem">Gerador de Link WhatsApp</h1>
+          <div class="muted">Crie links e botão flutuante com número brasileiro e mensagem pronta.</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Sobre</a>
+        <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+        <a href="gerador-de-link-whatsapp.html" aria-current="page">Link WhatsApp</a>
+        <a href="relax-and-breathe.html">Relax & Breathe</a>
+        <a href="verbal-tense.html">Verbal Tense</a>
+      </nav>
+    </header>
 
-		<h1 class="title"></h1> 
-		<h2 class="title"></h2>
-		<div class= "block-content1">
+    <section class="grid grid-2">
+      <div class="card">
+        <div class="row">
+          <div style="flex:1">
+            <label for="phone">Número (Brasil)</label>
+            <input id="phone" type="tel" placeholder="(11) 99855-3521" autocomplete="tel" />
+            <div class="hint">Aceita com/sem máscara; será normalizado para +55DDDNNNNNNNN.</div>
+          </div>
+        </div>
+        <div>
+          <label for="msg">Mensagem (opcional)</label>
+          <textarea id="msg" placeholder="Olá! Vi seu site e gostaria de saber mais…"></textarea>
+        </div>
 
-			<p class="title-input">
-				<label for="C01">Número de telefone</label><span class="option-required"> *</span>
-				<div style="display: flex;">
-					<span style="padding: 5px;">+55</span>
-					<input type="tel" id="C01" value="" class="cardNum" autofocus />
-				</div>
-				<span class="card-info">(Ex. Digitar somente números. Exemplo (11) 99855-3521</span>
-			</p>
-			<p class="title-input">
-				<label for="C04">Escreva a mensagem para enviar</label>
-				<textarea type="text" id="C04" class="cardNum"></textarea>
-				<span class="card-info">Quando acessar o link, essa mensagem já estará digitada</span>
-			</p>
-			<p>
-				<small style="color:#a1a1a1">Não guardamos nenhum dado informado.</small>
+        <div class="row">
+          <button id="gen" class="btn btn-primary">Gerar links</button>
+          <button id="clear" class="btn">Limpar</button>
+        </div>
 
-				
-			</p><br><br>
-			<div class="clear"></div>
+        <div>
+          <div class="row" style="align-items:center;justify-content:space-between;">
+            <div class="pill mono">Mobile: api.whatsapp.com</div>
+            <div class="row" style="gap:8px">
+              <button class="btn btn-ok" id="openMobile">Abrir</button>
+              <button class="btn" id="copyMobile">Copiar</button>
+            </div>
+          </div>
+          <div id="outMobile" class="codebox out mono"></div>
+        </div>
 
-			<div class= "block-content2">
-	
-			</div>
-			<div class="">
-				<!-- <button class="btn" name="generate-link" onclick="generatelink()" type="button">Gerar link</button> -->
-				<p>Link para usar em disposito celular/tablets e aplicativos mobile</p>
-				<textarea id="link-mobile" class="cardNum-result" disabled></textarea>
-				<div id="acesso-1"> </div>
+        <div>
+          <div class="row" style="align-items:center;justify-content:space-between;">
+            <div class="pill mono">Desktop: web.whatsapp.com</div>
+            <div class="row" style="gap:8px">
+              <button class="btn btn-ok" id="openDesktop">Abrir</button>
+              <button class="btn" id="copyDesktop">Copiar</button>
+            </div>
+          </div>
+          <div id="outDesktop" class="codebox out mono"></div>
+        </div>
+      </div>
 
-				<p>Link para usar em computadores/notebooks</p>
-				<textarea id="link-desktop" class="cardNum-result" disabled></textarea>
-				<div id="acesso-2"> </div>
+      <div class="card">
+        <div class="row" style="align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-weight:700">Botão flutuante (snippet)</div>
+            <div class="muted">Gere um código limpo, sem bibliotecas externas. Escolha o lado:</div>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="pos" value="left" checked> Esquerda</label>
+            <label><input type="radio" name="pos" value="right"> Direita</label>
+          </div>
+        </div>
 
+        <div class="preview">
+          <div class="wa-icon" id="prev" style="justify-self:start;margin-left:40px">🟢</div>
+        </div>
 
-			</div>
+        <div class="row" style="gap:8px;justify-content:flex-end">
+          <button class="btn btn-ok" id="copySnippet">Copiar snippet</button>
+        </div>
+        <pre id="snippet" class="codebox mono" style="white-space:pre-wrap"></pre>
+      </div>
+    </section>
 
-			<p class="title-input">
-				<label>Posição do botão flutuante </label>
-			</p>
-			<p>
-				<input type="radio" class="btn-radio" id="position-left" name="position-button" value="left" checked>
-				<label for="position-left" class="text-radio">Lado esquerdo</label>
-			</p>
-			<p>
-				<input type="radio" class="btn-radio" id="position-right" name="position-button" value="right">	
-				<label for="position-right" class="text-radio">Lado direito</label>
-			</p>
-			<p>
-				<img class="img-example" id="imgbtn-left" src="img/teste-2.jpg"/>
-				<img class="img-example" id="imgbtn-right" src="img/teste-1.jpg"/>
-			</p>
+    <footer>
+      <div>© <span id="y"></span> Danilo Oliveira Albergardi</div>
+      <div class="muted">Nada é enviado a servidores • 100% local</div>
+    </footer>
+  </div>
 
-			<p>Código de instalação do botão flutuante</p>
-			<textarea id="code-button" class="cardNum-result" disabled></textarea>
+<script>
+  const els = {
+    phone: byId('phone'), msg: byId('msg'), gen: byId('gen'), clear: byId('clear'),
+    outM: byId('outMobile'), outD: byId('outDesktop'),
+    openM: byId('openMobile'), openD: byId('openDesktop'),
+    copyM: byId('copyMobile'), copyD: byId('copyDesktop'),
+    snippet: byId('snippet'), copySnippet: byId('copySnippet'),
+    prev: byId('prev')
+  };
+  let position = 'left';
 
+  function byId(id){return document.getElementById(id)}
+  function digits(s){return (s||'').replace(/\D/g,'')}
+  function normBRPhone(raw){
+    let d = digits(raw);
+    if(d.startsWith('55')) d = d.slice(2);
+    // limita a 11 (DDD + 9 dígitos) ou 10 (DDD + 8)
+    d = d.slice(0,11);
+    if(d.length < 10) return null;
+    const ddd = d.slice(0,2);
+    const rest = d.slice(2);
+    return { e164: '55'+ddd+rest, ddd, rest };
+  }
+  function formatBR(raw){
+    const n = normBRPhone(raw); if(!n) return '';
+    const { ddd, rest } = n;
+    if(rest.length === 9) return `(${ddd}) ${rest.slice(0,5)}-${rest.slice(5)}`;
+    return `(${ddd}) ${rest.slice(0,4)}-${rest.slice(4)}`;
+  }
+  function enc(s){return encodeURIComponent(s||'')}
+  function buildLinks(){
+    const n = normBRPhone(els.phone.value);
+    if(!n){ alert('Informe um número válido com DDD.'); return null; }
+    const text = enc(els.msg.value);
+    const base = `whatsapp.com/send?phone=${n.e164}${text?`&text=${text}`:''}`;
+    return {
+      mobile: 'https://api.'+base,
+      desktop: 'https://web.'+base
+    };
+  }
+  function renderSnippet(links){
+    const side = position === 'left' ? 'left' : 'right';
+    const css = `
+<style>
+.wa-float{position:fixed;bottom:40px;${side}:40px;z-index:1000}
+.wa-float a{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;
+background:#25D366;color:white;text-decoration:none;box-shadow:0 2px 10px #0007;font-size:30px}
+@media (max-width: 768px){
+  .wa-float a{width:56px;height:56px;font-size:28px}
+}
+</style>`.trim();
+    const html = `
+<div class="wa-float">
+  <!-- Troque o href abaixo por ${side==='left'?'mobile':'mobile'} ou desktop conforme desejar -->
+  <a href="${links.mobile}" target="_blank" aria-label="WhatsApp">✆</a>
+</div>`.trim();
+    return css + '\n' + html;
+  }
+  function copy(text){
+    navigator.clipboard?.writeText(text).then(()=>alert('Copiado!')).catch(()=>{
+      const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);
+      ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Copiado!');
+    });
+  }
 
-		</div>
-		<div class="clear"></div>
-		
-	</div>
-	<footer>	
-		<script>	
-			document.getElementById('position-left').addEventListener('input', function (e) {
-				document.querySelector('#imgbtn-left').style.display = 'block';
-				document.querySelector('#imgbtn-right').style.display = 'none';
-			});
+  // events
+  els.phone.addEventListener('input', e=>{
+    const f = formatBR(e.target.value);
+    if(f){ e.target.setCustomValidity(''); e.target.dataset.pretty=f; }
+  });
+  document.querySelectorAll('input[name="pos"]').forEach(r=>{
+    r.addEventListener('change', e=>{
+      position = e.target.value;
+      els.prev.style.marginLeft = position==='left' ? '40px' : 'auto';
+      els.prev.style.marginRight = position==='right' ? '40px' : 'auto';
+      if(position==='right') els.prev.style.justifySelf='end'; else els.prev.style.justifySelf='start';
+    });
+  });
 
-			document.getElementById('position-right').addEventListener('input', function (e) {
-				document.querySelector('#imgbtn-right').style.display = 'block';
-				document.querySelector('#imgbtn-left').style.display = 'none';
-			});
-			// document.getElementById('C01').addEventListener('input', function (e) {
-			// 	// 55 18 99738-0929
-			// 	var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,2})(\d{0,5})(\d{0,4})/);
-			// 	e.target.value = !x[2] ? x[1] : '+' + x[1] + ' (' + x[2] + ') ' + x[3] + (x[4] ? '-' + x[4] : '');
-			// });
+  els.clear.addEventListener('click', ()=>{
+    els.phone.value=''; els.msg.value=''; els.outM.textContent=''; els.outD.textContent=''; els.snippet.textContent='';
+  });
 
-			document.getElementById('C01').addEventListener('input', function (e) {
-				var x = e.target.value.replace(/\D/g, '').match(/(\d{2})(\d{5})(\d{4})/);
-				e.target.value = '(' + x[1] + ') ' + x[2] + '-' + x[3];
-			});
+  els.gen.addEventListener('click', ()=>{
+    const links = buildLinks(); if(!links) return;
+    els.outM.textContent = links.mobile;
+    els.outD.textContent = links.desktop;
+    els.snippet.textContent = renderSnippet(links);
+  });
 
-			document.getElementById('C01').addEventListener('input', function (e) {
-				generatelink()
-			});
-			function copycontent() {
-			var copyText = document.getElementById("cNum-resulturl");
-			copyText.select();
-			copyText.setSelectionRange(0, 99999); 
-			document.execCommand("copy");
+  els.openM.addEventListener('click', ()=>{ const l=buildLinks(); if(l) window.open(l.mobile,'_blank') });
+  els.openD.addEventListener('click', ()=>{ const l=buildLinks(); if(l) window.open(l.desktop,'_blank') });
+  els.copyM.addEventListener('click', ()=>{ if(els.outM.textContent) copy(els.outM.textContent) });
+  els.copyD.addEventListener('click', ()=>{ if(els.outD.textContent) copy(els.outD.textContent) });
+  els.copySnippet.addEventListener('click', ()=>{ if(els.snippet.textContent) copy(els.snippet.textContent) });
 
-			alert("O texto foi copiado");
-			}
-		</script>
-	</footer>
+  // footer year
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>

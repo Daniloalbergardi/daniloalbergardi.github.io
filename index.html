@@ -1,134 +1,155 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-	<meta charset="utf-8"/>
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
-	<meta name="keywords" content="utm, gerador utm, utm campaign, google utm">
-	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Danilo Albergardi — Product Manager que gosta de programar</title>
+<meta name="description" content="Danilo Oliveira Albergardi — Product Manager (Tray) que gosta de programar. Resumo, projetos e ferramentas públicas." />
+<meta name="theme-color" content="#0f172a" />
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#0b1222; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --card:#111827; --ring:#1e293b;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+    color:var(--fg); background:linear-gradient(180deg,#0b1222,#0f172a);
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:radial-gradient(75% 75% at 50% 30%, #38bdf855 0%, #38bdf822 60%, transparent 100%), #0b1222;
+    border:1px solid #1f2937; box-shadow:0 10px 30px #000a; font-size:24px
+  }
+  nav{background:#0b1222;border:1px solid var(--ring);border-radius:14px;padding:8px 10px}
+  nav a{
+    color:var(--fg); text-decoration:none; padding:10px 12px; border-radius:10px; display:inline-block; font-weight:600
+  }
+  nav a:hover{background:#0f172a}
+  nav a[aria-current="page"]{background:#0f172a; outline:1px solid #223146}
 
-	<title>Gerar URL utm para campanha - Tools For You</title>
-	<link href="css/style.css" rel="stylesheet"/>
-	<script src="js/script.js"></script>
-	<script src="js/bioep.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<!-- Google Tag Manager -->
-		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-N76ZTQS');</script>
-	<!-- End Google Tag Manager -->
-	<script>
-		// bioEp.init({
-		// 	html: '<p class="titulo-q">Psiu, Clique em um anúncio para nos ajudar a melhorar o sistema</p></div><button class="botao_contato" type="submit" id="bio_ep_close" name="accept_click_ads" style=" /* padding: 30px; */ border-radius: 3px; height: 52px; width: 28%; left: unset; text-align: unset; position: unset; font-size: 0.8em; margin-bottom: 5px;">Vou clicar</button><p class="titulo-q" style=" font-size: 18px !important;margin: 15px !important;">Obrigado!</p><p class="titulo-q" style=" font-size: 16px !important; margin: 1px !important;">Quantos mais cliques, mais nos ajuda!</p>',
-		// 	css: '.box-q{margin: 20px 0 0 0;}.comentario{width: 85%; margin: 20px 0 0 0;border: 1px solid #ded4d4;}.btn_q{width: 100%;height: 65px;}.botao_contato{margin: 15px 0 0 0 !important;float: none !important;}.titulo-q{font-size: 19px !important;margin: 18px;font-weight: bold;}#bio_ep{width: 400px; height: 230px; color: #333; background-color: #fafafa; text-align: center;}#bio_ep_bg{opacity: 0.7!important;}#bio_ep_close{padding: 2px 0 0 0;}' +
-		// 	'#bio_ep_content {padding: 24px 0 0 0; font-family: "Titillium Web";}' +
-		// 	'#bio_ep_content span:nth-child(2) {display: block; color: #f21b1b; font-size: 32px; font-weight: 600;}' +
-		// 	'#bio_ep_content span:nth-child(3) {display: block; font-size: 16px;}' +
-		// 	'#bio_ep_content span:nth-child(4) {display: block; margin: -5px 0 0 0; font-size: 16px; font-weight: 600;}' +
-		// 	'.bio_btn {display: inline-block; margin: 18px 0 0 0; padding: 7px; color: #fff; font-size: 14px; font-weight: 600; background-color: #70bb39; border: 1px solid #47ad0b; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; border-radius: 0; text-decoration: none;}',
-		// 	fonts: ['//fonts.googleapis.com/css?family=Titillium+Web:300,400,600'],
-		// 	cookieExp: 0
-		// });
-	</script>
-	<script data-ad-client="ca-pub-6753564810765099" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  .hero{
+    margin-top:18px; display:grid; gap:14px; padding:18px;
+    background:linear-gradient(180deg,#0f172a,#0b1222); border:1px solid #1e293b; border-radius:18px; box-shadow:0 10px 30px #0007
+  }
+  .hero h1{margin:0;font-size:1.5rem}
+  .muted{color:var(--muted)}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#0b1222;border:1px solid #1f2937;color:var(--muted);font-size:.85rem}
 
+  .grid{display:grid;gap:16px;margin-top:18px}
+  @media (min-width:900px){ .grid-2{grid-template-columns:1.1fr .9fr} .grid-3{grid-template-columns:repeat(3,1fr)} }
+
+  .card{
+    background:linear-gradient(180deg,#0f172a,#0b1222); border:1px solid #1e293b; border-radius:18px;
+    padding:18px; box-shadow:0 10px 30px #0007; display:flex;flex-direction:column;gap:10px
+  }
+  .card h2{margin:0;font-size:1.15rem}
+  .card h3{margin:0;font-size:1.05rem}
+  .list{display:grid;gap:12px}
+  .item{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px dashed #223146;padding-bottom:10px}
+  .item:last-child{border-bottom:0;padding-bottom:0}
+  .btn{
+    align-self:flex-start; background:linear-gradient(180deg,#38bdf8,#0ea5e9);
+    color:#001018;border:1px solid #38bdf8;border-radius:12px;padding:8px 12px;font-weight:700; text-decoration:none
+  }
+  .ext{color:#7dd3fc;text-decoration:none;border-bottom:1px dashed #7dd3fc22}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  footer{margin-top:28px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style>
 </head>
-<body>	
-	<!-- Google Tag Manager (noscript) -->
-		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N76ZTQS"
-		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-	<!-- End Google Tag Manager (noscript) -->
-	<div class="container">
-		<header>
-			<div class="logo">
-				<a href="/"><img class="img-logo" src="img/tools-for-you.png" alt="Logo Tools For You"></a>
-				<p class="credits">Created by Danilo Albergardi</p>
-	
-			</div>
-	
-			<nav class="navegation" id="menu-main">
-				<ul class="menu-main">
-					<li>
-						<a href="/">Página Principal</a>
-						<a href="/gerador-de-url-para-campanha.html">Gerador URL utm para campanha</a>
-						<!-- <a href="/gerador-de-url-utm-campanha-ads">Gerador URL utm para campanha</a> -->
-						<a href="/gerador-de-link-whatsapp.html">Gerador de link Whatsapp</a>
-						<a href="/verbal-tense.html">English</a>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">👋</div>
+        <div>
+          <div style="font-size:1.25rem;font-weight:700">Danilo Albergardi</div>
+          <div class="muted">Product Manager que gosta de programar</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html" aria-current="page">Sobre</a>
+        <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+        <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
+        <a href="relax-and-breathe.html">Relax & Breathe</a>
+        <a href="verbal-tense.html">Verbal Tense</a>
+      </nav>
+    </header>
 
-					</li>
-				</ul>
-			</nav>
-		</header>
-	
-	</div>
-	<footer>	
-		<script>	
-			$("input[id^=C]").keyup(function(e) {
-				var str = "";
-				$("#C01").each(function(index) {
-					str = str + $(this).val()
-				});
+    <!-- HERO -->
+    <section class="hero">
+      <h1>PM com cabeça de builder — no meu tempo vago gosto de empreender (mesmo sem ganhar 💸 com isso), desenho soluções, priorizo e, quando preciso, prototipo em código e coloco em produção pra testar.</h1>
+      <p class="muted">
+        Trabalho no ecossistema de e-commerce há mais de 10 anos. Priorizo problemas bem definidos, métricas que importam e entregas enxutas que destravam valor rápido.
+        Quando tenho uma ideia e vejo que faz sentido acelerar a validação com um MVP, eu mesmo prototipo com HTML/CSS/JS; Python; PHP (Laravel) — e, claro, em projetos maiores conto com ótimos parceiros.
+      </p>
+      <div class="pills">
+        <span class="pill">E-commerce & Produto</span>
+        <span class="pill">Descoberta focada no problema</span>
+        <span class="pill">Priorizar & dizer não</span>
+        <span class="pill">Métricas (GA/GTM)</span>
+        <span class="pill">Web dev (HTML/CSS/JS)</span>
+      </div>
+    </section>
 
-				$("#C04").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "/?&utm_campaign=" + $(this).val()
-					}
-				});
+    <!-- SOBRE MIM + PROJETOS (unificados) -->
+    <section class="grid">
+      <article class="card">
+        <h2>Sobre mim & projetos</h2>
+        <ul class="list" style="margin-bottom:10px">
+          <li class="item"><div>Hoje <strong>Product Manager na Tray</strong>, trabalhando com e-commerce; já passei 7 anos pela gestão de projetos e <strong>construí diversos produtos</strong> até hoje (fui criado em fábrica de software rsrsrs).</div></li>
+          <li class="item"><div>Combino discovery com dados: entrevistas, hipóteses pequenas e acompanhamento de métricas.</div></li>
+          <li class="item"><div>Valorizo escrita clara, rituais leves e alinhamento frequente com stakeholders.</div></li>
+        </ul>
 
-				$("#C02").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_source=" + $(this).val();
-					}
-					
+        <h3>Projetos em destaque</h3>
+        <div class="list">
+          <div class="item">
+            <div>
+              <strong>Análise Virtual</strong>
+              <div class="muted">Esse foi meu TCC da faculdade. Criei para ajudar pessoas a comprarem online: o próprio usuário avalia a loja e decide se compra ou não.</div>
+            </div>
+            <a class="ext" href="https://analisevirtual.com.br/?utm_campaign=projetos_git&utm_source=referral&utm_medium=click_home" target="_blank" rel="noopener">abrir ↗</a>
+          </div>
+          <div class="item">
+            <div>
+              <strong>QR Fone</strong>
+              <div class="muted">Um MVP recente — talvez não esteja mais no ar quando você acessar — solução para reduzir transtornos com entregas. Use um QR Code como “interfone” e facilite a comunicação com entregadores.</div>
+            </div>
+            <a class="ext" href="http://qrfone.com.br/" target="_blank" rel="noopener">abrir ↗</a>
+          </div>
+        </div>
+      </article>
+    </section>
 
-				});
+    <!-- FERRAMENTAS PÚBLICAS DO SITE -->
+    <section class="grid grid-3" id="ferramentas" style="margin-top:16px">
+      <article class="card">
+        <h3>Gerador de URL UTM</h3>
+        <div class="muted">Monte URLs rastreáveis com <span class="mono">utm_*</span> e copie/abra com 1 clique.</div>
+        <a class="btn" href="gerador-de-url-para-campanha.html">Abrir</a>
+      </article>
+      <article class="card">
+        <h3>Gerador de Link WhatsApp</h3>
+        <div class="muted">Crie links <span class="mono">api.whatsapp.com</span> / <span class="mono">web.whatsapp.com</span> e snippet de botão.</div>
+        <a class="btn" href="gerador-de-link-whatsapp.html">Abrir</a>
+      </article>
+      <article class="card">
+        <h3>Relax & Breathe</h3>
+        <div class="muted">Lembretes com TTS/áudio local, volume, intervalo e animação de respiração.</div>
+        <a class="btn" href="relax-and-breathe.html">Abrir</a>
+      </article>
+      <article class="card">
+        <h3>Verbal Tense (EN)</h3>
+        <div class="muted">Ferramenta de tempos verbais (para treinar seu inglês).</div>
+        <a class="btn" href="verbal-tense.html">Abrir</a>
+      </article>
+    </section>
 
-				$("#C03").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_medium="+ $(this).val();
-					}
-				});
-				
-				
-
-				$("#C05").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_term=" + $(this).val()
-					}
-				});
-
-				$("#C06").each(function(index) {
-					var element = $(this);
-                	if (element.val() == ""){
-					} else{
-						str = str + "&utm_content=" + $(this).val()
-					}
-				});
-
-
-				$("#cNum-resulturl").val(str);
-			});	
-
-			
-			function copycontent() {
-			var copyText = document.getElementById("cNum-resulturl");
-			copyText.select();
-			copyText.setSelectionRange(0, 99999); 
-			document.execCommand("copy");
-
-			alert("O texto foi copiado");
-			}
-			
-		</script>
-	</footer>
-</body>
-</html>
+    <footer>
+      <div>© <span id="y"></span> Danilo Oliveira Albergardi</div>
+      <div class="muted">Contato: <a class="ext" href="mailto:seu-email@exemplo.com">linkedin.com/in/danilo-albergardi/
