@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Praticar Tabuada</title>
+<meta name="description" content="Treino de tabuada (2 a 9). Página estática com HTML, CSS e JS inline." />
+<style>
+  :root{
+    --bg:#f7fafc; --fg:#0f172a; --muted:#475569; --accent:#2563eb; --accent-2:#1d4ed8; --card:#ffffff; --ring:#e2e8f0;
+    --ok:#16a34a; --err:#dc2626; --ok-bg:#dcfce7; --err-bg:#fee2e2;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+    color:var(--fg); background:linear-gradient(180deg,#ffffff, var(--bg));
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#eef2ff;border:1px solid #c7d2fe;font-weight:800;color:#3730a3}
+  nav{background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:6px 8px}
+  nav a{color:#1e293b;text-decoration:none;padding:8px 10px;border-radius:8px;display:inline-block;font-weight:600}
+  nav a:hover{background:#e0e7ff}
+  nav a[aria-current="page"]{background:#c7d2fe}
+
+  h1.title{font-size:1.3rem;margin:8px 0 14px 0}
+
+  .panel{background:var(--card);border:1px solid var(--ring);border-radius:16px;box-shadow:0 10px 30px #0000000d;padding:16px}
+  .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+
+  .grid{display:grid;gap:12px}
+  .grid-choices{grid-template-columns:repeat(4,minmax(0,1fr))}
+  @media (max-width:640px){ .grid-choices{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+  .btn{
+    appearance:none; border:1px solid #cbd5e1; background:#ffffff; color:#0f172a; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:700;
+    transition:.15s transform ease, .2s background ease, .2s box-shadow ease, .2s border-color ease;
+    box-shadow:0 1px 0 #e2e8f0;
+  }
+  .btn:hover{transform:translateY(-1px); background:#f8fafc; border-color:#94a3b8}
+  .btn:active{transform:translateY(0)}
+  .btn-lg{font-size:1.1rem;padding:14px 16px}
+  .btn-primary{background:linear-gradient(180deg, #60a5fa, #2563eb); color:#fff; border-color:#2563eb}
+  .btn-primary:hover{background:linear-gradient(180deg, #93c5fd, #3b82f6); filter:saturate(1.05); box-shadow:0 4px 18px #3b82f633}
+  .btn-ghost{background:#fff}
+  .btn-inline{padding:10px 12px;font-size:.95rem}
+
+  .stat{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:8px 0 12px 0;
+    color:var(--muted); font-weight:600
+  }
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:.9rem}
+
+  .question{font-size:2.2rem; font-weight:800; letter-spacing:.5px}
+  .muted{color:var(--muted)}
+
+  .inputRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:10px}
+  input[type="number"]{
+    width:140px; text-align:center; font-size:1.1rem; padding:10px 12px; border-radius:12px; border:1px solid #cbd5e1; outline:2px solid transparent;
+    background:#ffffff;
+  }
+  input[type="number"]:focus{border-color:#94a3b8; box-shadow:0 0 0 4px #60a5fa33}
+
+  .feedback{margin-top:14px; font-weight:700; min-height:28px}
+  .ok{color:var(--ok); background:var(--ok-bg); border:1px solid #86efac; padding:8px 10px; border-radius:10px; display:inline-block}
+  .err{color:var(--err); background:var(--err-bg); border:1px solid #fca5a5; padding:8px 10px; border-radius:10px; display:inline-block}
+
+  .actions-end{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">×</div>
+        <div>
+          <div style="font-weight:800">Treino de Tabuada</div>
+          <div class="muted" style="font-size:.9rem">Página estática • 100% offline</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Sobre</a>
+        <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+        <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
+        <a href="relax-and-breathe.html">Relax & Breathe</a>
+        <a href="#" aria-current="page">Tabuada</a>
+      </nav>
+    </header>
+
+    <h1 class="title">Vamos praticar a Tabuada? Escolha:</h1>
+
+    <!-- Tela inicial de escolha -->
+    <section id="home" class="panel center">
+      <div class="grid grid-choices" style="width:100%">
+        <!-- Botões 2..9 gerados por JS também para garantir consistência, mas deixamos fallback -->
+        <button class="btn btn-lg" data-base="2">Tabuada do 2</button>
+        <button class="btn btn-lg" data-base="3">Tabuada do 3</button>
+        <button class="btn btn-lg" data-base="4">Tabuada do 4</button>
+        <button class="btn btn-lg" data-base="5">Tabuada do 5</button>
+        <button class="btn btn-lg" data-base="6">Tabuada do 6</button>
+        <button class="btn btn-lg" data-base="7">Tabuada do 7</button>
+        <button class="btn btn-lg" data-base="8">Tabuada do 8</button>
+        <button class="btn btn-lg" data-base="9">Tabuada do 9</button>
+      </div>
+    </section>
+
+    <!-- Jogo -->
+    <section id="game" class="panel hidden">
+      <div class="stat">
+        <div class="badge">Tabuada do <span id="lblBase">?</span></div>
+        <div class="badge">Progresso: <span id="lblScore">0/0</span></div>
+        <div class="badge" id="badgeTime">Tempo atual: <span id="lblTime">0,0s</span></div>
+      </div>
+
+      <div class="center" style="padding:6px 0 2px 0">
+        <div id="question" class="question">– × – = ?</div>
+        <div class="inputRow">
+          <label for="answer" class="muted" style="position:absolute;left:-9999px">Resposta</label>
+          <input id="answer" type="number" inputmode="numeric" placeholder="Resposta" />
+          <button id="btnCheck" class="btn btn-primary btn-inline">Validar</button>
+        </div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+        <div style="margin-top:12px">
+          <button id="btnSwitch" class="btn btn-ghost btn-inline">Escolher outra tabuada</button>
+        </div>
+      </div>
+
+      <div id="end" class="center hidden" style="margin-top:10px">
+        <div class="ok">Parabéns! Você concluiu a tabuada do <span id="endBase">?</span> 🎉</div>
+        <div id="timeSummary" class="muted" style="margin-top:10px;font-weight:600"></div>
+        <div class="actions-end">
+          <button id="btnRestart" class="btn">Reiniciar a mesma tabuada</button>
+          <button id="btnHome" class="btn">Escolher outra tabuada</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+(function(){
+  // Elements
+  const elHome = document.getElementById('home');
+  const elGame = document.getElementById('game');
+  const lblBase = document.getElementById('lblBase');
+  const lblScore = document.getElementById('lblScore');
+  const elQ = document.getElementById('question');
+  const elAns = document.getElementById('answer');
+  const elFeedback = document.getElementById('feedback');
+  const elEnd = document.getElementById('end');
+  const elEndBase = document.getElementById('endBase');
+  const btnCheck = document.getElementById('btnCheck');
+  const btnSwitch = document.getElementById('btnSwitch');
+  const btnRestart = document.getElementById('btnRestart');
+  const btnHome = document.getElementById('btnHome');
+  const lblTime = document.getElementById('lblTime');
+  const elTimeSummary = document.getElementById('timeSummary');
+
+  // State
+  let base = null;             // 2..9
+  let remaining = [];          // multiplicadores que faltam acertar
+  let attempts = 0;            // tentativas
+  let hits = 0;                // acertos
+  let current = null;          // multiplicador atual (1..10)
+  let lastMultiplier = null;   // para evitar repetir imediatamente após erro
+  let feedbackTimer = null;    // controla o tempo de exibição do feedback positivo
+  let questionStart = null;    // millis de quando a pergunta atual começou
+  let questionInterval = null; // atualiza o mostrador de tempo
+  let totalTimeMs = 0;         // tempo total gasto nos acertos
+  let timeRecords = [];        // tempos individuais por acerto
+
+  // Helpers
+  function choice(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+  function focusAnswer(){ setTimeout(()=>{ elAns.focus({preventScroll:true}); elAns.select(); }, 0); }
+  function updateScore(){ lblScore.textContent = hits + '/' + attempts; }
+  function formatSeconds(ms){
+    const seconds = ms / 1000;
+    if(seconds >= 60){
+      const minutes = Math.floor(seconds / 60);
+      const remainder = seconds - minutes * 60;
+      const remainderStr = remainder.toFixed(1).replace('.', ',');
+      return `${minutes}m ${remainderStr}s`;
+    }
+    return `${seconds.toFixed(1).replace('.', ',')}s`;
+  }
+  function updateTimerDisplay(ms){
+    if(!lblTime) return;
+    lblTime.textContent = formatSeconds(ms);
+  }
+  function clearQuestionTimer(){
+    if(questionInterval){
+      clearInterval(questionInterval);
+      questionInterval = null;
+    }
+  }
+  function resetQuestionTimer(){
+    clearQuestionTimer();
+    questionStart = null;
+    updateTimerDisplay(0);
+  }
+  function startQuestionTimer(){
+    clearQuestionTimer();
+    questionStart = performance.now();
+    updateTimerDisplay(0);
+    questionInterval = setInterval(()=>{
+      if(questionStart !== null){
+        updateTimerDisplay(performance.now() - questionStart);
+      }
+    }, 100);
+  }
+  function finalizeQuestionTime(){
+    if(questionStart === null) return 0;
+    const elapsed = performance.now() - questionStart;
+    totalTimeMs += elapsed;
+    timeRecords.push(elapsed);
+    clearQuestionTimer();
+    questionStart = null;
+    updateTimerDisplay(elapsed);
+    return elapsed;
+  }
+  function resetTimeStats(){
+    totalTimeMs = 0;
+    timeRecords = [];
+    resetQuestionTimer();
+    if(elTimeSummary){
+      elTimeSummary.textContent = '';
+    }
+  }
+  function updateEndSummary(){
+    if(!elTimeSummary) return;
+    if(!timeRecords.length){
+      elTimeSummary.textContent = '';
+      return;
+    }
+    const total = formatSeconds(totalTimeMs);
+    const average = formatSeconds(totalTimeMs / timeRecords.length);
+    elTimeSummary.textContent = `Tempo total: ${total} • Tempo médio: ${average}`;
+  }
+
+  function startTable(n){
+    base = n; lblBase.textContent = base; elEndBase.textContent = base;
+    remaining = Array.from({length:10}, (_,i)=>i+1); // 1..10
+    attempts = 0; hits = 0; updateScore(); elFeedback.textContent=''; elFeedback.className='feedback';
+    elHome.classList.add('hidden'); elGame.classList.remove('hidden'); elEnd.classList.add('hidden');
+    resetTimeStats();
+    nextQuestion();
+  }
+
+  function nextQuestion(){
+    if(remaining.length===0){
+      // terminou
+      resetQuestionTimer();
+      updateEndSummary();
+      elEnd.classList.remove('hidden');
+      return;
+    }
+    // escolhe um multiplicador que não seja igual ao último usado (para variar após erro)
+    const pool = remaining.length>1 && lastMultiplier ? remaining.filter(m=>m!==lastMultiplier) : remaining.slice();
+    current = choice(pool);
+    lastMultiplier = current;
+    elQ.textContent = `${base} × ${current} = ?`;
+    elAns.value='';
+    focusAnswer();
+    startQuestionTimer();
+  }
+
+  function check(){
+    if(feedbackTimer){
+      clearTimeout(feedbackTimer);
+      feedbackTimer = null;
+    }
+    const val = Number(elAns.value);
+    if(Number.isNaN(val)){
+      elFeedback.textContent = 'Digite um número.';
+      elFeedback.className = 'feedback err';
+      focusAnswer();
+      return;
+    }
+    attempts++; // conta tentativa
+    const correct = base*current;
+    if(val===correct){
+      hits++;
+      // remove da lista de pendentes
+      remaining = remaining.filter(m=>m!==current);
+      elFeedback.textContent = 'Acertou!';
+      elFeedback.className = 'feedback ok';
+      updateScore();
+      finalizeQuestionTime();
+      feedbackTimer = setTimeout(()=>{
+        elFeedback.textContent = '';
+        elFeedback.className = 'feedback';
+        feedbackTimer = null;
+      }, 1000);
+      if(remaining.length===0){
+        // pequena pausa para mostrar feedback
+        setTimeout(()=>{ updateEndSummary(); elEnd.classList.remove('hidden'); }, 400);
+      }else{
+        setTimeout(()=>{ nextQuestion(); updateScore(); }, 400);
+      }
+    }else{
+      elFeedback.textContent = `Errou! (${base} × ${current} = ${correct})`;
+      elFeedback.className = 'feedback err';
+      updateScore();
+      resetQuestionTimer(); // descarta o tempo da tentativa incorreta
+      // Gera outra questão aleatória (a errada pode voltar futuramente)
+      // Não removemos o current de remaining. Só evitamos repetir imediatamente.
+      setTimeout(()=>{ nextQuestion(); }, 500);
+    }
+  }
+
+  // Events
+  document.querySelectorAll('[data-base]').forEach(btn=>{
+    btn.addEventListener('click', ()=> startTable(Number(btn.dataset.base)) );
+  });
+  btnCheck.addEventListener('click', check);
+  elAns.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+  btnSwitch.addEventListener('click', ()=>{ // volta à home sem resetar DOM principal
+    resetQuestionTimer();
+    elGame.classList.add('hidden'); elHome.classList.remove('hidden');
+  });
+  btnRestart.addEventListener('click', ()=> startTable(base) );
+  btnHome.addEventListener('click', ()=>{
+    resetQuestionTimer();
+    elGame.classList.add('hidden'); elHome.classList.remove('hidden');
+  });
+
+  // Optional: gerar botões 2..9 dinamicamente se quiser (já estão no HTML como fallback)
+  // (mantido simples para GitHub Pages)
+})();
+</script>
+</body>
+</html>
