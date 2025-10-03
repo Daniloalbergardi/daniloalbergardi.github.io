@@ -72,17 +72,9 @@
   .hidden{display:none !important}
 
   .floating-check{
-    position:fixed;
-    bottom:20px;
-    right:20px;
+    margin-top:20px;
     display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:1000;
-    box-shadow:0 15px 35px #1d4ed820;
-  }
-  @media (min-width:768px){
-    .floating-check{bottom:32px;right:32px}
+    justify-content:flex-end;
   }
 </style>
 </head>
@@ -153,7 +145,9 @@
       </div>
     </section>
   </div>
-  <button id="btnCheckFloating" type="button" class="btn btn-primary floating-check hidden" aria-label="Validar resposta">Validar</button>
+  <div id="floatingCheckWrapper" class="floating-check hidden">
+    <button id="btnCheckFloating" type="button" class="btn btn-primary" aria-label="Validar resposta">Validar</button>
+  </div>
 <script>
 (function(){
   // Elements
@@ -168,6 +162,7 @@
   const elEndBase = document.getElementById('endBase');
   const btnCheck = document.getElementById('btnCheck');
   const btnCheckFloating = document.getElementById('btnCheckFloating');
+  const floatingWrapper = document.getElementById('floatingCheckWrapper');
   const btnSwitch = document.getElementById('btnSwitch');
   const btnRestart = document.getElementById('btnRestart');
   const btnHome = document.getElementById('btnHome');
@@ -266,7 +261,7 @@
     remaining = Array.from({length:10}, (_,i)=>i+1); // 1..10
     attempts = 0; hits = 0; updateScore(); elFeedback.textContent=''; elFeedback.className='feedback';
     elHome.classList.add('hidden'); elGame.classList.remove('hidden'); elEnd.classList.add('hidden');
-    if(btnCheckFloating){ btnCheckFloating.classList.remove('hidden'); }
+    if(floatingWrapper){ floatingWrapper.classList.remove('hidden'); }
     resetTimeStats();
     nextQuestion();
   }
@@ -276,7 +271,7 @@
       // terminou
       resetQuestionTimer();
       updateEndSummary();
-      if(btnCheckFloating){ btnCheckFloating.classList.add('hidden'); }
+      if(floatingWrapper){ floatingWrapper.classList.add('hidden'); }
       elEnd.classList.remove('hidden');
       return;
     }
@@ -351,13 +346,13 @@
   btnSwitch.addEventListener('click', ()=>{ // volta à home sem resetar DOM principal
     resetQuestionTimer();
     elGame.classList.add('hidden'); elHome.classList.remove('hidden');
-    if(btnCheckFloating){ btnCheckFloating.classList.add('hidden'); }
+    if(floatingWrapper){ floatingWrapper.classList.add('hidden'); }
   });
   btnRestart.addEventListener('click', ()=> startTable(base) );
   btnHome.addEventListener('click', ()=>{
     resetQuestionTimer();
     elGame.classList.add('hidden'); elHome.classList.remove('hidden');
-    if(btnCheckFloating){ btnCheckFloating.classList.add('hidden'); }
+    if(floatingWrapper){ floatingWrapper.classList.add('hidden'); }
   });
 
   // Optional: gerar botões 2..9 dinamicamente se quiser (já estão no HTML como fallback)
