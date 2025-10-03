@@ -127,7 +127,9 @@
         <div class="inputRow">
           <label for="answer" class="muted" style="position:absolute;left:-9999px">Resposta</label>
           <input id="answer" type="number" inputmode="numeric" placeholder="Resposta" />
+          <!-- Validar inicialmente visível; será ocultado após clique e "Próxima" ficará visível -->
           <button id="btnCheck" class="btn btn-primary btn-inline">Validar</button>
+          <button id="btnNext" class="btn btn-ghost btn-inline hidden">Próxima</button>
         </div>
         <div id="feedback" class="feedback" aria-live="polite"></div>
         <div style="margin-top:12px">
@@ -161,6 +163,7 @@
   const elEnd = document.getElementById('end');
   const elEndBase = document.getElementById('endBase');
   const btnCheck = document.getElementById('btnCheck');
+  const btnNext = document.getElementById('btnNext');
   const btnCheckFloating = document.getElementById('btnCheckFloating');
   const floatingWrapper = document.getElementById('floatingCheckWrapper');
   const btnSwitch = document.getElementById('btnSwitch');
@@ -191,6 +194,11 @@
       try{ elAns.select(); }catch(_){ /* ignore */ }
     }, 0);
   }
+  // Foco garantido por gesto do usuário (para mobile)
+  function focusAnswerTrusted(){
+    try{ elAns.focus({preventScroll:true}); elAns.select(); }
+    catch(_){ elAns.focus(); }
+  }
   function updateScore(){ lblScore.textContent = hits + '/' + attempts; }
   function formatSeconds(ms){
     const seconds = ms / 1000;
@@ -202,76 +210,47 @@
     }
     return `${seconds.toFixed(1).replace('.', ',')}s`;
   }
-  function updateTimerDisplay(ms){
-    if(!lblTime) return;
-    lblTime.textContent = formatSeconds(ms);
-  }
-  function clearQuestionTimer(){
-    if(questionInterval){
-      clearInterval(questionInterval);
-      questionInterval = null;
-    }
-  }
-  function resetQuestionTimer(){
-    clearQuestionTimer();
-    questionStart = null;
-    updateTimerDisplay(0);
-  }
+  function updateTimerDisplay(ms){ if(!lblTime) return; lblTime.textContent = formatSeconds(ms); }
+  function clearQuestionTimer(){ if(questionInterval){ clearInterval(questionInterval); questionInterval = null; } }
+  function resetQuestionTimer(){ clearQuestionTimer(); questionStart = null; updateTimerDisplay(0); }
   function startQuestionTimer(){
-    clearQuestionTimer();
-    questionStart = performance.now();
-    updateTimerDisplay(0);
-    questionInterval = setInterval(()=>{
-      if(questionStart !== null){
-        updateTimerDisplay(performance.now() - questionStart);
-      }
-    }, 100);
+    clearQuestionTimer(); questionStart = performance.now(); updateTimerDisplay(0);
+    questionInterval = setInterval(()=>{ if(questionStart !== null){ updateTimerDisplay(performance.now() - questionStart); } }, 100);
   }
   function finalizeQuestionTime(){
     if(questionStart === null) return 0;
-    const elapsed = performance.now() - questionStart;
-    totalTimeMs += elapsed;
-    timeRecords.push(elapsed);
-    clearQuestionTimer();
-    questionStart = null;
-    updateTimerDisplay(elapsed);
-    return elapsed;
+    const elapsed = performance.now() - questionStart; totalTimeMs += elapsed; timeRecords.push(elapsed);
+    clearQuestionTimer(); questionStart = null; updateTimerDisplay(elapsed); return elapsed;
   }
-  function resetTimeStats(){
-    totalTimeMs = 0;
-    timeRecords = [];
-    resetQuestionTimer();
-    if(elTimeSummary){
-      elTimeSummary.textContent = '';
-    }
-  }
+  function resetTimeStats(){ totalTimeMs = 0; timeRecords = []; resetQuestionTimer(); if(elTimeSummary){ elTimeSummary.textContent = ''; } }
   function updateEndSummary(){
-    if(!elTimeSummary) return;
-    if(!timeRecords.length){
-      elTimeSummary.textContent = '';
-      return;
-    }
-    const total = formatSeconds(totalTimeMs);
-    const average = formatSeconds(totalTimeMs / timeRecords.length);
+    if(!elTimeSummary) return; if(!timeRecords.length){ elTimeSummary.textContent = ''; return; }
+    const total = formatSeconds(totalTimeMs); const average = formatSeconds(totalTimeMs / timeRecords.length);
     elTimeSummary.textContent = `Tempo total: ${total} • Tempo médio: ${average}`;
   }
+
+  function showValidate(show){
+    btnCheck.classList.toggle('hidden', !show);
+    if(floatingWrapper){ floatingWrapper.classList.toggle('hidden', !show); }
+  }
+  function showNext(show){ if(btnNext){ btnNext.classList.toggle('hidden', !show); } }
 
   function startTable(n){
     base = n; lblBase.textContent = base; elEndBase.textContent = base;
     remaining = Array.from({length:10}, (_,i)=>i+1); // 1..10
     attempts = 0; hits = 0; updateScore(); elFeedback.textContent=''; elFeedback.className='feedback';
     elHome.classList.add('hidden'); elGame.classList.remove('hidden'); elEnd.classList.add('hidden');
-    if(floatingWrapper){ floatingWrapper.classList.remove('hidden'); }
+    showValidate(true); showNext(false);
     resetTimeStats();
     nextQuestion();
+    // foca já na primeira (no mesmo gesto do clique do botão da tabuada)
+    focusAnswerTrusted();
   }
 
   function nextQuestion(){
     if(remaining.length===0){
       // terminou
-      resetQuestionTimer();
-      updateEndSummary();
-      if(floatingWrapper){ floatingWrapper.classList.add('hidden'); }
+      resetQuestionTimer(); updateEndSummary(); showValidate(false); showNext(false);
       elEnd.classList.remove('hidden');
       return;
     }
@@ -281,15 +260,12 @@
     lastMultiplier = current;
     elQ.textContent = `${base} × ${current} = ?`;
     elAns.value='';
-    focusAnswer();
+    focusAnswer(); // mantém seu comportamento original (assíncrono)
     startQuestionTimer();
   }
 
   function check(){
-    if(feedbackTimer){
-      clearTimeout(feedbackTimer);
-      feedbackTimer = null;
-    }
+    if(feedbackTimer){ clearTimeout(feedbackTimer); feedbackTimer = null; }
     const raw = String(elAns.value).trim();
     if(raw===''){
       elFeedback.textContent = 'Digite uma resposta antes de validar.';
@@ -320,19 +296,23 @@
         feedbackTimer = null;
       }, 1000);
       if(remaining.length===0){
-        // pequena pausa para mostrar feedback
+        // fim — não mostra Próxima
         setTimeout(()=>{ updateEndSummary(); elEnd.classList.remove('hidden'); }, 400);
+        showNext(false);
+        showValidate(false);
       }else{
-        setTimeout(()=>{ nextQuestion(); updateScore(); }, 400);
+        // alterna: esconder Validar e mostrar Próxima
+        showValidate(false);
+        showNext(true);
       }
     }else{
       elFeedback.textContent = `Errou! (${base} × ${current} = ${correct})`;
       elFeedback.className = 'feedback err';
       updateScore();
       resetQuestionTimer(); // descarta o tempo da tentativa incorreta
-      // Gera outra questão aleatória (a errada pode voltar futuramente)
-      // Não removemos o current de remaining. Só evitamos repetir imediatamente.
-      setTimeout(()=>{ nextQuestion(); }, 500);
+      // alterna: esconder Validar e mostrar Próxima
+      showValidate(false);
+      showNext(true);
     }
   }
 
@@ -342,17 +322,33 @@
   });
   btnCheck.addEventListener('click', check);
   if(btnCheckFloating){ btnCheckFloating.addEventListener('click', check); }
-  elAns.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+  if(btnNext){
+    btnNext.addEventListener('click', ()=>{
+      // alterna de volta: esconder Próxima e mostrar Validar, ir para a próxima questão
+      showNext(false);
+      showValidate(true);
+      nextQuestion();
+      // foco imediato no mesmo gesto (mobile abre teclado)
+      focusAnswerTrusted();
+    });
+  }
+  elAns.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter'){
+      // Só valida com Enter se o botão Validar estiver visível
+      if(!btnCheck.classList.contains('hidden')){ e.preventDefault(); check(); }
+      else{ e.preventDefault(); }
+    }
+  });
   btnSwitch.addEventListener('click', ()=>{ // volta à home sem resetar DOM principal
     resetQuestionTimer();
     elGame.classList.add('hidden'); elHome.classList.remove('hidden');
-    if(floatingWrapper){ floatingWrapper.classList.add('hidden'); }
+    showValidate(false); showNext(false);
   });
   btnRestart.addEventListener('click', ()=> startTable(base) );
   btnHome.addEventListener('click', ()=>{
     resetQuestionTimer();
     elGame.classList.add('hidden'); elHome.classList.remove('hidden');
-    if(floatingWrapper){ floatingWrapper.classList.add('hidden'); }
+    showValidate(false); showNext(false);
   });
 
   // Optional: gerar botões 2..9 dinamicamente se quiser (já estão no HTML como fallback)
