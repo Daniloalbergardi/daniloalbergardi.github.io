@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Praticar Inglês – Gramática & Estruturas</title>
+<meta name="description" content="Treino de inglês focado em verbo to be, estruturas de frases e identificação de tempos verbais. Página estática com HTML, CSS e JS inline." />
+<style>
+  :root{
+    --bg:#f7fafc; --fg:#0f172a; --muted:#475569; --accent:#2563eb; --accent-2:#1d4ed8; --card:#ffffff; --ring:#e2e8f0;
+    --ok:#16a34a; --err:#dc2626; --ok-bg:#dcfce7; --err-bg:#fee2e2;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+    color:var(--fg); background:linear-gradient(180deg,#ffffff, var(--bg));
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#eef2ff;border:1px solid #c7d2fe;font-weight:800;color:#3730a3}
+  nav{background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:6px 8px}
+  nav a{color:#1e293b;text-decoration:none;padding:8px 10px;border-radius:8px;display:inline-block;font-weight:600}
+  nav a:hover{background:#e0e7ff}
+  nav a[aria-current="page"]{background:#c7d2fe}
+
+  h1.title{font-size:1.3rem;margin:8px 0 14px 0}
+
+  .mode-selector{margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .mode-btn{flex:1;min-width:180px;padding:12px;border:2px solid #cbd5e1;background:#fff;border-radius:12px;cursor:pointer;font-weight:600;transition:.2s}
+  .mode-btn.active{background:#3b82f6;color:#fff;border-color:#2563eb}
+  .mode-btn:hover{border-color:#94a3b8}
+
+  .options-panel{background:#f0f9ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;margin-bottom:16px}
+  .options-panel label{display:flex;align-items:center;gap:8px;cursor:pointer;margin:6px 0;font-weight:500}
+  .options-panel input[type="checkbox"],
+  .options-panel input[type="radio"]{cursor:pointer}
+  .options-panel input[type="number"]{
+    width:70px;padding:4px 6px;border-radius:8px;border:1px solid #cbd5e1;text-align:center;
+  }
+
+  .top-velocidade{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px;margin-bottom:16px}
+  .top-velocidade-title{font-weight:700;color:#991b1b;margin-bottom:8px}
+  .top-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #fee2e2;font-size:.9rem}
+  .top-item:last-child{border-bottom:none}
+  .top-rank{font-weight:700;color:#dc2626;min-width:24px}
+  .top-time{color:#7f1d1d;font-weight:600}
+  .top-streak{background:#fcd34d;color:#78350f;padding:2px 6px;border-radius:4px;font-size:.75rem;font-weight:600}
+
+  .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
+  .stat-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:140px}
+  .stat-box-label{font-size:.85rem;color:#64748b;text-transform:uppercase}
+  .stat-box-value{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+  .panel{background:var(--card);border:1px solid var(--ring);border-radius:16px;box-shadow:0 10px 30px #0000000d;padding:16px}
+  .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+
+  .grid{display:grid;gap:12px}
+  .grid-choices{grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media (min-width:768px){ .grid-choices{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media (max-width:640px){ .grid-choices{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+  .btn{
+    appearance:none; border:1px solid #cbd5e1; background:#ffffff; color:#0f172a; padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:700;
+    transition:.15s transform ease, .2s background ease, .2s box-shadow ease, .2s border-color ease;
+    box-shadow:0 1px 0 #e2e8f0; font-size:.95rem;
+  }
+  .btn:hover{transform:translateY(-1px); background:#f8fafc; border-color:#94a3b8}
+  .btn:active{transform:translateY(0)}
+  .btn-lg{font-size:1.05rem;padding:12px 14px}
+  .btn-primary{background:linear-gradient(180deg, #60a5fa, #2563eb); color:#fff; border-color:#2563eb}
+  .btn-primary:hover{background:linear-gradient(180deg, #93c5fd, #3b82f6); filter:saturate(1.05); box-shadow:0 4px 18px #3b82f633}
+  .btn-ghost{background:#fff}
+  .btn-inline{padding:8px 10px;font-size:.9rem}
+  .btn-choice{width:100%;justify-content:center;display:inline-flex;align-items:center;text-align:center;white-space:normal}
+  .btn-choice.selected{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}
+
+  .stat{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:8px 0 12px 0;
+    color:var(--muted); font-weight:600
+  }
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:.9rem}
+
+  .question{font-size:1.6rem; font-weight:800; letter-spacing:.5px;text-align:center}
+  .muted{color:var(--muted);font-size:.9rem}
+
+  .inputRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:10px}
+  input[type="text"]{
+    min-width:260px; max-width:100%; text-align:left; font-size:1rem; padding:10px 12px; border-radius:12px; border:1px solid #cbd5e1; outline:2px solid transparent;
+    background:#ffffff;
+  }
+  input[type="text"]:focus{border-color:#94a3b8; box-shadow:0 0 0 4px #60a5fa33}
+
+  .feedback{margin-top:14px; font-weight:700; min-height:28px}
+  .ok{color:var(--ok); background:var(--ok-bg); border:1px solid #86efac; padding:8px 10px; border-radius:10px; display:inline-block}
+  .err{color:var(--err); background:var(--err-bg); border:1px solid #fca5a5; padding:8px 10px; border-radius:10px; display:inline-block}
+
+  .actions-end{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+
+  .hidden{display:none !important}
+
+  .floating-check{
+    margin-top:20px;
+    display:flex;
+    justify-content:flex-end;
+  }
+  #floatingCheckWrapper{
+    position:fixed;
+    bottom:16px;
+    right:16px;
+    z-index:20;
+  }
+
+  .helper-box{
+    margin-top:10px;
+    padding:8px 10px;
+    border-radius:10px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    font-size:.85rem;
+    color:#475569;
+    max-width:100%;
+  }
+
+  .category-desc{font-size:.9rem;color:#475569;margin-bottom:10px}
+
+  /* ==== Blocos de estrutura (apenas estrutura da frase) ==== */
+  .structure-builder{
+    margin-top:14px;
+    width:100%;
+  }
+  .structure-answer{
+    min-height:44px;
+    border-radius:12px;
+    border:1px solid #cbd5e1;
+    background:#ffffff;
+    padding:6px 8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    cursor:pointer;
+  }
+  .structure-answer.empty::before{
+    content:"Clique nos blocos abaixo para montar a estrutura...";
+    color:#9ca3af;
+    font-size:.85rem;
+  }
+  .structure-bank{
+    margin-top:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .token-chip{
+    border-radius:999px;
+    border:1px dashed #94a3b8;
+    background:#e5f0ff;
+    padding:4px 8px;
+    font-size:.8rem;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .token-chip:hover{
+    border-style:solid;
+    border-color:#2563eb;
+    background:#dbeafe;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">EN</div>
+        <div>
+          <div style="font-weight:800">Treino de Inglês</div>
+          <div class="muted" style="font-size:.9rem">Gramática • Estruturas • 100% offline</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Sobre</a>
+        <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+        <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
+        <a href="relax-and-breathe.html">Relax & Breathe</a>
+        <a href="#" aria-current="page">Inglês</a>
+      </nav>
+    </header>
+
+    <h1 class="title">Vamos praticar inglês? Escolha o tipo de treino:</h1>
+
+    <!-- Tela inicial de escolha -->
+    <section id="home" class="panel">
+      <!-- Seleção de modo -->
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="toBe">Verbo To Be</button>
+        <button class="mode-btn" data-mode="structure">Estrutura das Frases</button>
+        <button class="mode-btn" data-mode="tenseIdentify">Identificar Tempo Verbal</button>
+      </div>
+
+      <!-- Top de Velocidade -->
+      <div id="topVelocidadeContainer" class="top-velocidade">
+        <div class="top-velocidade-title">🏃 Top de Velocidade (sessões recentes)</div>
+        <div id="topList">
+          <div style="color:#991b1b;font-size:.9rem;text-align:center;padding:8px">
+            Faça um treino para ver seu top!
+          </div>
+        </div>
+      </div>
+
+      <!-- Opções por modo -->
+      <!-- Verbo To Be -->
+      <div id="modeToBeOptions" class="options-panel">
+        <div style="margin-bottom:6px;font-weight:700;color:#1e293b">Verbo To Be</div>
+        <p class="category-desc">
+          O sistema sorteia <strong>um pronome</strong> e <strong>um tempo verbal (Present / Past / Future)</strong>.
+          Você escolhe a forma correta do verbo <em>to be</em>. As opções são de múltipla escolha e,
+          se você errar, a mesma combinação volta embaralhada depois.
+        </p>
+        <button id="startToBe" class="btn btn-primary btn-lg">Começar treino de Verbo To Be</button>
+      </div>
+
+      <!-- Estrutura das frases -->
+      <div id="modeStructureOptions" class="options-panel hidden">
+        <div style="margin-bottom:6px;font-weight:700;color:#1e293b">Estrutura das Frases</div>
+        <p class="category-desc">
+          Escolha quais <strong>tempos verbais</strong> deseja praticar e como deseja praticar.
+          Você pode treinar <strong>tradução da frase</strong> (PT → EN) ou
+          <strong>apenas a estrutura</strong>, montando a ordem correta com blocos clicáveis.
+          Perguntas erradas voltam embaralhadas até serem acertadas.
+        </p>
+
+        <div style="margin:8px 0 4px 0;font-weight:600">Como você quer praticar?</div>
+        <label><input type="radio" name="structureMode" value="translate" checked> Tradução da frase (PT → EN)</label>
+        <label><input type="radio" name="structureMode" value="pattern"> Apenas estrutura da frase (montar blocos)</label>
+
+        <div style="margin-top:10px;margin-bottom:6px;font-weight:600">Tempos verbais para praticar:</div>
+        <label><input type="checkbox" class="structure-tense" data-tense="simplePresent" checked> Simple Present</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="presentContinuous" checked> Present Continuous</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="presentPerfect"> Present Perfect</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="presentPerfectContinuous"> Present Perfect Continuous</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="simplePast" checked> Simple Past</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="pastContinuous" checked> Past Continuous</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="simpleFuture" checked> Simple Future</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="futureContinuous" checked> Future Continuous</label>
+        <label><input type="checkbox" class="structure-tense" data-tense="modalVerb"> Modal Verb</label>
+
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:.9rem;font-weight:600">Perguntas por estrutura (variações por tempo + afirm./neg./interrog.):</span>
+          <input type="number" id="questionsPerStructure" min="1" max="20" value="2" />
+          <span class="muted">(padrão: 2 por estrutura)</span>
+        </div>
+
+        <p class="muted" style="margin-top:8px">
+          Obs.: internamente há várias frases por tempo verbal (positivo, negativo, interrogativo).
+          Por enquanto usei algumas variações de exemplo; você pode editar o arquivo e adicionar até 20
+          por estrutura, seguindo o mesmo formato.
+        </p>
+
+        <button id="startStructure" class="btn btn-primary btn-lg" style="margin-top:10px">
+          Começar treino de Estrutura das Frases
+        </button>
+      </div>
+
+      <!-- Identificar tempo verbal -->
+      <div id="modeTenseOptions" class="options-panel hidden">
+        <div style="margin-bottom:6px;font-weight:700;color:#1e293b">Identificar Tempo Verbal</div>
+        <p class="category-desc">
+          Você vê uma frase em inglês e escolhe <strong>qual é o tempo verbal</strong>
+          (Simple Present, Present Continuous, Simple Past, etc.).<br>
+          Se errar, a frase volta depois, embaralhada no meio das demais.
+        </p>
+        <button id="startTenseIdentify" class="btn btn-primary btn-lg">
+          Começar treino de Identificar Tempo Verbal
+        </button>
+      </div>
+    </section>
+
+    <!-- Jogo -->
+    <section id="game" class="panel hidden">
+      <div class="stat">
+        <div class="badge">Modo: <span id="lblMode">?</span></div>
+        <div class="badge">Progresso: <span id="lblProgress">0/0</span></div>
+        <div class="badge" id="badgeTime">Tempo atual: <span id="lblTime">0,0s</span></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-box-label">Melhor tempo da sessão</div>
+          <div class="stat-box-value" id="bestTimeDisplay">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Tempo médio por acerto</div>
+          <div class="stat-box-value" id="avgTimeDisplay">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Streak de recordes</div>
+          <div class="stat-box-value" id="streakDisplay">-</div>
+        </div>
+      </div>
+
+      <div class="center" style="padding:6px 0 2px 0">
+        <div id="question" class="question">–</div>
+        <div id="questionHelper" class="helper-box hidden"></div>
+
+        <!-- Opções de múltipla escolha -->
+        <div id="choicesContainer" class="grid grid-choices hidden" style="margin-top:14px;width:100%"></div>
+
+        <!-- Input de texto para Estrutura das Frases (tradução) -->
+        <div id="textInputRow" class="inputRow hidden">
+          <label for="textAnswer" class="muted" style="position:absolute;left:-9999px">Resposta em inglês</label>
+          <input id="textAnswer" type="text" placeholder="Digite a frase em inglês aqui" autocomplete="off" />
+        </div>
+
+        <!-- Builder para APENAS ESTRUTURA DA FRASE -->
+        <div id="structureBuilder" class="structure-builder hidden">
+          <div class="muted" style="margin-bottom:6px">
+            Monte a estrutura gramatical correta desta frase clicando nos blocos abaixo.
+            Clique em um bloco da resposta para removê-lo.
+          </div>
+          <div id="structureAnswer" class="structure-answer empty"></div>
+          <div id="structureBank" class="structure-bank"></div>
+        </div>
+
+        <div class="inputRow" style="margin-top:10px">
+          <button id="btnCheck" class="btn btn-primary btn-inline">Validar</button>
+          <button id="btnNext" class="btn btn-ghost btn-inline hidden">Próxima</button>
+        </div>
+
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+
+        <div style="margin-top:12px">
+          <button id="btnSwitch" class="btn btn-ghost btn-inline">Escolher outro treino</button>
+        </div>
+      </div>
+
+      <div id="end" class="center hidden" style="margin-top:16px">
+        <div class="ok">
+          Parabéns! Você concluiu o treino de <span id="endMode">?</span> 🎉
+        </div>
+        <div id="timeSummary" class="muted" style="margin-top:10px;font-weight:600"></div>
+        <div id="sessionSummary" class="muted" style="margin-top:4px;font-weight:600"></div>
+        <div class="actions-end">
+          <button id="btnRestart" class="btn">Reiniciar o mesmo treino</button>
+          <button id="btnHome" class="btn">Voltar para o início</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Botão flutuante de "Validar" -->
+  <div id="floatingCheckWrapper" class="floating-check hidden">
+    <button id="btnCheckFloating" type="button" class="btn btn-primary" aria-label="Validar resposta">Validar</button>
+  </div>
+
+<script>
+(function(){
+  // ==========================
+  //  UTILITÁRIOS GERAIS
+  // ==========================
+  function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function shuffle(arr){
+    const copy = [...arr];
+    for(let i = copy.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+  function formatSeconds(ms){
+    const seconds = ms / 1000;
+    if(seconds >= 60){
+      const minutes = Math.floor(seconds / 60);
+      const remainder = seconds - minutes * 60;
+      const remainderStr = remainder.toFixed(1).replace('.', ',');
+      return minutes + 'm ' + remainderStr + 's';
+    }
+    return seconds.toFixed(1).replace('.', ',') + 's';
+  }
+
+  function normalizeSentence(str){
+    if(!str) return '';
+    let s = String(str).toLowerCase();
+
+    // Normalizar contrações comuns (inglês)
+    const replacements = [
+      ["don't","do not"],
+      ["doesn't","does not"],
+      ["didn't","did not"],
+      ["can't","cannot"],
+      ["won't","will not"],
+      ["isn't","is not"],
+      ["aren't","are not"],
+      ["wasn't","was not"],
+      ["weren't","were not"],
+      ["hasn't","has not"],
+      ["haven't","have not"],
+      ["couldn't","could not"],
+      ["shouldn't","should not"],
+      ["mustn't","must not"],
+      ["i'm","i am"],
+      ["you're","you are"],
+      ["we're","we are"],
+      ["they're","they are"],
+      ["he's","he is"],
+      ["she's","she is"],
+      ["it's","it is"],
+      ["i’ve","i have"],
+      ["we’ve","we have"],
+      ["they’ve","they have"],
+      ["she’s","she has"],
+      ["he’s","he has"]
+    ];
+    replacements.forEach(([from,to])=>{
+      const re = new RegExp("\\b"+from+"\\b","g");
+      s = s.replace(re,to);
+    });
+
+    // remover pontuação simples
+    s = s.replace(/[.,!?]/g,' ');
+
+    // remover aspas
+    s = s.replace(/["']/g,'');
+
+    // espaços extras
+    s = s.replace(/\s+/g,' ').trim();
+    return s;
+  }
+
+  function splitGrammarToTokens(grammar){
+    if(!grammar) return [];
+    return grammar.split('+').map(s => s.trim()).filter(Boolean);
+  }
+
+  const STRUCTURE_DISTRACTORS = [
+    'subject',
+    'verb (base form)',
+    'verb (+s)',
+    'verb (-ing)',
+    'past participle',
+    'complement',
+    'do/does',
+    'did',
+    'will',
+    'will be',
+    'have/has',
+    'have/has been',
+    'to be (present)',
+    'to be (past)',
+    'modal'
+  ];
+
+  // ==========================
+  //  ELEMENTOS DO DOM
+  // ==========================
+  const elHome = document.getElementById('home');
+  const elGame = document.getElementById('game');
+
+  const modeButtons = document.querySelectorAll('.mode-btn');
+  const modeToBeOptions = document.getElementById('modeToBeOptions');
+  const modeStructureOptions = document.getElementById('modeStructureOptions');
+  const modeTenseOptions = document.getElementById('modeTenseOptions');
+
+  const startToBeBtn = document.getElementById('startToBe');
+  const startStructureBtn = document.getElementById('startStructure');
+  const startTenseIdentifyBtn = document.getElementById('startTenseIdentify');
+
+  const lblMode = document.getElementById('lblMode');
+  const lblProgress = document.getElementById('lblProgress');
+  const lblTime = document.getElementById('lblTime');
+  const bestTimeDisplay = document.getElementById('bestTimeDisplay');
+  const avgTimeDisplay = document.getElementById('avgTimeDisplay');
+  const streakDisplay = document.getElementById('streakDisplay');
+
+  const elQuestion = document.getElementById('question');
+  const elHelper = document.getElementById('questionHelper');
+  const choicesContainer = document.getElementById('choicesContainer');
+  const textInputRow = document.getElementById('textInputRow');
+  const textAnswerInput = document.getElementById('textAnswer');
+
+  const structureBuilderEl = document.getElementById('structureBuilder');
+  const structureAnswerEl = document.getElementById('structureAnswer');
+  const structureBankEl = document.getElementById('structureBank');
+
+  const btnCheck = document.getElementById('btnCheck');
+  const btnNext = document.getElementById('btnNext');
+  const btnCheckFloating = document.getElementById('btnCheckFloating');
+  const floatingWrapper = document.getElementById('floatingCheckWrapper');
+
+  const btnSwitch = document.getElementById('btnSwitch');
+  const btnRestart = document.getElementById('btnRestart');
+  const btnHome = document.getElementById('btnHome');
+
+  const elFeedback = document.getElementById('feedback');
+  const elEnd = document.getElementById('end');
+  const elEndMode = document.getElementById('endMode');
+  const elTimeSummary = document.getElementById('timeSummary');
+  const elSessionSummary = document.getElementById('sessionSummary');
+  const topList = document.getElementById('topList');
+
+  const structureTenseCheckboxes = document.querySelectorAll('.structure-tense');
+  const questionsPerStructureInput = document.getElementById('questionsPerStructure');
+  const structureModeRadios = document.querySelectorAll('input[name="structureMode"]');
+
+  // ==========================
+  //  ESTADO GLOBAL
+  // ==========================
+  let currentMode = 'toBe'; // 'toBe', 'structure', 'tenseIdentify'
+  let currentModeOptions = null;
+  let questions = [];       // array de objetos de pergunta
+  let remainingIndexes = []; // índices que ainda precisam ser acertados
+  let currentIndex = null;
+  let selectedChoiceValue = null; // para múltipla escolha
+
+  let totalQuestions = 0;
+  let correctCount = 0;
+  let attempts = 0;
+
+  // tempo
+  let questionStart = null;
+  let questionInterval = null;
+  let totalTimeMs = 0;
+  let timeRecords = [];
+  let currentBestTime = null;
+  let currentStreak = 0;
+
+  // sessão (para top de velocidade)
+  let sessionId = null;
+  let lastModeForRestart = null;   // para reiniciar
+  let lastOptionsForRestart = null;
+  const STORAGE_KEY_SESSIONS = 'englishPracticeSessions_v1';
+
+  // modo da estrutura (config da home)
+  let structurePracticeMode = 'translate';
+  let structureAnswerTokensCurrent = [];
+  let structureBankTokensCurrent = [];
+
+  // ==========================
+  //  GERAÇÃO DO SESSION ID
+  // ==========================
+  function createSessionId(){
+    const rand = Math.floor(100 + Math.random()*900);
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const dd = String(now.getDate()).padStart(2,'0');
+    const mon = String(now.getMonth()+1).padStart(2,'0');
+    return rand + '#' + hh + 'h' + mm + '_' + dd + '/' + mon;
+  }
+  sessionId = createSessionId();
+
+  // ==========================
+  //  CONTROLE DE TEMPO
+  // ==========================
+  function clearQuestionTimer(){
+    if(questionInterval){
+      clearInterval(questionInterval);
+      questionInterval = null;
+    }
+  }
+  function resetQuestionTimer(){
+    clearQuestionTimer();
+    questionStart = null;
+    lblTime.textContent = '0,0s';
+  }
+  function startQuestionTimer(){
+    clearQuestionTimer();
+    questionStart = performance.now();
+    lblTime.textContent = '0,0s';
+    questionInterval = setInterval(()=>{
+      if(questionStart !== null){
+        const elapsed = performance.now() - questionStart;
+        lblTime.textContent = formatSeconds(elapsed);
+      }
+    },100);
+  }
+  function finalizeQuestionTime(){
+    if(questionStart === null) return 0;
+    const elapsed = performance.now() - questionStart;
+    totalTimeMs += elapsed;
+    timeRecords.push(elapsed);
+    clearQuestionTimer();
+    questionStart = null;
+    lblTime.textContent = formatSeconds(elapsed);
+    return elapsed;
+  }
+  function resetTimeStats(){
+    totalTimeMs = 0;
+    timeRecords = [];
+    currentBestTime = null;
+    currentStreak = 0;
+    resetQuestionTimer();
+    bestTimeDisplay.textContent = '-';
+    avgTimeDisplay.textContent = '-';
+    streakDisplay.textContent = '-';
+    elTimeSummary.textContent = '';
+  }
+  function updateSessionStats(){
+    if(!timeRecords.length) return;
+    const bestTime = Math.min(...timeRecords);
+    const avgTime = timeRecords.reduce((a,b)=>a+b,0) / timeRecords.length;
+
+    if(currentBestTime === null || bestTime < currentBestTime){
+      currentBestTime = bestTime;
+      currentStreak = 1;
+    }else if(Math.abs(bestTime - currentBestTime) < 50){
+      currentStreak++;
+    }else{
+      currentStreak = 0;
+    }
+
+    bestTimeDisplay.textContent = formatSeconds(bestTime);
+    avgTimeDisplay.textContent = formatSeconds(avgTime);
+    streakDisplay.textContent = currentStreak > 1 ? (currentStreak + 'x 🔥') : '-';
+  }
+
+  // ==========================
+  //  TOPO DE VELOCIDADE
+  // ==========================
+  function loadSessions(){
+    const raw = localStorage.getItem(STORAGE_KEY_SESSIONS);
+    if(!raw) return [];
+    try{
+      const data = JSON.parse(raw);
+      if(Array.isArray(data)) return data;
+      return [];
+    }catch(e){
+      return [];
+    }
+  }
+  function saveSessions(list){
+    localStorage.setItem(STORAGE_KEY_SESSIONS, JSON.stringify(list));
+  }
+  function addSessionRecord(record){
+    const list = loadSessions();
+    list.unshift(record);
+    // mantém só os últimos 20
+    if(list.length > 20) list.length = 20;
+    saveSessions(list);
+  }
+  function updateTopVelocidade(){
+    if(!topList) return;
+    const list = loadSessions();
+    if(!list.length){
+      topList.innerHTML = '<div style="color:#991b1b;font-size:.9rem;text-align:center;padding:8px">Faça um treino para ver seu top!</div>';
+      return;
+    }
+
+    // ordenar por velocidade (desc) e mais recente em caso de empate
+    const sorted = [...list].sort((a,b)=>{
+      if(b.speed === a.speed) return b.timestamp - a.timestamp;
+      return b.speed - a.speed;
+    });
+
+    const top = sorted.slice(0,5);
+    let rank = 1;
+    const html = top.map(rec=>{
+      const modeLabel = rec.modeLabel || rec.mode;
+      const progress = rec.correct + '/' + rec.total;
+      const speedStr = rec.speed.toFixed(2).replace('.',',');
+      const timeStr = formatSeconds(rec.totalTimeMs);
+      return `
+        <div class="top-item">
+          <span><span class="top-rank">#${rank++}</span> ${modeLabel} – <strong>${rec.sessionId}</strong></span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;font-size:.8rem">
+            <span class="top-time">Vel.: ${speedStr} q/s</span>
+            <span style="color:#7f1d1d">Prog.: ${progress} • ${timeStr}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    topList.innerHTML = html;
+  }
+
+  // ==========================
+  //  VISIBILIDADE DE CONTROLES
+  // ==========================
+  function showValidate(show){
+    btnCheck.classList.toggle('hidden', !show);
+    if(floatingWrapper){
+      floatingWrapper.classList.toggle('hidden', !show);
+    }
+  }
+  function showNext(show){
+    btnNext.classList.toggle('hidden', !show);
+  }
+  function showHelper(text){
+    if(text){
+      elHelper.textContent = text;
+      elHelper.classList.remove('hidden');
+    }else{
+      elHelper.textContent = '';
+      elHelper.classList.add('hidden');
+    }
+  }
+  function showChoices(show){
+    choicesContainer.classList.toggle('hidden', !show);
+    if(show){
+      textInputRow.classList.add('hidden');
+      if(structureBuilderEl) structureBuilderEl.classList.add('hidden');
+    }
+  }
+  function showTextInput(show){
+    textInputRow.classList.toggle('hidden', !show);
+    if(show){
+      choicesContainer.classList.add('hidden');
+      if(structureBuilderEl) structureBuilderEl.classList.add('hidden');
+    }
+  }
+  function showStructureBuilder(show){
+    if(!structureBuilderEl) return;
+    structureBuilderEl.classList.toggle('hidden', !show);
+    if(show){
+      choicesContainer.classList.add('hidden');
+      textInputRow.classList.add('hidden');
+    }
+  }
+
+  function updateProgress(){
+    lblProgress.textContent = correctCount + '/' + totalQuestions;
+  }
+
+  // ==========================
+  //  DADOS – VERBO TO BE
+  // ==========================
+  const TO_BE_PRONOUNS = [
+    { id:'i', label:'I', forms:{present:'am',past:'was',future:'will'} },
+    { id:'you', label:'You', forms:{present:'are',past:'were',future:'will'} },
+    { id:'he', label:'He', forms:{present:'is',past:'was',future:'will'} },
+    { id:'she', label:'She', forms:{present:'is',past:'was',future:'will'} },
+    { id:'it', label:'It', forms:{present:'is',past:'was',future:'will'} },
+    { id:'we', label:'We', forms:{present:'are',past:'were',future:'will'} },
+    { id:'you_pl', label:'You (plural)', forms:{present:'are',past:'were',future:'will'} },
+    { id:'they', label:'They', forms:{present:'are',past:'were',future:'will'} }
+  ];
+  const TO_BE_TENSES = [
+    { id:'present', label:'Present' },
+    { id:'past', label:'Past' },
+    { id:'future', label:'Future' }
+  ];
+  function getToBeOptions(tenseId){
+    if(tenseId === 'present'){
+      return shuffle(['am','are','is']);
+    }
+    if(tenseId === 'past'){
+      return shuffle(['was','were']);
+    }
+    // future – sempre conter 'will', com alguns distratores
+    const base = ['will','am','are','is','was','were'];
+    return shuffle(base);
+  }
+
+  // ==========================
+  //  DADOS – ESTRUTURA DAS FRASES
+  // ==========================
+  const STRUCTURES = [
+    {
+      tenseId:'simplePresent',
+      tenseLabel:'Simple Present',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + verb (base form) + complement',
+          examples:[
+            {pt:'Eu trabalho aqui.', en:'I work here.'},
+            {pt:'Ela lê livros todos os dias.', en:'She reads books every day.'},
+            {pt:'Eles jogam futebol aos sábados.', en:'They play soccer on Saturdays.'},
+            {pt:'Nós moramos em São Paulo.', en:'We live in São Paulo.'},
+            {pt:'Ele estuda inglês de manhã.', en:'He studies English in the morning.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + auxiliary (do/does) + not + verb (base form) + complement',
+          examples:[
+            {pt:'Eu não trabalho aqui.', en:'I do not work here.'},
+            {pt:'Ela não lê livros à noite.', en:'She does not read books at night.'},
+            {pt:'Eles não jogam futebol no domingo.', en:'They do not play soccer on Sunday.'},
+            {pt:'Nós não moramos perto daqui.', en:'We do not live near here.'},
+            {pt:'Ele não estuda inglês à noite.', en:'He does not study English at night.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'auxiliary (do/does) + subject + verb (base form) + complement',
+          examples:[
+            {pt:'Você trabalha aqui?', en:'Do you work here?'},
+            {pt:'Ela lê livros todos os dias?', en:'Does she read books every day?'},
+            {pt:'Eles jogam futebol aos sábados?', en:'Do they play soccer on Saturdays?'},
+            {pt:'Nós moramos em São Paulo?', en:'Do we live in São Paulo?'},
+            {pt:'Ele estuda inglês de manhã?', en:'Does he study English in the morning?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'presentContinuous',
+      tenseLabel:'Present Continuous',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + to be (present) + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu estou trabalhando aqui agora.', en:'I am working here now.'},
+            {pt:'Ela está lendo um livro.', en:'She is reading a book.'},
+            {pt:'Eles estão jogando futebol no parque.', en:'They are playing soccer in the park.'},
+            {pt:'Nós estamos morando em São Paulo temporariamente.', en:'We are living in São Paulo temporarily.'},
+            {pt:'Ele está estudando inglês neste momento.', en:'He is studying English at the moment.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + to be (present) + not + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu não estou trabalhando aqui agora.', en:'I am not working here now.'},
+            {pt:'Ela não está lendo um livro.', en:'She is not reading a book.'},
+            {pt:'Eles não estão jogando futebol no parque.', en:'They are not playing soccer in the park.'},
+            {pt:'Nós não estamos morando em São Paulo.', en:'We are not living in São Paulo.'},
+            {pt:'Ele não está estudando inglês neste momento.', en:'He is not studying English at the moment.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'to be (present) + subject + verb (-ing) + complement',
+          examples:[
+            {pt:'Você está trabalhando aqui agora?', en:'Are you working here now?'},
+            {pt:'Ela está lendo um livro?', en:'Is she reading a book?'},
+            {pt:'Eles estão jogando futebol no parque?', en:'Are they playing soccer in the park?'},
+            {pt:'Nós estamos morando em São Paulo?', en:'Are we living in São Paulo?'},
+            {pt:'Ele está estudando inglês neste momento?', en:'Is he studying English at the moment?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'presentPerfect',
+      tenseLabel:'Present Perfect',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + have/has + past participle + complement',
+          examples:[
+            {pt:'Eu já visitei Londres.', en:'I have visited London.'},
+            {pt:'Ela já leu este livro.', en:'She has read this book.'},
+            {pt:'Eles já viram esse filme.', en:'They have seen that movie.'},
+            {pt:'Nós já moramos em três cidades diferentes.', en:'We have lived in three different cities.'},
+            {pt:'Ele já estudou inglês antes.', en:'He has studied English before.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + have/has + not + past participle + complement',
+          examples:[
+            {pt:'Eu ainda não visitei Londres.', en:'I have not visited London yet.'},
+            {pt:'Ela ainda não leu este livro.', en:'She has not read this book yet.'},
+            {pt:'Eles ainda não viram esse filme.', en:'They have not seen that movie yet.'},
+            {pt:'Nós ainda não moramos fora do Brasil.', en:'We have not lived outside Brazil.'},
+            {pt:'Ele ainda não estudou inglês online.', en:'He has not studied English online yet.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'have/has + subject + past participle + complement',
+          examples:[
+            {pt:'Você já visitou Londres?', en:'Have you visited London?'},
+            {pt:'Ela já leu este livro?', en:'Has she read this book?'},
+            {pt:'Eles já viram esse filme?', en:'Have they seen that movie?'},
+            {pt:'Nós já moramos em outra cidade?', en:'Have we lived in another city?'},
+            {pt:'Ele já estudou inglês antes?', en:'Has he studied English before?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'presentPerfectContinuous',
+      tenseLabel:'Present Perfect Continuous',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + have/has been + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu tenho estudado inglês ultimamente.', en:'I have been studying English lately.'},
+            {pt:'Ela tem trabalhado muito nos últimos meses.', en:'She has been working a lot in the last few months.'},
+            {pt:'Eles têm jogado futebol todas as semanas.', en:'They have been playing soccer every week.'},
+            {pt:'Nós temos morado aqui desde janeiro.', en:'We have been living here since January.'},
+            {pt:'Ele tem assistido muitas séries recentes.', en:'He has been watching many recent series.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + have/has not been + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu não tenho estudado inglês ultimamente.', en:'I have not been studying English lately.'},
+            {pt:'Ela não tem trabalhado muito nos últimos meses.', en:'She has not been working a lot in the last few months.'},
+            {pt:'Eles não têm jogado futebol todas as semanas.', en:'They have not been playing soccer every week.'},
+            {pt:'Nós não temos morado aqui há muito tempo.', en:'We have not been living here for long.'},
+            {pt:'Ele não tem assistido muitas séries recentes.', en:'He has not been watching many recent series.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'have/has + subject + been + verb (-ing) + complement',
+          examples:[
+            {pt:'Você tem estudado inglês ultimamente?', en:'Have you been studying English lately?'},
+            {pt:'Ela tem trabalhado muito nos últimos meses?', en:'Has she been working a lot in the last few months?'},
+            {pt:'Eles têm jogado futebol todas as semanas?', en:'Have they been playing soccer every week?'},
+            {pt:'Nós temos morado aqui desde janeiro?', en:'Have we been living here since January?'},
+            {pt:'Ele tem assistido muitas séries recentes?', en:'Has he been watching many recent series?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'simplePast',
+      tenseLabel:'Simple Past',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + verb (past) + complement',
+          examples:[
+            {pt:'Eu trabalhei aqui ontem.', en:'I worked here yesterday.'},
+            {pt:'Ela leu o livro na semana passada.', en:'She read the book last week.'},
+            {pt:'Eles jogaram futebol no sábado.', en:'They played soccer on Saturday.'},
+            {pt:'Nós moramos em Londres em 2010.', en:'We lived in London in 2010.'},
+            {pt:'Ele estudou inglês na escola.', en:'He studied English at school.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + did not + verb (base form) + complement',
+          examples:[
+            {pt:'Eu não trabalhei aqui ontem.', en:'I did not work here yesterday.'},
+            {pt:'Ela não leu o livro na semana passada.', en:'She did not read the book last week.'},
+            {pt:'Eles não jogaram futebol no sábado.', en:'They did not play soccer on Saturday.'},
+            {pt:'Nós não moramos em Londres em 2010.', en:'We did not live in London in 2010.'},
+            {pt:'Ele não estudou inglês na escola.', en:'He did not study English at school.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'did + subject + verb (base form) + complement',
+          examples:[
+            {pt:'Você trabalhou aqui ontem?', en:'Did you work here yesterday?'},
+            {pt:'Ela leu o livro na semana passada?', en:'Did she read the book last week?'},
+            {pt:'Eles jogaram futebol no sábado?', en:'Did they play soccer on Saturday?'},
+            {pt:'Nós moramos em Londres em 2010?', en:'Did we live in London in 2010?'},
+            {pt:'Ele estudou inglês na escola?', en:'Did he study English at school?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'pastContinuous',
+      tenseLabel:'Past Continuous',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + was/were + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu estava trabalhando aqui ontem à tarde.', en:'I was working here yesterday afternoon.'},
+            {pt:'Ela estava lendo um livro quando cheguei.', en:'She was reading a book when I arrived.'},
+            {pt:'Eles estavam jogando futebol às 10h.', en:'They were playing soccer at 10 a.m.'},
+            {pt:'Nós estávamos morando em Londres naquele ano.', en:'We were living in London that year.'},
+            {pt:'Ele estava estudando inglês quando o telefone tocou.', en:'He was studying English when the phone rang.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + was/were not + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu não estava trabalhando aqui ontem à tarde.', en:'I was not working here yesterday afternoon.'},
+            {pt:'Ela não estava lendo um livro quando cheguei.', en:'She was not reading a book when I arrived.'},
+            {pt:'Eles não estavam jogando futebol às 10h.', en:'They were not playing soccer at 10 a.m.'},
+            {pt:'Nós não estávamos morando em Londres naquele ano.', en:'We were not living in London that year.'},
+            {pt:'Ele não estava estudando inglês quando o telefone tocou.', en:'He was not studying English when the phone rang.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'was/were + subject + verb (-ing) + complement',
+          examples:[
+            {pt:'Você estava trabalhando aqui ontem à tarde?', en:'Were you working here yesterday afternoon?'},
+            {pt:'Ela estava lendo um livro quando você chegou?', en:'Was she reading a book when you arrived?'},
+            {pt:'Eles estavam jogando futebol às 10h?', en:'Were they playing soccer at 10 a.m.?'},
+            {pt:'Nós estávamos morando em Londres naquele ano?', en:'Were we living in London that year?'},
+            {pt:'Ele estava estudando inglês quando o telefone tocou?', en:'Was he studying English when the phone rang?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'simpleFuture',
+      tenseLabel:'Simple Future (Will)',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + will + verb (base form) + complement',
+          examples:[
+            {pt:'Eu trabalharei aqui amanhã.', en:'I will work here tomorrow.'},
+            {pt:'Ela viajará para Londres no próximo mês.', en:'She will travel to London next month.'},
+            {pt:'Eles jogarão futebol no sábado.', en:'They will play soccer on Saturday.'},
+            {pt:'Nós moraremos em São Paulo no próximo ano.', en:'We will live in São Paulo next year.'},
+            {pt:'Ele estudará inglês amanhã de manhã.', en:'He will study English tomorrow morning.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + will not + verb (base form) + complement',
+          examples:[
+            {pt:'Eu não trabalharei aqui amanhã.', en:'I will not work here tomorrow.'},
+            {pt:'Ela não viajará para Londres no próximo mês.', en:'She will not travel to London next month.'},
+            {pt:'Eles não jogarão futebol no sábado.', en:'They will not play soccer on Saturday.'},
+            {pt:'Nós não moraremos em São Paulo no próximo ano.', en:'We will not live in São Paulo next year.'},
+            {pt:'Ele não estudará inglês amanhã de manhã.', en:'He will not study English tomorrow morning.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'will + subject + verb (base form) + complement',
+          examples:[
+            {pt:'Você trabalhará aqui amanhã?', en:'Will you work here tomorrow?'},
+            {pt:'Ela viajará para Londres no próximo mês?', en:'Will she travel to London next month?'},
+            {pt:'Eles jogarão futebol no sábado?', en:'Will they play soccer on Saturday?'},
+            {pt:'Nós moraremos em São Paulo no próximo ano?', en:'Will we live in São Paulo next year?'},
+            {pt:'Ele estudará inglês amanhã de manhã?', en:'Will he study English tomorrow morning?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'futureContinuous',
+      tenseLabel:'Future Continuous',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + will be + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu estarei trabalhando aqui amanhã às 10h.', en:'I will be working here tomorrow at 10 a.m.'},
+            {pt:'Ela estará viajando para Londres na próxima semana.', en:'She will be traveling to London next week.'},
+            {pt:'Eles estarão jogando futebol no sábado à tarde.', en:'They will be playing soccer on Saturday afternoon.'},
+            {pt:'Nós estaremos morando em São Paulo no ano que vem.', en:'We will be living in São Paulo next year.'},
+            {pt:'Ele estará estudando inglês amanhã de manhã.', en:'He will be studying English tomorrow morning.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + will not be + verb (-ing) + complement',
+          examples:[
+            {pt:'Eu não estarei trabalhando aqui amanhã às 10h.', en:'I will not be working here tomorrow at 10 a.m.'},
+            {pt:'Ela não estará viajando para Londres na próxima semana.', en:'She will not be traveling to London next week.'},
+            {pt:'Eles não estarão jogando futebol no sábado à tarde.', en:'They will not be playing soccer on Saturday afternoon.'},
+            {pt:'Nós não estaremos morando em São Paulo no ano que vem.', en:'We will not be living in São Paulo next year.'},
+            {pt:'Ele não estará estudando inglês amanhã de manhã.', en:'He will not be studying English tomorrow morning.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'will + subject + be + verb (-ing) + complement',
+          examples:[
+            {pt:'Você estará trabalhando aqui amanhã às 10h?', en:'Will you be working here tomorrow at 10 a.m.?'},
+            {pt:'Ela estará viajando para Londres na próxima semana?', en:'Will she be traveling to London next week?'},
+            {pt:'Eles estarão jogando futebol no sábado à tarde?', en:'Will they be playing soccer on Saturday afternoon?'},
+            {pt:'Nós estaremos morando em São Paulo no ano que vem?', en:'Will we be living in São Paulo next year?'},
+            {pt:'Ele estará estudando inglês amanhã de manhã?', en:'Will he be studying English tomorrow morning?'}
+          ]
+        }
+      ]
+    },
+    {
+      tenseId:'modalVerb',
+      tenseLabel:'Modal Verb',
+      patterns:[
+        {
+          polarity:'positive',
+          label:'Positive',
+          grammar:'subject + modal + verb (base form) + complement',
+          examples:[
+            {pt:'Eu posso trabalhar aqui hoje.', en:'I can work here today.'},
+            {pt:'Ela deve estudar mais.', en:'She must study more.'},
+            {pt:'Eles deveriam praticar inglês todos os dias.', en:'They should practice English every day.'},
+            {pt:'Nós podemos viajar este ano.', en:'We can travel this year.'},
+            {pt:'Ele pode falar inglês muito bem.', en:'He can speak English very well.'}
+          ]
+        },
+        {
+          polarity:'negative',
+          label:'Negative',
+          grammar:'subject + modal + not + verb (base form) + complement',
+          examples:[
+            {pt:'Eu não posso trabalhar aqui hoje.', en:'I cannot work here today.'},
+            {pt:'Ela não deve estudar menos.', en:'She must not study less.'},
+            {pt:'Eles não deveriam chegar atrasados.', en:'They should not arrive late.'},
+            {pt:'Nós não podemos viajar este ano.', en:'We cannot travel this year.'},
+            {pt:'Ele não pode falar inglês muito bem.', en:'He cannot speak English very well.'}
+          ]
+        },
+        {
+          polarity:'interrogative',
+          label:'Interrogative',
+          grammar:'modal + subject + verb (base form) + complement',
+          examples:[
+            {pt:'Você pode trabalhar aqui hoje?', en:'Can you work here today?'},
+            {pt:'Ela deve estudar mais?', en:'Must she study more?'},
+            {pt:'Eles deveriam praticar inglês todos os dias?', en:'Should they practice English every day?'},
+            {pt:'Nós podemos viajar este ano?', en:'Can we travel this year?'},
+            {pt:'Ele pode falar inglês muito bem?', en:'Can he speak English very well?'}
+          ]
+        }
+      ]
+    }
+  ];
+
+  // ==========================
+  //  DADOS – IDENTIFICAR TEMPO VERBAL
+  // ==========================
+  const TENSE_OPTIONS = [
+    "1 - Simple Present (Positive)",
+    "2 - Simple Present (Negative)",
+    "3 - Simple Present (Interrogative)",
+    "4 - Present Continuous (Positive)",
+    "5 - Present Continuous (Negative)",
+    "6 - Present Continuous (Interrogative)",
+    "7 - Present Perfect (Positive)",
+    "8 - Present Perfect (Negative)",
+    "9 - Present Perfect (Interrogative)",
+    "10 - Simple Past (Positive)",
+    "11 - Simple Past (Negative)",
+    "12 - Simple Past (Interrogative)",
+    "13 - Past Continuous (Positive)",
+    "14 - Past Continuous (Negative)",
+    "15 - Past Continuous (Interrogative)",
+    "16 - Simple Future (Positive)",
+    "17 - Simple Future (Negative)",
+    "18 - Simple Future (Interrogative)",
+    "19 - Future Continuous (Positive)",
+    "20 - Future Continuous (Negative)",
+    "21 - Future Continuous (Interrogative)",
+    "22 - Modal Verb (Positive)",
+    "23 - Modal Verb (Negative)",
+    "24 - Modal Verb (Interrogative)"
+  ];
+
+  const TENSE_QUESTIONS = shuffle([
+    {question:"She works hard every day.", correct:1},
+    {question:"I do not eat meat.", correct:2},
+    {question:"Do you play the guitar?", correct:3},
+    {question:"They are playing in the garden.", correct:4},
+    {question:"She is not cooking dinner tonight.", correct:5},
+    {question:"Are you studying for the exam?", correct:6},
+    {question:"She has visited Paris multiple times.", correct:7},
+    {question:"They have not completed the project yet.", correct:8},
+    {question:"Have you ever tried sushi?", correct:9},
+    {question:"She visited the museum last weekend.", correct:10},
+    {question:"They did not finish the project on time.", correct:11},
+    {question:"Did you enjoy the concert?", correct:12},
+    {question:"She was cooking dinner when the power went out.", correct:13},
+    {question:"They were not studying during the party.", correct:14},
+    {question:"Were you listening to music while working?", correct:15},
+    {question:"She will visit her parents next weekend.", correct:16},
+    {question:"He will not forget your birthday.", correct:17},
+    {question:"Will you come to the party with us?", correct:18},
+    {question:"They will be celebrating their anniversary at this time tomorrow.", correct:19},
+    {question:"She will not be attending the meeting next week.", correct:20},
+    {question:"Will you be working on the project in the evening?", correct:21},
+    {question:"He can speak three languages fluently.", correct:22},
+    {question:"They cannot attend the meeting tomorrow.", correct:23},
+    {question:"Can she help with the presentation?", correct:24}
+  ]);
+
+  // ==========================
+  //  GERAÇÃO DE PERGUNTAS POR MODO
+  // ==========================
+
+  function buildToBeQuestions(){
+    const q = [];
+    TO_BE_PRONOUNS.forEach(p=>{
+      TO_BE_TENSES.forEach(t=>{
+        const correct = p.forms[t.id];
+        q.push({
+          type:'toBe',
+          pronoun:p.label,
+          tenseId:t.id,
+          tenseLabel:t.label,
+          correctAnswer:correct,
+          options:getToBeOptions(t.id)
+        });
+      });
+    });
+    return shuffle(q);
+  }
+
+  function buildStructureQuestions(){
+    const selectedTenseIds = Array.from(structureTenseCheckboxes)
+      .filter(chk => chk.checked)
+      .map(chk => chk.dataset.tense);
+
+    const perStructureRaw = parseInt(questionsPerStructureInput.value,10);
+    const perStructure = (!isNaN(perStructureRaw) && perStructureRaw > 0) ? Math.min(perStructureRaw,20) : 2;
+
+    const q = [];
+    const usedMap = new Map(); // chave: patternId -> Set de índices já usados
+
+    STRUCTURES.forEach(tense=>{
+      if(!selectedTenseIds.includes(tense.tenseId)) return;
+      tense.patterns.forEach(pattern=>{
+        const patternId = tense.tenseId + '|' + pattern.polarity;
+        usedMap.set(patternId, new Set());
+        for(let i=0;i<perStructure;i++){
+          q.push({
+            type:'structure',
+            tenseId:tense.tenseId,
+            tenseLabel:tense.tenseLabel,
+            polarity:pattern.polarity,
+            polarityLabel:pattern.label,
+            grammar:pattern.grammar,
+            structureTokens:splitGrammarToTokens(pattern.grammar),
+            patternRef:pattern,      // referência para acessar examples
+            patternKey:patternId,    // para controlar variações usadas
+            exampleIndex:null        // será definido na primeira vez que aparecer
+          });
+        }
+      });
+    });
+
+    // anexar mapa dentro do array para reuso
+    q._usedMap = usedMap;
+    return shuffle(q);
+  }
+
+  function pickExampleForStructureQuestion(q){
+    const pattern = q.patternRef;
+    if(!pattern || !pattern.examples || !pattern.examples.length) return null;
+    const usedMap = questions._usedMap || questions._usedMapStructure || null;
+    let usedSet = null;
+    if(usedMap && usedMap.has(q.patternKey)){
+      usedSet = usedMap.get(q.patternKey);
+    }
+    const total = pattern.examples.length;
+    let available = [];
+    for(let i=0;i<total;i++){
+      if(!usedSet || !usedSet.has(i)){
+        available.push(i);
+      }
+    }
+    if(!available.length){
+      // já usamos todas, pode reutilizar
+      available = Array.from({length:total},(_,i)=>i);
+      if(usedSet) usedSet.clear();
+    }
+    const idx = choice(available);
+    if(usedSet){
+      usedSet.add(idx);
+    }
+    q.exampleIndex = idx;
+    return idx;
+  }
+
+  function buildTenseIdentifyQuestions(){
+    return TENSE_QUESTIONS.map(tq=>({
+      type:'tenseIdentify',
+      sentence:tq.question,
+      correctValue:String(tq.correct)
+    }));
+  }
+
+  // ==========================
+  //  RENDER DO BUILDER DE ESTRUTURA
+  // ==========================
+  function renderStructureBuilder(){
+    if(!structureAnswerEl || !structureBankEl) return;
+    structureAnswerEl.innerHTML = '';
+    structureBankEl.innerHTML = '';
+
+    if(!structureAnswerTokensCurrent.length){
+      structureAnswerEl.classList.add('empty');
+    }else{
+      structureAnswerEl.classList.remove('empty');
+    }
+
+    structureAnswerTokensCurrent.forEach((tok, idx)=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'token-chip';
+      btn.textContent = tok;
+      btn.dataset.index = idx;
+      btn.addEventListener('click', ()=>{
+        // remover da resposta e devolver ao banco
+        structureAnswerTokensCurrent.splice(idx,1);
+        structureBankTokensCurrent.push(tok);
+        renderStructureBuilder();
+      });
+      structureAnswerEl.appendChild(btn);
+    });
+
+    structureBankTokensCurrent.forEach((tok, idx)=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'token-chip';
+      btn.textContent = tok;
+      btn.dataset.index = idx;
+      btn.addEventListener('click', ()=>{
+        // mover do banco para resposta
+        structureAnswerTokensCurrent.push(tok);
+        structureBankTokensCurrent.splice(idx,1);
+        renderStructureBuilder();
+      });
+      structureBankEl.appendChild(btn);
+    });
+  }
+
+  // ==========================
+  //  CARREGAR PERGUNTA ATUAL
+  // ==========================
+  function loadQuestion(){
+    elFeedback.textContent = '';
+    elFeedback.className = 'feedback';
+    showValidate(true);
+    showNext(false);
+    selectedChoiceValue = null;
+
+    if(remainingIndexes.length === 0){
+      // acabou
+      endSession();
+      return;
+    }
+
+    currentIndex = choice(remainingIndexes);
+    const q = questions[currentIndex];
+
+    if(q.type === 'toBe'){
+      lblMode.textContent = 'Verbo To Be';
+      elQuestion.textContent = q.pronoun + ' — ' + q.tenseLabel;
+      showHelper('Escolha a forma correta do verbo "to be" para o pronome e tempo verbal mostrados.');
+      showStructureBuilder(false);
+      renderChoices(q.options.map(opt => ({value:opt,label:opt})));
+      showChoices(true);
+      showTextInput(false);
+    }else if(q.type === 'structure'){
+      lblMode.textContent = 'Estrutura das Frases';
+      // escolher frase se ainda não tiver
+      if(q.exampleIndex === null){
+        pickExampleForStructureQuestion(q);
+      }
+      const ex = q.patternRef.examples[q.exampleIndex];
+      elQuestion.textContent = ex.pt;
+
+      const helperText = 'Tempo verbal: ' + q.tenseLabel + ' (' + q.polarityLabel + ')';
+      showHelper(helperText);
+
+      const sMode = (currentModeOptions && currentModeOptions.structureMode) || 'translate';
+
+      if(sMode === 'pattern'){
+        // Apenas estrutura (blocos)
+        structureAnswerTokensCurrent = [];
+        // tokens corretos
+        if(!q.structureTokens || !q.structureTokens.length){
+          q.structureTokens = splitGrammarToTokens(q.grammar);
+        }
+        const correctTokens = q.structureTokens;
+
+        // distratores para confundir
+        const availableDistractors = STRUCTURE_DISTRACTORS.filter(tok => !correctTokens.includes(tok));
+        const extraCount = Math.min(4, availableDistractors.length);
+        const selectedDistractors = shuffle(availableDistractors).slice(0, extraCount);
+        structureBankTokensCurrent = shuffle([...correctTokens, ...selectedDistractors]);
+
+        renderStructureBuilder();
+        showStructureBuilder(true);
+        showChoices(false);
+        showTextInput(false);
+      }else{
+        // Tradução normal (PT -> EN)
+        showStructureBuilder(false);
+        showChoices(false);
+        showTextInput(true);
+        textAnswerInput.value = '';
+        setTimeout(()=>{ textAnswerInput.focus(); },50);
+      }
+    }else if(q.type === 'tenseIdentify'){
+      lblMode.textContent = 'Identificar Tempo Verbal';
+      elQuestion.textContent = q.sentence;
+      showHelper('Qual é o tempo verbal desta frase? Escolha na lista.');
+      showStructureBuilder(false);
+      renderChoices(TENSE_OPTIONS.map((label,idx)=>({
+        value:String(idx+1),
+        label:label
+      })));
+      showChoices(true);
+      showTextInput(false);
+    }
+
+    startQuestionTimer();
+    updateProgress();
+  }
+
+  function renderChoices(list){
+    choicesContainer.innerHTML = '';
+    list.forEach(item=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-choice';
+      btn.textContent = item.label;
+      btn.dataset.value = item.value;
+      btn.addEventListener('click', ()=>{
+        // limpar seleção anterior
+        const all = choicesContainer.querySelectorAll('.btn-choice');
+        all.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedChoiceValue = item.value;
+      });
+      choicesContainer.appendChild(btn);
+    });
+  }
+
+  // ==========================
+  //  VALIDAÇÃO DE RESPOSTA
+  // ==========================
+  function checkCurrent(){
+    if(currentIndex === null || currentIndex < 0 || currentIndex >= questions.length) return;
+    const q = questions[currentIndex];
+
+    if(q.type === 'structure'){
+      checkStructureQuestion(q);
+    }else{
+      checkMultipleChoiceQuestion(q);
+    }
+  }
+
+  function checkMultipleChoiceQuestion(q){
+    if(!selectedChoiceValue){
+      elFeedback.textContent = 'Escolha uma opção antes de validar.';
+      elFeedback.className = 'feedback err';
+      return;
+    }
+    attempts++;
+    let correct = false;
+    if(q.type === 'toBe'){
+      correct = (selectedChoiceValue === q.correctAnswer);
+    }else if(q.type === 'tenseIdentify'){
+      correct = (selectedChoiceValue === q.correctValue);
+    }
+
+    if(correct){
+      correctCount++;
+      finalizeQuestionTime();
+      updateSessionStats();
+      elFeedback.textContent = 'Acertou! ✅';
+      elFeedback.className = 'feedback ok';
+      // remover da lista de restantes
+      remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
+    }else{
+      // manter na lista (vai voltar embaralhada)
+      let correctText;
+      if(q.type === 'toBe'){
+        correctText = 'Resposta correta: "' + q.correctAnswer + '".';
+      }else{
+        const label = TENSE_OPTIONS[parseInt(q.correctValue,10)-1];
+        correctText = 'Resposta correta: ' + label + '.';
+      }
+      elFeedback.textContent = 'Errou. ' + correctText;
+      elFeedback.className = 'feedback err';
+      resetQuestionTimer();
+    }
+    updateProgress();
+    showValidate(false);
+    showNext(true);
+  }
+
+  function checkStructureQuestion(q){
+    const mode = (currentModeOptions && currentModeOptions.structureMode) || 'translate';
+
+    if(mode === 'pattern'){
+      // Apenas estrutura (blocos)
+      checkStructurePatternQuestion(q);
+      return;
+    }
+
+    // Tradução normal (PT -> EN)
+    const user = textAnswerInput.value;
+    if(!user || !user.trim()){
+      elFeedback.textContent = 'Digite a frase em inglês antes de validar.';
+      elFeedback.className = 'feedback err';
+      textAnswerInput.focus();
+      return;
+    }
+    attempts++;
+
+    const ex = q.patternRef.examples[q.exampleIndex];
+    const correct = ex.en;
+    const normUser = normalizeSentence(user);
+    const normCorrect = normalizeSentence(correct);
+
+    if(normUser === normCorrect){
+      correctCount++;
+      finalizeQuestionTime();
+      updateSessionStats();
+      elFeedback.innerHTML = 'Acertou! ✅<br><span style="font-weight:400">Frase correta: ' + correct + '</span>';
+      elFeedback.className = 'feedback ok';
+      remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
+    }else{
+      elFeedback.innerHTML =
+        'Errou. ❌<br><span style="font-weight:400">Frase correta: ' + correct + '</span>';
+      elFeedback.className = 'feedback err';
+      resetQuestionTimer();
+    }
+    updateProgress();
+    showValidate(false);
+    showNext(true);
+  }
+
+  function checkStructurePatternQuestion(q){
+    if(!structureAnswerTokensCurrent.length){
+      elFeedback.textContent = 'Monte a estrutura completa usando os blocos antes de validar.';
+      elFeedback.className = 'feedback err';
+      return;
+    }
+
+    attempts++;
+
+    if(!q.structureTokens || !q.structureTokens.length){
+      q.structureTokens = splitGrammarToTokens(q.grammar);
+    }
+    const correctTokens = q.structureTokens;
+    let isCorrect = true;
+
+    if(structureAnswerTokensCurrent.length !== correctTokens.length){
+      isCorrect = false;
+    }else{
+      for(let i=0;i<correctTokens.length;i++){
+        if(structureAnswerTokensCurrent[i] !== correctTokens[i]){
+          isCorrect = false;
+          break;
+        }
+      }
+    }
+
+    const correctStr = correctTokens.join(' + ');
+
+    if(isCorrect){
+      correctCount++;
+      finalizeQuestionTime();
+      updateSessionStats();
+      elFeedback.innerHTML = 'Acertou! ✅<br><span style="font-weight:400">Estrutura: ' + correctStr + '</span>';
+      elFeedback.className = 'feedback ok';
+      remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
+    }else{
+      elFeedback.innerHTML =
+        'Errou. ❌<br><span style="font-weight:400">Estrutura correta: ' + correctStr + '</span>';
+      elFeedback.className = 'feedback err';
+      resetQuestionTimer();
+    }
+
+    updateProgress();
+    showValidate(false);
+    showNext(true);
+  }
+
+  // ==========================
+  //  FINALIZAÇÃO DE SESSÃO
+  // ==========================
+  function endSession(){
+    resetQuestionTimer();
+    updateSessionStats();
+
+    elEndMode.textContent = (currentMode === 'toBe'
+      ? 'Verbo To Be'
+      : currentMode === 'structure'
+        ? 'Estrutura das Frases'
+        : 'Identificar Tempo Verbal'
+    );
+
+    if(timeRecords.length){
+      const totalStr = formatSeconds(totalTimeMs);
+      const avgStr = formatSeconds(totalTimeMs / timeRecords.length);
+      elTimeSummary.textContent = 'Tempo total: ' + totalStr + ' • Tempo médio por acerto: ' + avgStr;
+    }else{
+      elTimeSummary.textContent = '';
+    }
+
+    // progresso final
+    const progressStr = correctCount + '/' + totalQuestions;
+    const totalTimeSec = totalTimeMs / 1000 || 1;
+    const speed = totalQuestions > 0 ? (totalQuestions / totalTimeSec) : 0;
+    const speedStr = speed.toFixed(2).replace('.',',');
+
+    const modeLabel = (currentMode === 'toBe'
+      ? 'Verbo To Be'
+      : currentMode === 'structure'
+        ? 'Estrutura das Frases'
+        : 'Identificar Tempo Verbal'
+    );
+
+    elSessionSummary.textContent =
+      'Sessão: ' + sessionId +
+      ' • Modo: ' + modeLabel +
+      ' • Progresso: ' + progressStr +
+      ' • Velocidade: ' + speedStr + ' questões/s';
+
+    // salvar no top
+    const record = {
+      sessionId: sessionId,
+      mode: currentMode,
+      modeLabel: modeLabel,
+      correct: correctCount,
+      total: totalQuestions,
+      totalTimeMs: totalTimeMs,
+      speed: speed,
+      timestamp: Date.now()
+    };
+    addSessionRecord(record);
+    updateTopVelocidade();
+
+    showValidate(false);
+    showNext(false);
+    elEnd.classList.remove('hidden');
+  }
+
+  // ==========================
+  //  INICIALIZAÇÃO DE UM TREINO
+  // ==========================
+  function startTraining(mode, options){
+    // guardar para "reiniciar"
+    lastModeForRestart = mode;
+    lastOptionsForRestart = options || null;
+
+    currentMode = mode;
+    currentModeOptions = options || {};
+
+    elHome.classList.add('hidden');
+    elGame.classList.remove('hidden');
+    elEnd.classList.add('hidden');
+    elFeedback.textContent = '';
+    elFeedback.className = 'feedback';
+    if(structureBuilderEl){
+      structureBuilderEl.classList.add('hidden');
+    }
+    structureAnswerTokensCurrent = [];
+    structureBankTokensCurrent = [];
+
+    // estado de contagem
+    correctCount = 0;
+    attempts = 0;
+    resetTimeStats();
+
+    // gerar perguntas
+    if(mode === 'toBe'){
+      questions = buildToBeQuestions();
+    }else if(mode === 'structure'){
+      questions = buildStructureQuestions();
+      // anexa mapa de usados dentro de questions para reuso
+      questions._usedMapStructure = questions._usedMap || questions._usedMapStructure;
+    }else if(mode === 'tenseIdentify'){
+      questions = buildTenseIdentifyQuestions();
+    }else{
+      questions = [];
+    }
+
+    remainingIndexes = questions.map((_,idx)=>idx);
+    totalQuestions = remainingIndexes.length;
+    updateProgress();
+
+    showChoices(false);
+    showTextInput(false);
+    showHelper('');
+    showValidate(true);
+    showNext(false);
+
+    loadQuestion();
+  }
+
+  // ==========================
+  //  CONTROLE DE MODO DA TELA INICIAL
+  // ==========================
+  function setHomeMode(mode){
+    modeButtons.forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    if(mode === 'toBe'){
+      modeToBeOptions.classList.remove('hidden');
+      modeStructureOptions.classList.add('hidden');
+      modeTenseOptions.classList.add('hidden');
+    }else if(mode === 'structure'){
+      modeToBeOptions.classList.add('hidden');
+      modeStructureOptions.classList.remove('hidden');
+      modeTenseOptions.classList.add('hidden');
+    }else{
+      modeToBeOptions.classList.add('hidden');
+      modeStructureOptions.classList.add('hidden');
+      modeTenseOptions.classList.remove('hidden');
+    }
+  }
+
+  // ==========================
+  //  EVENTOS
+  // ==========================
+  modeButtons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const mode = btn.dataset.mode;
+      setHomeMode(mode);
+    });
+  });
+
+  startToBeBtn.addEventListener('click', ()=> startTraining('toBe') );
+  startStructureBtn.addEventListener('click', ()=>{
+    const opt = { structureMode: structurePracticeMode };
+    startTraining('structure', opt);
+  });
+  startTenseIdentifyBtn.addEventListener('click', ()=> startTraining('tenseIdentify') );
+
+  structureModeRadios.forEach(radio=>{
+    radio.addEventListener('change',()=>{
+      if(radio.checked){
+        structurePracticeMode = radio.value;
+      }
+    });
+  });
+
+  btnCheck.addEventListener('click', checkCurrent);
+  btnCheckFloating.addEventListener('click', checkCurrent);
+
+  btnNext.addEventListener('click', ()=>{
+    showNext(false);
+    showValidate(true);
+    loadQuestion();
+  });
+
+  // enter no input de texto
+  textAnswerInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      if(!btnCheck.classList.contains('hidden')){
+        checkCurrent();
+      }
+    }
+  });
+
+  btnSwitch.addEventListener('click', ()=>{
+    resetQuestionTimer();
+    elGame.classList.add('hidden');
+    elHome.classList.remove('hidden');
+    showValidate(false);
+    showNext(false);
+    if(structureBuilderEl){
+      structureBuilderEl.classList.add('hidden');
+    }
+    structureAnswerTokensCurrent = [];
+    structureBankTokensCurrent = [];
+  });
+
+  btnRestart.addEventListener('click', ()=>{
+    if(lastModeForRestart){
+      startTraining(lastModeForRestart, lastOptionsForRestart);
+    }
+  });
+
+  btnHome.addEventListener('click', ()=>{
+    resetQuestionTimer();
+    elGame.classList.add('hidden');
+    elHome.classList.remove('hidden');
+    showValidate(false);
+    showNext(false);
+    if(structureBuilderEl){
+      structureBuilderEl.classList.add('hidden');
+    }
+    structureAnswerTokensCurrent = [];
+    structureBankTokensCurrent = [];
+  });
+
+  // ==========================
+  //  INICIALIZAÇÃO GERAL
+  // ==========================
+  updateTopVelocidade();
+  setHomeMode('toBe');
+})();
+</script>
+</body>
+</html>
