@@ -126,7 +126,7 @@
 
       <!-- Top de Velocidade -->
       <div id="topVelocidadeContainer" class="top-velocidade">
-        <div class="top-velocidade-title">🏃 Top de Velocidade</div>
+        <div class="top-velocidade-title">Top de Velocidade (sessoes recentes)</div>
         <div id="topList">
           <div style="color:#991b1b;font-size:.9rem;text-align:center;padding:8px">Faça uma tabuada para ver seu top!</div>
         </div>
@@ -289,38 +289,48 @@
   let hits = 0;                // acertos
   let current = null;          // objeto com {a, b, result} para pitagórica ou número para clássica
   let lastMultiplier = null;   // para evitar repetir imediatamente após erro
+  let lastQuestionKey = null;  // evita repetir a mesma pergunta quando há mais opções
   let feedbackTimer = null;    // controla o tempo de exibição do feedback positivo
   let questionStart = null;    // millis de quando a pergunta atual começou
   let questionInterval = null; // atualiza o mostrador de tempo
   let totalTimeMs = 0;         // tempo total gasto nos acertos
   let timeRecords = [];        // tempos individuais por acerto
-  let sessionRecords = {};     // { base: [{time, speed, date, timestamp}] }
   let currentBestTime = null;  // melhor tempo da sessão atual
-  let streakCount = 0;         // quantas vezes o melhor tempo foi batido
   let currentStreak = 0;       // streak atual (quantas vezes bateu o record)
+  let maxStreak = 0;           // maior streak batido na sessão
+  let sessionId = null;        // identificador da sessão do usuário
+  let totalQuestions = 0;      // quantidade total de perguntas da sessão
+  const PROGRESS_TARGET = 24;  // limite padrão de perguntas
+  const STORAGE_KEY_SESSIONS = 'multiplicationTableSessions_v1';
 
   // ===== LocalStorage =====
+  function createSessionId(){
+    const rand = Math.floor(100 + Math.random() * 900);
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mon = String(now.getMonth() + 1).padStart(2, '0');
+    return `${rand}#${hh}h${mm}_${dd}/${mon}`;
+  }
   function loadRecords(){
-    const stored = localStorage.getItem('multiplicationRecords');
-    sessionRecords = stored ? JSON.parse(stored) : {};
+    const raw = localStorage.getItem(STORAGE_KEY_SESSIONS);
+    if(!raw) return [];
+    try{
+      const data = JSON.parse(raw);
+      return Array.isArray(data) ? data : [];
+    }catch(_){
+      return [];
+    }
   }
-  function saveRecords(){
-    localStorage.setItem('multiplicationRecords', JSON.stringify(sessionRecords));
+  function saveRecords(list){
+    localStorage.setItem(STORAGE_KEY_SESSIONS, JSON.stringify(list.slice(0, 20)));
   }
-  function addRecord(base, timeMs){
-    const key = String(base);
-    if(!sessionRecords[key]) sessionRecords[key] = [];
-    const speed = (10 / (timeMs / 1000)).toFixed(2); // questões por segundo
-    sessionRecords[key].unshift({
-      time: formatSeconds(timeMs),
-      speed: speed,
-      date: new Date().toLocaleDateString('pt-BR'),
-      timestamp: Date.now(),
-      ms: timeMs
-    });
-    // Mantém apenas os últimos 50 registros
-    if(sessionRecords[key].length > 50) sessionRecords[key].pop();
-    saveRecords();
+  function addRecord(record){
+    const list = loadRecords();
+    list.unshift(record);
+    if(list.length > 20) list.length = 20;
+    saveRecords(list);
   }
 
   // ===== Helpers =====
@@ -344,7 +354,18 @@
     try{ elAns.focus({preventScroll:true}); elAns.select(); }
     catch(_){ elAns.focus(); }
   }
-  function updateScore(){ lblScore.textContent = hits + '/' + attempts; }
+  function questionKey(q){
+    if(q && typeof q === 'object' && 'a' in q && 'b' in q){
+      return `${q.a}x${q.b}`;
+    }
+    return String(q);
+  }
+  function clearFeedback(){
+    if(feedbackTimer){ clearTimeout(feedbackTimer); feedbackTimer = null; }
+    elFeedback.textContent = '';
+    elFeedback.className = 'feedback';
+  }
+  function updateScore(){ lblScore.textContent = attempts + '/' + totalQuestions; }
   function formatSeconds(ms){
     const seconds = ms / 1000;
     if(seconds >= 60){
@@ -367,25 +388,28 @@
     const elapsed = performance.now() - questionStart; totalTimeMs += elapsed; timeRecords.push(elapsed);
     clearQuestionTimer(); questionStart = null; updateTimerDisplay(elapsed); return elapsed;
   }
-  function resetTimeStats(){ totalTimeMs = 0; timeRecords = []; resetQuestionTimer(); if(elTimeSummary){ elTimeSummary.textContent = ''; } }
+  function removeOneFromRemaining(item){
+    const key = questionKey(item);
+    const idx = remaining.findIndex(q => questionKey(q) === key);
+    if(idx >= 0){ remaining.splice(idx,1); }
+  }
+  function resetTimeStats(){
+    totalTimeMs = 0; timeRecords = [];
+    resetQuestionTimer();
+    if(elTimeSummary){ elTimeSummary.textContent = ''; }
+    bestTimeDisplay.textContent = '-';
+    avgTimeDisplay.textContent = '-';
+    streakDisplay.textContent = '-';
+  }
   function updateSessionStats(){
     if(!timeRecords.length) return;
     const bestTime = Math.min(...timeRecords);
     const avgTime = timeRecords.reduce((a,b)=>a+b,0) / timeRecords.length;
-    
-    if(currentBestTime === null || bestTime < currentBestTime){
-      currentBestTime = bestTime;
-      currentStreak = 1;
-    } else if(Math.abs(bestTime - currentBestTime) < 50){
-      currentStreak++;
-    } else {
-      currentStreak = 0;
-    }
-    
+
     bestTimeDisplay.textContent = formatSeconds(bestTime);
     avgTimeDisplay.textContent = formatSeconds(avgTime);
-    if(currentStreak > 1){
-      streakDisplay.textContent = `${currentStreak}x 🔥`;
+    if(currentStreak >= 2){
+      streakDisplay.textContent = `${currentStreak}x`;
     } else {
       streakDisplay.textContent = '-';
     }
@@ -397,32 +421,58 @@
   }
   function updateTopVelocidade(){
     if(!topList) return;
-    const html = [];
+    const sessions = loadRecords();
+    if(!sessions.length){
+      topList.innerHTML = '<div style="color:#991b1b;font-size:.9rem;text-align:center;padding:8px">Faça uma tabuada para ver seu top!</div>';
+      return;
+    }
+
+    const target = PROGRESS_TARGET;
+    const sorted = [...sessions].sort((a,b)=>{
+      const correctA = typeof a.correct === 'number' ? a.correct : 0;
+      const correctB = typeof b.correct === 'number' ? b.correct : 0;
+      const ratioA = target > 0 ? Math.min(correctA, target) / target : 0;
+      const ratioB = target > 0 ? Math.min(correctB, target) / target : 0;
+      if(ratioA !== ratioB) return ratioB - ratioA;
+
+      const streakA = typeof a.maxStreak === 'number' ? a.maxStreak : 0;
+      const streakB = typeof b.maxStreak === 'number' ? b.maxStreak : 0;
+      if(streakA !== streakB) return streakB - streakA;
+
+      const timeA = typeof a.totalTimeMs === 'number' ? a.totalTimeMs : Number.MAX_SAFE_INTEGER;
+      const timeB = typeof b.totalTimeMs === 'number' ? b.totalTimeMs : Number.MAX_SAFE_INTEGER;
+      if(timeA !== timeB) return timeA - timeB;
+
+      const tsA = typeof a.timestamp === 'number' ? a.timestamp : 0;
+      const tsB = typeof b.timestamp === 'number' ? b.timestamp : 0;
+      return tsB - tsA;
+    });
+
+    const top = sorted.slice(0, 5);
     let rank = 1;
-    for(const baseKey in sessionRecords){
-      const records = sessionRecords[baseKey];
-      if(records.length === 0) continue;
-      const bestRecord = records[0]; // primeiro é o mais recente
-      const allTimes = records.map(r=>r.ms).sort((a,b)=>a-b);
-      const bestTime = allTimes[0];
-      const recordCount = records.filter(r=>r.ms <= bestTime + 50).length;
-      const streakText = recordCount > 1 ? `<span class="top-streak">x${recordCount}</span>` : '';
-      html.push(`
+    topList.innerHTML = top.map(rec=>{
+      const modeLabel = rec.modeLabel || rec.mode || 'Sessão';
+      const totalQ = rec.total || target;
+      const attemptsUsed = typeof rec.attempts === 'number' ? rec.attempts : 0;
+      const progress = `${attemptsUsed}/${totalQ || '?'}`;
+      const speed = typeof rec.speed === 'number' ? rec.speed : 0;
+      const speedStr = speed ? speed.toFixed(2).replace('.', ',') : '0,00';
+      const timeStr = formatSeconds(rec.totalTimeMs || 0);
+      const streakLine = rec.maxStreak && rec.maxStreak >= 1
+        ? `<span class="top-streak">Streak máx.: ${rec.maxStreak}x</span>`
+        : `<span class="top-streak">Streak máx.: -</span>`;
+
+      return `
         <div class="top-item">
-          <span><span class="top-rank">#${rank}</span> Tabuada do ${baseKey}</span>
-          <div style="display:flex;gap:8px;align-items:center">
-            <span class="top-time">${bestRecord.time}</span>
-            ${streakText}
+          <span><span class="top-rank">#${rank++}</span> ${modeLabel} -> <strong>${rec.sessionId || '???'}</strong></span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;font-size:.8rem">
+            <span class="top-time">Vel.: ${speedStr} q/s</span>
+            <span style="color:#7f1d1d">Prog.: ${progress} • ${timeStr}</span>
+            ${streakLine}
           </div>
         </div>
-      `);
-      rank++;
-    }
-    if(html.length === 0){
-      topList.innerHTML = '<div style="color:#991b1b;font-size:.9rem;text-align:center;padding:8px">Faça uma tabuada para ver seu top!</div>';
-    } else {
-      topList.innerHTML = html.join('');
-    }
+      `;
+    }).join('');
   }
 
   function showValidate(show){
@@ -446,41 +496,59 @@
 
   function startTable(n){
     isPitagorica = false;
+    sessionId = createSessionId();
     base = n; lblBase.textContent = base; elEndBase.textContent = base;
-    remaining = Array.from({length:10}, (_,i)=>i+1); // 1..10
-    attempts = 0; hits = 0; updateScore(); elFeedback.textContent=''; elFeedback.className='feedback';
+    const baseSet = Array.from({length:10}, (_,i)=>i+1); // 1..10
+    const pool = shuffle(baseSet);
+    while(pool.length < PROGRESS_TARGET){ pool.push(choice(baseSet)); }
+    remaining = pool.slice(0, PROGRESS_TARGET);
+    totalQuestions = PROGRESS_TARGET;
+    lastQuestionKey = null; lastMultiplier = null;
+    attempts = 0; hits = 0; updateScore(); clearFeedback();
     elHome.classList.add('hidden'); elGame.classList.remove('hidden'); elEnd.classList.add('hidden');
     showValidate(true); showNext(false);
-    currentBestTime = null; currentStreak = 0; resetTimeStats();
+    currentBestTime = null; currentStreak = 0; maxStreak = 0; resetTimeStats();
     nextQuestion();
     focusAnswerTrusted();
   }
 
   function startPitagorica(){
     isPitagorica = true;
+    sessionId = createSessionId();
     lblBase.textContent = 'Pitagórica'; elEndBase.textContent = 'Pitagórica';
-    remaining = getPitagoricaQuestions();
+    let questions = getPitagoricaQuestions();
+    if(!questions.length){ questions = pitagoricaMultiplications.slice(0, PROGRESS_TARGET); }
+    if(questions.length > PROGRESS_TARGET){ questions = questions.slice(0, PROGRESS_TARGET); }
+    while(questions.length < PROGRESS_TARGET){ questions.push(choice(questions)); }
+    remaining = questions;
+    totalQuestions = PROGRESS_TARGET;
+    lastQuestionKey = null; lastMultiplier = null;
     base = 'pitagorica';
-    attempts = 0; hits = 0; updateScore(); elFeedback.textContent=''; elFeedback.className='feedback';
+    attempts = 0; hits = 0; updateScore(); clearFeedback();
     elHome.classList.add('hidden'); elGame.classList.remove('hidden'); elEnd.classList.add('hidden');
     showValidate(true); showNext(false);
-    currentBestTime = null; currentStreak = 0; resetTimeStats();
+    currentBestTime = null; currentStreak = 0; maxStreak = 0; resetTimeStats();
     nextQuestion();
     focusAnswerTrusted();
   }
 
   function nextQuestion(){
+    clearFeedback();
     if(remaining.length===0){
       resetQuestionTimer(); updateEndSummary(); updateSessionStats(); showValidate(false); showNext(false);
       elEnd.classList.remove('hidden');
       return;
     }
+    let pool = remaining.slice();
+    if(pool.length > 1 && lastQuestionKey){
+      const filtered = pool.filter(item => questionKey(item) !== lastQuestionKey);
+      if(filtered.length){ pool = filtered; }
+    }
+    current = choice(pool);
+    lastQuestionKey = questionKey(current);
     if(isPitagorica){
-      current = choice(remaining);
       elQ.textContent = `${current.a} × ${current.b} = ?`;
     } else {
-      const pool = remaining.length>1 && lastMultiplier ? remaining.filter(m=>m!==lastMultiplier) : remaining.slice();
-      current = choice(pool);
       lastMultiplier = current;
       elQ.textContent = `${base} × ${current} = ?`;
     }
@@ -515,7 +583,9 @@
     
     if(val===correct){
       hits++;
-      remaining = remaining.filter(m=> isPitagorica ? m !== current : m !== current);
+      removeOneFromRemaining(current);
+      currentStreak++;
+      if(currentStreak > maxStreak){ maxStreak = currentStreak; }
       elFeedback.textContent = 'Acertou!';
       elFeedback.className = 'feedback ok';
       updateScore();
@@ -530,7 +600,20 @@
         setTimeout(()=>{ 
           updateEndSummary(); 
           if(typeof base === 'string') base = 'pitagorica';
-          addRecord(base, totalTimeMs);
+          const totalQ = totalQuestions || hits || attempts || 0;
+          const record = {
+            sessionId: sessionId || createSessionId(),
+            mode: isPitagorica ? 'pitagorica' : 'classic',
+            modeLabel: isPitagorica ? 'Tabela Pitagórica' : `Tabuada do ${base}`,
+            total: totalQ,
+            correct: hits,
+            attempts: attempts,
+            totalTimeMs: totalTimeMs,
+            speed: totalTimeMs > 0 ? hits / (totalTimeMs / 1000) : 0,
+            timestamp: Date.now(),
+            maxStreak: maxStreak
+          };
+          addRecord(record);
           updateTopVelocidade();
           elEnd.classList.remove('hidden'); 
         }, 400);
@@ -541,10 +624,12 @@
         showNext(true);
       }
     }else{
+      currentStreak = 0;
       elFeedback.textContent = `Errou! (${isPitagorica ? `${current.a} × ${current.b}` : `${base} × ${current}`} = ${correct})`;
       elFeedback.className = 'feedback err';
       updateScore();
       resetQuestionTimer();
+      streakDisplay.textContent = '-';
       showValidate(false);
       showNext(true);
     }
@@ -600,7 +685,6 @@
   });
 
   // Inicialização
-  loadRecords();
   updateTopVelocidade();
 })();
 </script>

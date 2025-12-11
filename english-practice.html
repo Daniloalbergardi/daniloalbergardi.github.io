@@ -46,7 +46,7 @@
   .top-item:last-child{border-bottom:none}
   .top-rank{font-weight:700;color:#dc2626;min-width:24px}
   .top-time{color:#7f1d1d;font-weight:600}
-  .top-streak{background:#fcd34d;color:#78350f;padding:2px 6px;border-radius:4px;font-size:.75rem;font-weight:600}
+  .top-streak{background:#fcd34d;color:#78350f;padding:2px 6px;border-radius:4px;font-size:.75rem;font-weight:600;display:inline-block;margin-top:2px}
 
   .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
   .stat-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:140px}
@@ -75,6 +75,15 @@
   .btn-inline{padding:8px 10px;font-size:.9rem}
   .btn-choice{width:100%;justify-content:center;display:inline-flex;align-items:center;text-align:center;white-space:normal}
   .btn-choice.selected{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}
+  /* Cores por contexto de tempo verbal (Identificar Tempo Verbal) */
+  .tense-sp{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a;}              /* Simple Present - azul pastel */
+  .tense-pc{background:#f5f3ff;border-color:#e9d5ff;color:#5b21b6;}              /* Present Continuous - roxo claro */
+  .tense-pp{background:#ecfeff;border-color:#a5f3fc;color:#155e75;}              /* Present Perfect - azul/teal suave */
+  .tense-past{background:#fefce8;border-color:#facc15;color:#854d0e;}            /* Simple Past - amarelo pastel */
+  .tense-past-cont{background:#fef2f2;border-color:#fecaca;color:#7f1d1d;}       /* Past Continuous - vermelho bem suave */
+  .tense-future{background:#ecfdf5;border-color:#bbf7d0;color:#166534;}          /* Simple Future - verde pastel */
+  .tense-future-cont{background:#f5f5ff;border-color:#ddd6fe;color:#3730a3;}     /* Future Continuous - lavanda suave */
+  .tense-modal{background:#fdf2ff;border-color:#f5d0fe;color:#a21caf;}           /* Modal Verb - rosa/lilás pastel */
 
   .stat{
     display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:8px 0 12px 0;
@@ -183,7 +192,7 @@
         <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
         <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
         <a href="relax-and-breathe.html">Relax & Breathe</a>
-        <a href="#" aria-current="page">Inglês</a>
+        <a href="#" aria-current="page">Praticar Inglês</a>
       </nav>
     </header>
 
@@ -217,7 +226,30 @@
           Você escolhe a forma correta do verbo <em>to be</em>. As opções são de múltipla escolha e,
           se você errar, a mesma combinação volta embaralhada depois.
         </p>
-        <button id="startToBe" class="btn btn-primary btn-lg">Começar treino de Verbo To Be</button>
+
+        <div style="margin-top:8px;margin-bottom:4px;font-weight:600">Pronomes:</div>
+        <label>
+          <input type="radio" name="toBePronounMode" value="individual" checked>
+          Usar pronomes individuais (I, You, He, She, It, We, You (plural), They)
+        </label>
+        <label>
+          <input type="radio" name="toBePronounMode" value="grouped">
+          Agrupar: <strong>He / She / It</strong> e <strong>We / You / They</strong>
+        </label>
+
+        <div style="margin-top:10px;margin-bottom:4px;font-weight:600">Opções de resposta:</div>
+        <label>
+          <input type="radio" name="toBeOptionMode" value="byPronoun" checked>
+          Somente variações do pronome (ex.: You → <strong>are / were / will</strong>)
+        </label>
+        <label>
+          <input type="radio" name="toBeOptionMode" value="all">
+          Exibir todas as formas (<strong>am / is / are / was / were / will</strong>)
+        </label>
+
+        <button id="startToBe" class="btn btn-primary btn-lg" style="margin-top:10px">
+          Começar treino de Verbo To Be
+        </button>
       </div>
 
       <!-- Estrutura das frases -->
@@ -300,8 +332,8 @@
       </div>
 
       <div class="center" style="padding:6px 0 2px 0">
-        <div id="question" class="question">–</div>
         <div id="questionHelper" class="helper-box hidden"></div>
+        <div id="question" class="question">–</div>
 
         <!-- Opções de múltipla escolha -->
         <div id="choicesContainer" class="grid grid-choices hidden" style="margin-top:14px;width:100%"></div>
@@ -483,8 +515,8 @@
   const structureBankEl = document.getElementById('structureBank');
 
   const btnCheck = document.getElementById('btnCheck');
-  const btnNext = document.getElementById('btnNext');
   const btnCheckFloating = document.getElementById('btnCheckFloating');
+  const btnNext = document.getElementById('btnNext');
   const floatingWrapper = document.getElementById('floatingCheckWrapper');
 
   const btnSwitch = document.getElementById('btnSwitch');
@@ -502,14 +534,18 @@
   const questionsPerStructureInput = document.getElementById('questionsPerStructure');
   const structureModeRadios = document.querySelectorAll('input[name="structureMode"]');
 
+  const toBePronounRadios = document.querySelectorAll('input[name="toBePronounMode"]');
+  const toBeOptionRadios = document.querySelectorAll('input[name="toBeOptionMode"]');
+
   // ==========================
   //  ESTADO GLOBAL
   // ==========================
   let currentMode = 'toBe'; // 'toBe', 'structure', 'tenseIdentify'
   let currentModeOptions = null;
-  let questions = [];       // array de objetos de pergunta
+  let questions = [];        // array de objetos de pergunta
   let remainingIndexes = []; // índices que ainda precisam ser acertados
   let currentIndex = null;
+  let lastQuestionIndex = null;
   let selectedChoiceValue = null; // para múltipla escolha
 
   let totalQuestions = 0;
@@ -522,7 +558,10 @@
   let totalTimeMs = 0;
   let timeRecords = [];
   let currentBestTime = null;
+
+  // streaks
   let currentStreak = 0;
+  let maxStreak = 0;
 
   // sessão (para top de velocidade)
   let sessionId = null;
@@ -534,6 +573,10 @@
   let structurePracticeMode = 'translate';
   let structureAnswerTokensCurrent = [];
   let structureBankTokensCurrent = [];
+
+  // configurações Verbo To Be
+  let toBePronounMode = 'individual';  // 'individual' | 'grouped'
+  let toBeOptionMode = 'byPronoun';    // 'byPronoun' | 'all'
 
   // ==========================
   //  GERAÇÃO DO SESSION ID
@@ -589,6 +632,7 @@
     timeRecords = [];
     currentBestTime = null;
     currentStreak = 0;
+    maxStreak = 0;
     resetQuestionTimer();
     bestTimeDisplay.textContent = '-';
     avgTimeDisplay.textContent = '-';
@@ -596,22 +640,24 @@
     elTimeSummary.textContent = '';
   }
   function updateSessionStats(){
-    if(!timeRecords.length) return;
-    const bestTime = Math.min(...timeRecords);
-    const avgTime = timeRecords.reduce((a,b)=>a+b,0) / timeRecords.length;
+    // Atualiza melhor tempo / média e streak visual
+    if(timeRecords.length){
+      const bestTime = Math.min(...timeRecords);
+      const avgTime = timeRecords.reduce((a,b)=>a+b,0) / timeRecords.length;
 
-    if(currentBestTime === null || bestTime < currentBestTime){
-      currentBestTime = bestTime;
-      currentStreak = 1;
-    }else if(Math.abs(bestTime - currentBestTime) < 50){
-      currentStreak++;
-    }else{
-      currentStreak = 0;
+      if(currentBestTime === null || bestTime < currentBestTime){
+        currentBestTime = bestTime;
+      }
+
+      bestTimeDisplay.textContent = formatSeconds(currentBestTime);
+      avgTimeDisplay.textContent = formatSeconds(avgTime);
     }
 
-    bestTimeDisplay.textContent = formatSeconds(bestTime);
-    avgTimeDisplay.textContent = formatSeconds(avgTime);
-    streakDisplay.textContent = currentStreak > 1 ? (currentStreak + 'x 🔥') : '-';
+    if(currentStreak >= 2){
+      streakDisplay.textContent = currentStreak + 'x 🔥';
+    }else{
+      streakDisplay.textContent = '-';
+    }
   }
 
   // ==========================
@@ -646,25 +692,55 @@
       return;
     }
 
-    // ordenar por velocidade (desc) e mais recente em caso de empate
+    // Ordenação:
+    // 1) Resultado mais próximo de total/total (maior razão acertos/total)
+    // 2) Maior streak máximo
+    // 3) Menor tempo total (mais rápido)
+    // 4) Mais recente
     const sorted = [...list].sort((a,b)=>{
-      if(b.speed === a.speed) return b.timestamp - a.timestamp;
-      return b.speed - a.speed;
+      const totalA = a.total || 0;
+      const totalB = b.total || 0;
+      const correctA = (typeof a.correct === 'number') ? a.correct : 0;
+      const correctB = (typeof b.correct === 'number') ? b.correct : 0;
+
+      const ratioA = totalA > 0 ? correctA / totalA : 0;
+      const ratioB = totalB > 0 ? correctB / totalB : 0;
+      if(ratioA !== ratioB) return ratioB - ratioA;
+
+      const streakMaxA = (typeof a.maxStreak === 'number') ? a.maxStreak : 0;
+      const streakMaxB = (typeof b.maxStreak === 'number') ? b.maxStreak : 0;
+      if(streakMaxA !== streakMaxB) return streakMaxB - streakMaxA;
+
+      const timeA = (typeof a.totalTimeMs === 'number') ? a.totalTimeMs : Number.MAX_SAFE_INTEGER;
+      const timeB = (typeof b.totalTimeMs === 'number') ? b.totalTimeMs : Number.MAX_SAFE_INTEGER;
+      if(timeA !== timeB) return timeA - timeB;
+
+      const tsA = (typeof a.timestamp === 'number') ? a.timestamp : 0;
+      const tsB = (typeof b.timestamp === 'number') ? b.timestamp : 0;
+      return tsB - tsA;
     });
 
     const top = sorted.slice(0,5);
     let rank = 1;
     const html = top.map(rec=>{
       const modeLabel = rec.modeLabel || rec.mode;
-      const progress = rec.correct + '/' + rec.total;
+      const totalQ = rec.total || 0;
+      const attemptsUsed = (typeof rec.attempts === 'number') ? rec.attempts : totalQ;
+      const progress = attemptsUsed + '/' + totalQ;
       const speedStr = rec.speed.toFixed(2).replace('.',',');
-      const timeStr = formatSeconds(rec.totalTimeMs);
+      const timeStr = formatSeconds(rec.totalTimeMs || 0);
+      const maxStreakValue = (typeof rec.maxStreak === 'number' ? rec.maxStreak : 0);
+      const streakLine = maxStreakValue >= 2
+        ? `<span class="top-streak">Streak máx.: ${maxStreakValue}x</span>`
+        : `<span class="top-streak">Streak máx.: -</span>`;
+
       return `
         <div class="top-item">
           <span><span class="top-rank">#${rank++}</span> ${modeLabel} – <strong>${rec.sessionId}</strong></span>
           <div style="display:flex;flex-direction:column;align-items:flex-end;font-size:.8rem">
             <span class="top-time">Vel.: ${speedStr} q/s</span>
             <span style="color:#7f1d1d">Prog.: ${progress} • ${timeStr}</span>
+            ${streakLine}
           </div>
         </div>
       `;
@@ -717,7 +793,8 @@
   }
 
   function updateProgress(){
-    lblProgress.textContent = correctCount + '/' + totalQuestions;
+    // Numerador = tentativas (acertos + erros); denominador = total de perguntas do treino.
+    lblProgress.textContent = attempts + '/' + totalQuestions;
   }
 
   // ==========================
@@ -733,11 +810,20 @@
     { id:'you_pl', label:'You (plural)', forms:{present:'are',past:'were',future:'will'} },
     { id:'they', label:'They', forms:{present:'are',past:'were',future:'will'} }
   ];
+
+  const TO_BE_PRONOUN_GROUPS = [
+    { id:'i', label:'I', forms:{present:'am',past:'was',future:'will'} },
+    { id:'hsi', label:'He / She / It', forms:{present:'is',past:'was',future:'will'} },
+    { id:'wyt', label:'We / You / They', forms:{present:'are',past:'were',future:'will'} }
+  ];
+
   const TO_BE_TENSES = [
     { id:'present', label:'Present' },
     { id:'past', label:'Past' },
     { id:'future', label:'Future' }
   ];
+
+  // função antiga mantida (não usada mais, para não mexer onde não precisa)
   function getToBeOptions(tenseId){
     if(tenseId === 'present'){
       return shuffle(['am','are','is']);
@@ -745,15 +831,27 @@
     if(tenseId === 'past'){
       return shuffle(['was','were']);
     }
-    // future – sempre conter 'will', com alguns distratores
-    const base = ['will','am','are','is','was','were'];
+    const base = ['will','am','are','is'];
     return shuffle(base);
+  }
+
+  // NOVO: opções para cada pergunta respeitando configurações
+  function getToBeOptionsForQuestion(pronoun, tenseId){
+    // Modo "todas as opções": sempre as 6 formas
+    if(toBeOptionMode === 'all'){
+      return shuffle(['am','is','are','was','were','will']);
+    }
+
+    // Modo "somente variações do pronome":
+    const f = pronoun.forms || {};
+    const opts = Array.from(new Set([f.present, f.past, f.future].filter(Boolean)));
+    return shuffle(opts);
   }
 
   // ==========================
   //  DADOS – ESTRUTURA DAS FRASES
   // ==========================
-  const STRUCTURES = [
+  const STRUCTURE_TENSES = [
     {
       tenseId:'simplePresent',
       tenseLabel:'Simple Present',
@@ -761,37 +859,37 @@
         {
           polarity:'positive',
           label:'Positive',
-          grammar:'subject + verb (base form) + complement',
+          grammar:'subject + verb (+s) + complement',
           examples:[
-            {pt:'Eu trabalho aqui.', en:'I work here.'},
-            {pt:'Ela lê livros todos os dias.', en:'She reads books every day.'},
-            {pt:'Eles jogam futebol aos sábados.', en:'They play soccer on Saturdays.'},
+            {pt:'Eu trabalho aqui todos os dias.', en:'I work here every day.'},
+            {pt:'Ela estuda inglês à noite.', en:'She studies English at night.'},
+            {pt:'Eles jogam futebol aos domingos.', en:'They play soccer on Sundays.'},
             {pt:'Nós moramos em São Paulo.', en:'We live in São Paulo.'},
-            {pt:'Ele estuda inglês de manhã.', en:'He studies English in the morning.'}
+            {pt:'Ele gosta de café.', en:'He likes coffee.'}
           ]
         },
         {
           polarity:'negative',
           label:'Negative',
-          grammar:'subject + auxiliary (do/does) + not + verb (base form) + complement',
+          grammar:'subject + do/does not + verb (base form) + complement',
           examples:[
-            {pt:'Eu não trabalho aqui.', en:'I do not work here.'},
-            {pt:'Ela não lê livros à noite.', en:'She does not read books at night.'},
-            {pt:'Eles não jogam futebol no domingo.', en:'They do not play soccer on Sunday.'},
-            {pt:'Nós não moramos perto daqui.', en:'We do not live near here.'},
-            {pt:'Ele não estuda inglês à noite.', en:'He does not study English at night.'}
+            {pt:'Eu não trabalho aqui todos os dias.', en:'I do not work here every day.'},
+            {pt:'Ela não estuda inglês à noite.', en:'She does not study English at night.'},
+            {pt:'Eles não jogam futebol aos domingos.', en:'They do not play soccer on Sundays.'},
+            {pt:'Nós não moramos em São Paulo.', en:'We do not live in São Paulo.'},
+            {pt:'Ele não gosta de café.', en:'He does not like coffee.'}
           ]
         },
         {
           polarity:'interrogative',
           label:'Interrogative',
-          grammar:'auxiliary (do/does) + subject + verb (base form) + complement',
+          grammar:'do/does + subject + verb (base form) + complement',
           examples:[
-            {pt:'Você trabalha aqui?', en:'Do you work here?'},
-            {pt:'Ela lê livros todos os dias?', en:'Does she read books every day?'},
-            {pt:'Eles jogam futebol aos sábados?', en:'Do they play soccer on Saturdays?'},
+            {pt:'Você trabalha aqui todos os dias?', en:'Do you work here every day?'},
+            {pt:'Ela estuda inglês à noite?', en:'Does she study English at night?'},
+            {pt:'Eles jogam futebol aos domingos?', en:'Do they play soccer on Sundays?'},
             {pt:'Nós moramos em São Paulo?', en:'Do we live in São Paulo?'},
-            {pt:'Ele estuda inglês de manhã?', en:'Does he study English in the morning?'}
+            {pt:'Ele gosta de café?', en:'Does he like coffee?'}
           ]
         }
       ]
@@ -805,11 +903,11 @@
           label:'Positive',
           grammar:'subject + to be (present) + verb (-ing) + complement',
           examples:[
-            {pt:'Eu estou trabalhando aqui agora.', en:'I am working here now.'},
-            {pt:'Ela está lendo um livro.', en:'She is reading a book.'},
+            {pt:'Eu estou trabalhando agora.', en:'I am working now.'},
+            {pt:'Ela está estudando inglês neste momento.', en:'She is studying English right now.'},
             {pt:'Eles estão jogando futebol no parque.', en:'They are playing soccer in the park.'},
-            {pt:'Nós estamos morando em São Paulo temporariamente.', en:'We are living in São Paulo temporarily.'},
-            {pt:'Ele está estudando inglês neste momento.', en:'He is studying English at the moment.'}
+            {pt:'Nós estamos morando aqui temporariamente.', en:'We are living here temporarily.'},
+            {pt:'Ele está assistindo TV na sala.', en:'He is watching TV in the living room.'}
           ]
         },
         {
@@ -817,11 +915,11 @@
           label:'Negative',
           grammar:'subject + to be (present) + not + verb (-ing) + complement',
           examples:[
-            {pt:'Eu não estou trabalhando aqui agora.', en:'I am not working here now.'},
-            {pt:'Ela não está lendo um livro.', en:'She is not reading a book.'},
+            {pt:'Eu não estou trabalhando agora.', en:'I am not working now.'},
+            {pt:'Ela não está estudando inglês neste momento.', en:'She is not studying English right now.'},
             {pt:'Eles não estão jogando futebol no parque.', en:'They are not playing soccer in the park.'},
-            {pt:'Nós não estamos morando em São Paulo.', en:'We are not living in São Paulo.'},
-            {pt:'Ele não está estudando inglês neste momento.', en:'He is not studying English at the moment.'}
+            {pt:'Nós não estamos morando aqui temporariamente.', en:'We are not living here temporarily.'},
+            {pt:'Ele não está assistindo TV na sala.', en:'He is not watching TV in the living room.'}
           ]
         },
         {
@@ -829,11 +927,11 @@
           label:'Interrogative',
           grammar:'to be (present) + subject + verb (-ing) + complement',
           examples:[
-            {pt:'Você está trabalhando aqui agora?', en:'Are you working here now?'},
-            {pt:'Ela está lendo um livro?', en:'Is she reading a book?'},
+            {pt:'Você está trabalhando agora?', en:'Are you working now?'},
+            {pt:'Ela está estudando inglês neste momento?', en:'Is she studying English right now?'},
             {pt:'Eles estão jogando futebol no parque?', en:'Are they playing soccer in the park?'},
-            {pt:'Nós estamos morando em São Paulo?', en:'Are we living in São Paulo?'},
-            {pt:'Ele está estudando inglês neste momento?', en:'Is he studying English at the moment?'}
+            {pt:'Nós estamos morando aqui temporariamente?', en:'Are we living here temporarily?'},
+            {pt:'Ele está assistindo TV na sala?', en:'Is he watching TV in the living room?'}
           ]
         }
       ]
@@ -850,14 +948,14 @@
             {pt:'Eu já visitei Londres.', en:'I have visited London.'},
             {pt:'Ela já leu este livro.', en:'She has read this book.'},
             {pt:'Eles já viram esse filme.', en:'They have seen that movie.'},
-            {pt:'Nós já moramos em três cidades diferentes.', en:'We have lived in three different cities.'},
+            {pt:'Nós já moramos em outra cidade.', en:'We have lived in another city.'},
             {pt:'Ele já estudou inglês antes.', en:'He has studied English before.'}
           ]
         },
         {
           polarity:'negative',
           label:'Negative',
-          grammar:'subject + have/has + not + past participle + complement',
+          grammar:'subject + have/has not + past participle + complement',
           examples:[
             {pt:'Eu ainda não visitei Londres.', en:'I have not visited London yet.'},
             {pt:'Ela ainda não leu este livro.', en:'She has not read this book yet.'},
@@ -1008,7 +1106,7 @@
     },
     {
       tenseId:'simpleFuture',
-      tenseLabel:'Simple Future (Will)',
+      tenseLabel:'Simple Future',
       patterns:[
         {
           polarity:'positive',
@@ -1016,10 +1114,10 @@
           grammar:'subject + will + verb (base form) + complement',
           examples:[
             {pt:'Eu trabalharei aqui amanhã.', en:'I will work here tomorrow.'},
-            {pt:'Ela viajará para Londres no próximo mês.', en:'She will travel to London next month.'},
-            {pt:'Eles jogarão futebol no sábado.', en:'They will play soccer on Saturday.'},
-            {pt:'Nós moraremos em São Paulo no próximo ano.', en:'We will live in São Paulo next year.'},
-            {pt:'Ele estudará inglês amanhã de manhã.', en:'He will study English tomorrow morning.'}
+            {pt:'Ela vai estudar inglês amanhã.', en:'She will study English tomorrow.'},
+            {pt:'Eles vão jogar futebol no sábado.', en:'They will play soccer on Saturday.'},
+            {pt:'Nós vamos morar em Londres no próximo ano.', en:'We will live in London next year.'},
+            {pt:'Ele vai estudar inglês no próximo semestre.', en:'He will study English next semester.'}
           ]
         },
         {
@@ -1028,10 +1126,10 @@
           grammar:'subject + will not + verb (base form) + complement',
           examples:[
             {pt:'Eu não trabalharei aqui amanhã.', en:'I will not work here tomorrow.'},
-            {pt:'Ela não viajará para Londres no próximo mês.', en:'She will not travel to London next month.'},
-            {pt:'Eles não jogarão futebol no sábado.', en:'They will not play soccer on Saturday.'},
-            {pt:'Nós não moraremos em São Paulo no próximo ano.', en:'We will not live in São Paulo next year.'},
-            {pt:'Ele não estudará inglês amanhã de manhã.', en:'He will not study English tomorrow morning.'}
+            {pt:'Ela não vai estudar inglês amanhã.', en:'She will not study English tomorrow.'},
+            {pt:'Eles não vão jogar futebol no sábado.', en:'They will not play soccer on Saturday.'},
+            {pt:'Nós não vamos morar em Londres no próximo ano.', en:'We will not live in London next year.'},
+            {pt:'Ele não vai estudar inglês no próximo semestre.', en:'He will not study English next semester.'}
           ]
         },
         {
@@ -1040,10 +1138,10 @@
           grammar:'will + subject + verb (base form) + complement',
           examples:[
             {pt:'Você trabalhará aqui amanhã?', en:'Will you work here tomorrow?'},
-            {pt:'Ela viajará para Londres no próximo mês?', en:'Will she travel to London next month?'},
-            {pt:'Eles jogarão futebol no sábado?', en:'Will they play soccer on Saturday?'},
-            {pt:'Nós moraremos em São Paulo no próximo ano?', en:'Will we live in São Paulo next year?'},
-            {pt:'Ele estudará inglês amanhã de manhã?', en:'Will he study English tomorrow morning?'}
+            {pt:'Ela vai estudar inglês amanhã?', en:'Will she study English tomorrow?'},
+            {pt:'Eles vão jogar futebol no sábado?', en:'Will they play soccer on Saturday?'},
+            {pt:'Nós vamos morar em Londres no próximo ano?', en:'Will we live in London next year?'},
+            {pt:'Ele vai estudar inglês no próximo semestre?', en:'Will he study English next semester?'}
           ]
         }
       ]
@@ -1058,10 +1156,10 @@
           grammar:'subject + will be + verb (-ing) + complement',
           examples:[
             {pt:'Eu estarei trabalhando aqui amanhã às 10h.', en:'I will be working here tomorrow at 10 a.m.'},
-            {pt:'Ela estará viajando para Londres na próxima semana.', en:'She will be traveling to London next week.'},
-            {pt:'Eles estarão jogando futebol no sábado à tarde.', en:'They will be playing soccer on Saturday afternoon.'},
-            {pt:'Nós estaremos morando em São Paulo no ano que vem.', en:'We will be living in São Paulo next year.'},
-            {pt:'Ele estará estudando inglês amanhã de manhã.', en:'He will be studying English tomorrow morning.'}
+            {pt:'Ela estará estudando inglês amanhã à noite.', en:'She will be studying English tomorrow night.'},
+            {pt:'Eles estarão jogando futebol no sábado de manhã.', en:'They will be playing soccer on Saturday morning.'},
+            {pt:'Nós estaremos morando em Londres no próximo ano.', en:'We will be living in London next year.'},
+            {pt:'Ele estará estudando inglês no próximo semestre.', en:'He will be studying English next semester.'}
           ]
         },
         {
@@ -1070,10 +1168,10 @@
           grammar:'subject + will not be + verb (-ing) + complement',
           examples:[
             {pt:'Eu não estarei trabalhando aqui amanhã às 10h.', en:'I will not be working here tomorrow at 10 a.m.'},
-            {pt:'Ela não estará viajando para Londres na próxima semana.', en:'She will not be traveling to London next week.'},
-            {pt:'Eles não estarão jogando futebol no sábado à tarde.', en:'They will not be playing soccer on Saturday afternoon.'},
-            {pt:'Nós não estaremos morando em São Paulo no ano que vem.', en:'We will not be living in São Paulo next year.'},
-            {pt:'Ele não estará estudando inglês amanhã de manhã.', en:'He will not be studying English tomorrow morning.'}
+            {pt:'Ela não estará estudando inglês amanhã à noite.', en:'She will not be studying English tomorrow night.'},
+            {pt:'Eles não estarão jogando futebol no sábado de manhã.', en:'They will not be playing soccer on Saturday morning.'},
+            {pt:'Nós não estaremos morando em Londres no próximo ano.', en:'We will not be living in London next year.'},
+            {pt:'Ele não estará estudando inglês no próximo semestre.', en:'He will not be studying English next semester.'}
           ]
         },
         {
@@ -1082,10 +1180,10 @@
           grammar:'will + subject + be + verb (-ing) + complement',
           examples:[
             {pt:'Você estará trabalhando aqui amanhã às 10h?', en:'Will you be working here tomorrow at 10 a.m.?'},
-            {pt:'Ela estará viajando para Londres na próxima semana?', en:'Will she be traveling to London next week?'},
-            {pt:'Eles estarão jogando futebol no sábado à tarde?', en:'Will they be playing soccer on Saturday afternoon?'},
-            {pt:'Nós estaremos morando em São Paulo no ano que vem?', en:'Will we be living in São Paulo next year?'},
-            {pt:'Ele estará estudando inglês amanhã de manhã?', en:'Will he be studying English tomorrow morning?'}
+            {pt:'Ela estará estudando inglês amanhã à noite?', en:'Will she be studying English tomorrow night?'},
+            {pt:'Eles estarão jogando futebol no sábado de manhã?', en:'Will they be playing soccer on Saturday morning?'},
+            {pt:'Nós estaremos morando em Londres no próximo ano?', en:'Will we be living in London next year?'},
+            {pt:'Ele estará estudando inglês no próximo semestre?', en:'Will he be studying English next semester?'}
           ]
         }
       ]
@@ -1163,6 +1261,21 @@
     "23 - Modal Verb (Negative)",
     "24 - Modal Verb (Interrogative)"
   ];
+  function getTenseContextClass(label){
+    if(!label) return '';
+    const m = String(label).trim().match(/^(\d+)\s*-/);
+    if(!m) return '';
+    const n = parseInt(m[1],10);
+    if(n>=1 && n<=3) return 'tense-sp';
+    if(n>=4 && n<=6) return 'tense-pc';
+    if(n>=7 && n<=9) return 'tense-pp';
+    if(n>=10 && n<=12) return 'tense-past';
+    if(n>=13 && n<=15) return 'tense-past-cont';
+    if(n>=16 && n<=18) return 'tense-future';
+    if(n>=19 && n<=21) return 'tense-future-cont';
+    if(n>=22 && n<=24) return 'tense-modal';
+    return '';
+  }
 
   const TENSE_QUESTIONS = shuffle([
     {question:"She works hard every day.", correct:1},
@@ -1197,16 +1310,26 @@
 
   function buildToBeQuestions(){
     const q = [];
-    TO_BE_PRONOUNS.forEach(p=>{
+    const pronounList = (toBePronounMode === 'grouped') ? TO_BE_PRONOUN_GROUPS : TO_BE_PRONOUNS;
+
+    pronounList.forEach(p=>{
       TO_BE_TENSES.forEach(t=>{
         const correct = p.forms[t.id];
+        let helper = '';
+        if(t.id === 'present'){
+          helper = 'Simple Present – foco na forma básica do verbo to be.';
+        }else if(t.id === 'past'){
+          helper = 'Simple Past – passado simples do verbo to be.';
+        }else if(t.id === 'future'){
+          helper = 'Simple Future – use "will" para indicar futuro.';
+        }
         q.push({
           type:'toBe',
           pronoun:p.label,
-          tenseId:t.id,
-          tenseLabel:t.label,
-          correctAnswer:correct,
-          options:getToBeOptions(t.id)
+          tense:t.label,
+          question:`${p.label} – ${t.label}`,
+          helper,
+          correctAnswer:correct
         });
       });
     });
@@ -1214,127 +1337,106 @@
   }
 
   function buildStructureQuestions(){
-    const selectedTenseIds = Array.from(structureTenseCheckboxes)
-      .filter(chk => chk.checked)
-      .map(chk => chk.dataset.tense);
+    const selectedTenses = [];
+    structureTenseCheckboxes.forEach(ch=>{
+      if(ch.checked){
+        selectedTenses.push(ch.dataset.tense);
+      }
+    });
+    if(!selectedTenses.length){
+      selectedTenses.push('simplePresent');
+    }
+    const perStructure = Math.max(1, Math.min(20, parseInt(questionsPerStructureInput.value,10) || 2));
 
-    const perStructureRaw = parseInt(questionsPerStructureInput.value,10);
-    const perStructure = (!isNaN(perStructureRaw) && perStructureRaw > 0) ? Math.min(perStructureRaw,20) : 2;
+    const list = [];
+    const mode = structurePracticeMode;
 
-    const q = [];
-    const usedMap = new Map(); // chave: patternId -> Set de índices já usados
+    STRUCTURE_TENSES.forEach(tense=>{
+      if(!selectedTenses.includes(tense.tenseId)) return;
 
-    STRUCTURES.forEach(tense=>{
-      if(!selectedTenseIds.includes(tense.tenseId)) return;
       tense.patterns.forEach(pattern=>{
-        const patternId = tense.tenseId + '|' + pattern.polarity;
-        usedMap.set(patternId, new Set());
-        for(let i=0;i<perStructure;i++){
-          q.push({
-            type:'structure',
-            tenseId:tense.tenseId,
-            tenseLabel:tense.tenseLabel,
-            polarity:pattern.polarity,
-            polarityLabel:pattern.label,
-            grammar:pattern.grammar,
-            structureTokens:splitGrammarToTokens(pattern.grammar),
-            patternRef:pattern,      // referência para acessar examples
-            patternKey:patternId,    // para controlar variações usadas
-            exampleIndex:null        // será definido na primeira vez que aparecer
-          });
-        }
+        const examples = shuffle(pattern.examples).slice(0, perStructure);
+        examples.forEach(ex=>{
+          if(mode === 'pattern'){
+            list.push({
+              type:'structure',
+              subMode:'pattern',
+              question:ex.pt,
+              helper:`${tense.tenseLabel} – ${pattern.label}`,
+              grammar:pattern.grammar
+            });
+          }else{
+            list.push({
+              type:'structure',
+              subMode:'translate',
+              question:ex.pt,
+              helper:`${tense.tenseLabel} – ${pattern.label}`,
+              answer:ex.en
+            });
+          }
+        });
       });
     });
 
-    // anexar mapa dentro do array para reuso
-    q._usedMap = usedMap;
-    return shuffle(q);
-  }
-
-  function pickExampleForStructureQuestion(q){
-    const pattern = q.patternRef;
-    if(!pattern || !pattern.examples || !pattern.examples.length) return null;
-    const usedMap = questions._usedMap || questions._usedMapStructure || null;
-    let usedSet = null;
-    if(usedMap && usedMap.has(q.patternKey)){
-      usedSet = usedMap.get(q.patternKey);
-    }
-    const total = pattern.examples.length;
-    let available = [];
-    for(let i=0;i<total;i++){
-      if(!usedSet || !usedSet.has(i)){
-        available.push(i);
-      }
-    }
-    if(!available.length){
-      // já usamos todas, pode reutilizar
-      available = Array.from({length:total},(_,i)=>i);
-      if(usedSet) usedSet.clear();
-    }
-    const idx = choice(available);
-    if(usedSet){
-      usedSet.add(idx);
-    }
-    q.exampleIndex = idx;
-    return idx;
+    return shuffle(list);
   }
 
   function buildTenseIdentifyQuestions(){
-    return TENSE_QUESTIONS.map(tq=>({
+    return TENSE_QUESTIONS.map(item=>({
       type:'tenseIdentify',
-      sentence:tq.question,
-      correctValue:String(tq.correct)
+      sentence:item.question,
+      correctValue:String(item.correct)
     }));
   }
 
   // ==========================
-  //  RENDER DO BUILDER DE ESTRUTURA
+  //  CONTROLE DE TREINO
   // ==========================
-  function renderStructureBuilder(){
-    if(!structureAnswerEl || !structureBankEl) return;
-    structureAnswerEl.innerHTML = '';
-    structureBankEl.innerHTML = '';
+  function startTraining(mode, options){
+    currentMode = mode;
+    currentModeOptions = options || {};
+    lastModeForRestart = mode;
+    lastOptionsForRestart = options || {};
 
-    if(!structureAnswerTokensCurrent.length){
-      structureAnswerEl.classList.add('empty');
-    }else{
-      structureAnswerEl.classList.remove('empty');
+    elHome.classList.add('hidden');
+    elGame.classList.remove('hidden');
+    elEnd.classList.add('hidden');
+    elFeedback.textContent = '';
+    elFeedback.className = 'feedback';
+    showHelper('');
+    showValidate(true);
+    showNext(false);
+
+    correctCount = 0;
+    attempts = 0;
+    totalQuestions = 0;
+    remainingIndexes = [];
+    questions = [];
+    lastQuestionIndex = null;
+
+    resetTimeStats();
+
+    if(mode === 'toBe'){
+      lblMode.textContent = 'Verbo To Be';
+      questions = buildToBeQuestions();
+    }else if(mode === 'structure'){
+      structurePracticeMode = currentModeOptions.structureMode || 'translate';
+      lblMode.textContent = (structurePracticeMode === 'pattern')
+        ? 'Estrutura – Apenas blocos'
+        : 'Estrutura – Tradução (PT → EN)';
+      questions = buildStructureQuestions();
+    }else if(mode === 'tenseIdentify'){
+      lblMode.textContent = 'Identificar Tempo Verbal';
+      questions = buildTenseIdentifyQuestions();
     }
 
-    structureAnswerTokensCurrent.forEach((tok, idx)=>{
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'token-chip';
-      btn.textContent = tok;
-      btn.dataset.index = idx;
-      btn.addEventListener('click', ()=>{
-        // remover da resposta e devolver ao banco
-        structureAnswerTokensCurrent.splice(idx,1);
-        structureBankTokensCurrent.push(tok);
-        renderStructureBuilder();
-      });
-      structureAnswerEl.appendChild(btn);
-    });
+    totalQuestions = questions.length;
+    remainingIndexes = questions.map((_,idx)=>idx);
 
-    structureBankTokensCurrent.forEach((tok, idx)=>{
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'token-chip';
-      btn.textContent = tok;
-      btn.dataset.index = idx;
-      btn.addEventListener('click', ()=>{
-        // mover do banco para resposta
-        structureAnswerTokensCurrent.push(tok);
-        structureBankTokensCurrent.splice(idx,1);
-        renderStructureBuilder();
-      });
-      structureBankEl.appendChild(btn);
-    });
+    updateProgress();
+    loadQuestion();
   }
 
-  // ==========================
-  //  CARREGAR PERGUNTA ATUAL
-  // ==========================
   function loadQuestion(){
     elFeedback.textContent = '';
     elFeedback.className = 'feedback';
@@ -1343,46 +1445,48 @@
     selectedChoiceValue = null;
 
     if(remainingIndexes.length === 0){
-      // acabou
       endSession();
       return;
     }
 
-    currentIndex = choice(remainingIndexes);
+    // Escolha aleatória evitando repetir a mesma questão imediatamente,
+    // se houver mais de uma questão restante.
+    if(remainingIndexes.length === 1){
+      currentIndex = remainingIndexes[0];
+    }else{
+      let candidate;
+      do{
+        candidate = choice(remainingIndexes);
+      }while(candidate === lastQuestionIndex);
+      currentIndex = candidate;
+    }
+    lastQuestionIndex = currentIndex;
+
     const q = questions[currentIndex];
 
     if(q.type === 'toBe'){
       lblMode.textContent = 'Verbo To Be';
-      elQuestion.textContent = q.pronoun + ' — ' + q.tenseLabel;
-      showHelper('Escolha a forma correta do verbo "to be" para o pronome e tempo verbal mostrados.');
+      elQuestion.textContent = q.question;
+      showHelper(q.helper || '');
       showStructureBuilder(false);
-      renderChoices(q.options.map(opt => ({value:opt,label:opt})));
+      renderChoices(buildToBeChoiceList(q));
       showChoices(true);
       showTextInput(false);
     }else if(q.type === 'structure'){
-      lblMode.textContent = 'Estrutura das Frases';
-      // escolher frase se ainda não tiver
-      if(q.exampleIndex === null){
-        pickExampleForStructureQuestion(q);
-      }
-      const ex = q.patternRef.examples[q.exampleIndex];
-      elQuestion.textContent = ex.pt;
+      lblMode.textContent = (structurePracticeMode === 'pattern')
+        ? 'Estrutura – Apenas blocos'
+        : 'Estrutura – Tradução (PT → EN)';
+      elQuestion.textContent = q.question;
+      showHelper(q.helper || '');
 
-      const helperText = 'Tempo verbal: ' + q.tenseLabel + ' (' + q.polarityLabel + ')';
-      showHelper(helperText);
-
-      const sMode = (currentModeOptions && currentModeOptions.structureMode) || 'translate';
-
-      if(sMode === 'pattern'){
+      if(q.subMode === 'pattern'){
         // Apenas estrutura (blocos)
         structureAnswerTokensCurrent = [];
-        // tokens corretos
         if(!q.structureTokens || !q.structureTokens.length){
           q.structureTokens = splitGrammarToTokens(q.grammar);
         }
         const correctTokens = q.structureTokens;
 
-        // distratores para confundir
         const availableDistractors = STRUCTURE_DISTRACTORS.filter(tok => !correctTokens.includes(tok));
         const extraCount = Math.min(4, availableDistractors.length);
         const selectedDistractors = shuffle(availableDistractors).slice(0, extraCount);
@@ -1417,16 +1521,84 @@
     updateProgress();
   }
 
+  function buildToBeChoiceList(q){
+    const pronounId = TO_BE_PRONOUNS.find(p=>p.label === q.pronoun) ||
+                      TO_BE_PRONOUN_GROUPS.find(p=>p.label === q.pronoun);
+    const tenseId = (q.tense === 'Present' ? 'present' :
+                    q.tense === 'Past' ? 'past' : 'future');
+
+    const baseOptions = getToBeOptionsForQuestion(pronounId || {forms:{}}, tenseId);
+    const hasCorrect = baseOptions.includes(q.correctAnswer);
+    const options = hasCorrect ? baseOptions : shuffle([...baseOptions, q.correctAnswer]);
+
+    return options.map(opt=>({
+      value:opt,
+      label:opt
+    }));
+  }
+
+  function renderStructureBuilder(){
+    if(!structureBuilderEl) return;
+    structureAnswerEl.innerHTML = '';
+    structureAnswerEl.classList.add('empty');
+    structureBankEl.innerHTML = '';
+
+    structureBankTokensCurrent.forEach((token,idx)=>{
+      const chip = document.createElement('div');
+      chip.className = 'token-chip';
+      chip.textContent = token;
+      chip.dataset.token = token;
+      chip.dataset.index = String(idx);
+      chip.addEventListener('click', ()=>{
+        addStructureToken(token);
+      });
+      structureBankEl.appendChild(chip);
+    });
+  }
+
+  function addStructureToken(token){
+    structureAnswerTokensCurrent.push(token);
+    updateStructureAnswerView();
+  }
+  function removeStructureToken(index){
+    structureAnswerTokensCurrent.splice(index,1);
+    updateStructureAnswerView();
+  }
+  function updateStructureAnswerView(){
+    if(!structureAnswerEl) return;
+    structureAnswerEl.innerHTML = '';
+    if(!structureAnswerTokensCurrent.length){
+      structureAnswerEl.classList.add('empty');
+      return;
+    }
+    structureAnswerEl.classList.remove('empty');
+    structureAnswerTokensCurrent.forEach((token,idx)=>{
+      const chip = document.createElement('div');
+      chip.className = 'token-chip';
+      chip.textContent = token;
+      chip.dataset.index = String(idx);
+      chip.addEventListener('click', ()=>{
+        removeStructureToken(idx);
+      });
+      structureAnswerEl.appendChild(chip);
+    });
+  }
+
   function renderChoices(list){
     choicesContainer.innerHTML = '';
     list.forEach(item=>{
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'btn btn-choice';
+      if(currentMode === 'tenseIdentify'){
+        const extraClass = getTenseContextClass(item.label);
+        if(extraClass){
+          btn.classList.add(extraClass);
+        }
+      }
       btn.textContent = item.label;
       btn.dataset.value = item.value;
       btn.addEventListener('click', ()=>{
-        // limpar seleção anterior
         const all = choicesContainer.querySelectorAll('.btn-choice');
         all.forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
@@ -1437,7 +1609,7 @@
   }
 
   // ==========================
-  //  VALIDAÇÃO DE RESPOSTA
+  //  CHECAGEM
   // ==========================
   function checkCurrent(){
     if(currentIndex === null || currentIndex < 0 || currentIndex >= questions.length) return;
@@ -1466,115 +1638,69 @@
 
     if(correct){
       correctCount++;
+      currentStreak++;
+      if(currentStreak > maxStreak) maxStreak = currentStreak;
       finalizeQuestionTime();
-      updateSessionStats();
-      elFeedback.textContent = 'Acertou! ✅';
+      elFeedback.textContent = 'Acertou! ✔';
       elFeedback.className = 'feedback ok';
-      // remover da lista de restantes
       remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
     }else{
-      // manter na lista (vai voltar embaralhada)
-      let correctText;
-      if(q.type === 'toBe'){
-        correctText = 'Resposta correta: "' + q.correctAnswer + '".';
-      }else{
-        const label = TENSE_OPTIONS[parseInt(q.correctValue,10)-1];
-        correctText = 'Resposta correta: ' + label + '.';
-      }
-      elFeedback.textContent = 'Errou. ' + correctText;
-      elFeedback.className = 'feedback err';
+      currentStreak = 0;
       resetQuestionTimer();
+      elFeedback.textContent = 'Errou. ❌';
+      elFeedback.className = 'feedback err';
     }
+
     updateProgress();
+    updateSessionStats();
     showValidate(false);
     showNext(true);
   }
 
   function checkStructureQuestion(q){
-    const mode = (currentModeOptions && currentModeOptions.structureMode) || 'translate';
-
-    if(mode === 'pattern'){
-      // Apenas estrutura (blocos)
-      checkStructurePatternQuestion(q);
-      return;
-    }
-
-    // Tradução normal (PT -> EN)
-    const user = textAnswerInput.value;
-    if(!user || !user.trim()){
-      elFeedback.textContent = 'Digite a frase em inglês antes de validar.';
-      elFeedback.className = 'feedback err';
-      textAnswerInput.focus();
-      return;
-    }
     attempts++;
-
-    const ex = q.patternRef.examples[q.exampleIndex];
-    const correct = ex.en;
-    const normUser = normalizeSentence(user);
-    const normCorrect = normalizeSentence(correct);
-
-    if(normUser === normCorrect){
-      correctCount++;
-      finalizeQuestionTime();
-      updateSessionStats();
-      elFeedback.innerHTML = 'Acertou! ✅<br><span style="font-weight:400">Frase correta: ' + correct + '</span>';
-      elFeedback.className = 'feedback ok';
-      remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
+    if(q.subMode === 'translate'){
+      const user = normalizeSentence(textAnswerInput.value);
+      const expected = normalizeSentence(q.answer);
+      if(user && user === expected){
+        correctCount++;
+        currentStreak++;
+        if(currentStreak > maxStreak) maxStreak = currentStreak;
+        finalizeQuestionTime();
+        elFeedback.textContent = 'Acertou! ✔';
+        elFeedback.className = 'feedback ok';
+        remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
+      }else{
+        currentStreak = 0;
+        resetQuestionTimer();
+        elFeedback.textContent = 'Ainda não. ❌ Tente se aproximar mais da frase esperada.';
+        elFeedback.className = 'feedback err';
+      }
     }else{
-      elFeedback.innerHTML =
-        'Errou. ❌<br><span style="font-weight:400">Frase correta: ' + correct + '</span>';
-      elFeedback.className = 'feedback err';
-      resetQuestionTimer();
-    }
-    updateProgress();
-    showValidate(false);
-    showNext(true);
-  }
-
-  function checkStructurePatternQuestion(q){
-    if(!structureAnswerTokensCurrent.length){
-      elFeedback.textContent = 'Monte a estrutura completa usando os blocos antes de validar.';
-      elFeedback.className = 'feedback err';
-      return;
-    }
-
-    attempts++;
-
-    if(!q.structureTokens || !q.structureTokens.length){
-      q.structureTokens = splitGrammarToTokens(q.grammar);
-    }
-    const correctTokens = q.structureTokens;
-    let isCorrect = true;
-
-    if(structureAnswerTokensCurrent.length !== correctTokens.length){
-      isCorrect = false;
-    }else{
-      for(let i=0;i<correctTokens.length;i++){
-        if(structureAnswerTokensCurrent[i] !== correctTokens[i]){
-          isCorrect = false;
-          break;
-        }
+      const userTokens = structureAnswerTokensCurrent.slice();
+      const correctTokens = q.structureTokens || splitGrammarToTokens(q.grammar);
+      const correctStr = correctTokens.join(' + ');
+      const userStr = userTokens.join(' + ');
+      if(userTokens.length && userStr.toLowerCase() === correctStr.toLowerCase()){
+        correctCount++;
+        currentStreak++;
+        if(currentStreak > maxStreak) maxStreak = currentStreak;
+        finalizeQuestionTime();
+        elFeedback.innerHTML =
+          'Acertou! ✔<br><span style="font-weight:400">Estrutura: ' + correctStr + '</span>';
+        elFeedback.className = 'feedback ok';
+        remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
+      }else{
+        currentStreak = 0;
+        elFeedback.innerHTML =
+          'Errou. ❌<br><span style="font-weight:400">Estrutura correta: ' + correctStr + '</span>';
+        elFeedback.className = 'feedback err';
+        resetQuestionTimer();
       }
     }
 
-    const correctStr = correctTokens.join(' + ');
-
-    if(isCorrect){
-      correctCount++;
-      finalizeQuestionTime();
-      updateSessionStats();
-      elFeedback.innerHTML = 'Acertou! ✅<br><span style="font-weight:400">Estrutura: ' + correctStr + '</span>';
-      elFeedback.className = 'feedback ok';
-      remainingIndexes = remainingIndexes.filter(idx => idx !== currentIndex);
-    }else{
-      elFeedback.innerHTML =
-        'Errou. ❌<br><span style="font-weight:400">Estrutura correta: ' + correctStr + '</span>';
-      elFeedback.className = 'feedback err';
-      resetQuestionTimer();
-    }
-
     updateProgress();
+    updateSessionStats();
     showValidate(false);
     showNext(true);
   }
@@ -1583,121 +1709,45 @@
   //  FINALIZAÇÃO DE SESSÃO
   // ==========================
   function endSession(){
-    resetQuestionTimer();
-    updateSessionStats();
+    clearQuestionTimer();
+    elEnd.classList.remove('hidden');
+    elEndMode.textContent = lblMode.textContent || '?';
+    const totalTimeStr = formatSeconds(totalTimeMs || 0);
+    elTimeSummary.textContent = `Tempo total de treino: ${totalTimeStr}`;
+    elSessionSummary.textContent = `Você acertou ${correctCount} de ${totalQuestions} perguntas.`;
 
-    elEndMode.textContent = (currentMode === 'toBe'
-      ? 'Verbo To Be'
-      : currentMode === 'structure'
-        ? 'Estrutura das Frases'
-        : 'Identificar Tempo Verbal'
-    );
-
-    if(timeRecords.length){
-      const totalStr = formatSeconds(totalTimeMs);
-      const avgStr = formatSeconds(totalTimeMs / timeRecords.length);
-      elTimeSummary.textContent = 'Tempo total: ' + totalStr + ' • Tempo médio por acerto: ' + avgStr;
-    }else{
-      elTimeSummary.textContent = '';
-    }
-
-    // progresso final
-    const progressStr = correctCount + '/' + totalQuestions;
-    const totalTimeSec = totalTimeMs / 1000 || 1;
-    const speed = totalQuestions > 0 ? (totalQuestions / totalTimeSec) : 0;
-    const speedStr = speed.toFixed(2).replace('.',',');
-
-    const modeLabel = (currentMode === 'toBe'
-      ? 'Verbo To Be'
-      : currentMode === 'structure'
-        ? 'Estrutura das Frases'
-        : 'Identificar Tempo Verbal'
-    );
-
-    elSessionSummary.textContent =
-      'Sessão: ' + sessionId +
-      ' • Modo: ' + modeLabel +
-      ' • Progresso: ' + progressStr +
-      ' • Velocidade: ' + speedStr + ' questões/s';
-
-    // salvar no top
+    const totalSeconds = (totalTimeMs || 1) / 1000;
+    const speed = totalQuestions ? (correctCount / totalSeconds) : 0;
     const record = {
-      sessionId: sessionId,
-      mode: currentMode,
-      modeLabel: modeLabel,
-      correct: correctCount,
-      total: totalQuestions,
-      totalTimeMs: totalTimeMs,
-      speed: speed,
-      timestamp: Date.now()
+      sessionId,
+      mode:currentMode,
+      modeLabel:lblMode.textContent || currentMode,
+      total:totalQuestions,
+      correct:correctCount,
+      attempts:attempts,
+      totalTimeMs:totalTimeMs,
+      speed,
+      timestamp:Date.now(),
+      maxStreak:maxStreak
     };
     addSessionRecord(record);
     updateTopVelocidade();
 
     showValidate(false);
     showNext(false);
-    elEnd.classList.remove('hidden');
   }
 
   // ==========================
-  //  INICIALIZAÇÃO DE UM TREINO
-  // ==========================
-  function startTraining(mode, options){
-    // guardar para "reiniciar"
-    lastModeForRestart = mode;
-    lastOptionsForRestart = options || null;
-
-    currentMode = mode;
-    currentModeOptions = options || {};
-
-    elHome.classList.add('hidden');
-    elGame.classList.remove('hidden');
-    elEnd.classList.add('hidden');
-    elFeedback.textContent = '';
-    elFeedback.className = 'feedback';
-    if(structureBuilderEl){
-      structureBuilderEl.classList.add('hidden');
-    }
-    structureAnswerTokensCurrent = [];
-    structureBankTokensCurrent = [];
-
-    // estado de contagem
-    correctCount = 0;
-    attempts = 0;
-    resetTimeStats();
-
-    // gerar perguntas
-    if(mode === 'toBe'){
-      questions = buildToBeQuestions();
-    }else if(mode === 'structure'){
-      questions = buildStructureQuestions();
-      // anexa mapa de usados dentro de questions para reuso
-      questions._usedMapStructure = questions._usedMap || questions._usedMapStructure;
-    }else if(mode === 'tenseIdentify'){
-      questions = buildTenseIdentifyQuestions();
-    }else{
-      questions = [];
-    }
-
-    remainingIndexes = questions.map((_,idx)=>idx);
-    totalQuestions = remainingIndexes.length;
-    updateProgress();
-
-    showChoices(false);
-    showTextInput(false);
-    showHelper('');
-    showValidate(true);
-    showNext(false);
-
-    loadQuestion();
-  }
-
-  // ==========================
-  //  CONTROLE DE MODO DA TELA INICIAL
+  //  MODOS NA TELA INICIAL
   // ==========================
   function setHomeMode(mode){
+    currentMode = mode;
     modeButtons.forEach(btn=>{
-      btn.classList.toggle('active', btn.dataset.mode === mode);
+      if(btn.dataset.mode === mode){
+        btn.classList.add('active');
+      }else{
+        btn.classList.remove('active');
+      }
     });
 
     if(mode === 'toBe'){
@@ -1708,7 +1758,7 @@
       modeToBeOptions.classList.add('hidden');
       modeStructureOptions.classList.remove('hidden');
       modeTenseOptions.classList.add('hidden');
-    }else{
+    }else if(mode === 'tenseIdentify'){
       modeToBeOptions.classList.add('hidden');
       modeStructureOptions.classList.add('hidden');
       modeTenseOptions.classList.remove('hidden');
@@ -1736,6 +1786,22 @@
     radio.addEventListener('change',()=>{
       if(radio.checked){
         structurePracticeMode = radio.value;
+      }
+    });
+  });
+
+  toBePronounRadios.forEach(radio=>{
+    radio.addEventListener('change', ()=>{
+      if(radio.checked){
+        toBePronounMode = radio.value; // 'individual' | 'grouped'
+      }
+    });
+  });
+
+  toBeOptionRadios.forEach(radio=>{
+    radio.addEventListener('change', ()=>{
+      if(radio.checked){
+        toBeOptionMode = radio.value; // 'byPronoun' | 'all'
       }
     });
   });
