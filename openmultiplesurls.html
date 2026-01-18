@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Abrir Múltiplas URLs — Tools For You</title>
+<meta name="description" content="Abra múltiplas URLs em abas ou janelas com validação e controle seguro." />
+<meta name="theme-color" content="#0f172a" />
+
+<style>
+:root{
+  --bg:#0f172a;
+  --bg2:#0b1222;
+  --fg:#e2e8f0;
+  --muted:#94a3b8;
+  --accent:#38bdf8;
+  --card:#111827;
+  --ring:#1e293b;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --err:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+  color:var(--fg);
+  background:linear-gradient(180deg,#0b1222,#0f172a);
+}
+.wrap{max-width:1040px;margin:0 auto;padding:20px}
+
+/* HEADER */
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:44px;height:44px;border-radius:12px;
+  display:grid;place-items:center;
+  background:radial-gradient(75% 75% at 50% 30%, #38bdf855 0%, #38bdf822 60%, transparent 100%), #0b1222;
+  border:1px solid #1f2937;
+  box-shadow:0 10px 30px #000a;
+  font-size:22px
+}
+nav{
+  background:#0b1222;
+  border:1px solid var(--ring);
+  border-radius:14px;
+  padding:8px 10px
+}
+nav a{
+  color:var(--fg);
+  text-decoration:none;
+  padding:10px 12px;
+  border-radius:10px;
+  display:inline-block;
+  font-weight:600
+}
+nav a:hover{background:#0f172a}
+nav a[aria-current="page"]{
+  background:#0f172a;
+  outline:1px solid #223146
+}
+
+/* LAYOUT */
+.grid{display:grid;gap:16px;margin-top:18px}
+@media (min-width:900px){
+  .grid-2{grid-template-columns:1.2fr .8fr}
+}
+.card{
+  background:linear-gradient(180deg,#0f172a,#0b1222);
+  border:1px solid #1e293b;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 30px #0007;
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+label{font-size:.9rem;color:var(--muted)}
+textarea,input,select{
+  width:100%;
+  background:#0b1222;
+  border:1px solid #1f2937;
+  color:var(--fg);
+  padding:10px 12px;
+  border-radius:12px
+}
+textarea{min-height:220px;resize:vertical}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+
+.btn{
+  border:1px solid #1f2937;
+  background:#0b1222;
+  color:var(--fg);
+  padding:10px 14px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:700
+}
+.btn:hover{border-color:#2a3a52}
+.btn-primary{
+  background:linear-gradient(180deg,#38bdf8,#0ea5e9);
+  border-color:#38bdf8;
+  color:#001018
+}
+.btn-ok{
+  background:linear-gradient(180deg,#22c55e,#16a34a);
+  border-color:#22c55e;
+  color:#00180a
+}
+.btn-warn{
+  background:linear-gradient(180deg,#f59e0b,#d97706);
+  border-color:#f59e0b;
+  color:#1f1300
+}
+.muted{color:var(--muted)}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* LISTA */
+.list{
+  max-height:260px;
+  overflow:auto;
+  border:1px solid #1f2937;
+  border-radius:12px;
+  background:#0b1222
+}
+.item{
+  padding:8px 10px;
+  border-bottom:1px dashed #223146;
+  font-size:.85rem;
+  display:flex;
+  justify-content:space-between;
+  gap:8px
+}
+.item:last-child{border-bottom:0}
+.ok{color:var(--ok)}
+.err{color:var(--err)}
+
+.progress{
+  height:8px;
+  background:#0b1222;
+  border:1px solid #1f2937;
+  border-radius:999px;
+  overflow:hidden
+}
+.progress > div{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#38bdf8,#22c55e);
+  transition:width .3s
+}
+
+footer{
+  margin-top:18px;
+  color:var(--muted);
+  font-size:.85rem;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <div class="logo">🌐</div>
+    <div>
+      <div style="font-weight:700">Abrir Múltiplas URLs</div>
+      <div class="muted">Modo seguro e compatível com Chrome</div>
+    </div>
+  </div>
+  <nav>
+    <a href="index.html">Sobre</a>
+    <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+    <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
+    <a href="openmultiplesurls.html" aria-current="page">Abrir URLs</a>
+  </nav>
+</header>
+
+<section class="grid grid-2">
+
+<div class="card">
+  <label>URLs (uma por linha, espaço, vírgula ou ;)</label>
+  <textarea id="urls" placeholder="https://site1.com
+https://site2.com"></textarea>
+
+  <div class="row">
+    <label>Modo</label>
+    <select id="target">
+      <option value="_blank">Nova aba (_blank)</option>
+      <option value="_self">Mesma aba (_self)</option>
+    </select>
+
+    <label>Máx.</label>
+    <input type="number" id="limit" value="30" min="1">
+  </div>
+
+  <div class="row">
+    <label><input type="checkbox" id="autoHttps" checked> Adicionar https://</label>
+    <label><input type="checkbox" id="dedupe" checked> Remover duplicadas</label>
+    <label><input type="checkbox" id="ignoreComments" checked> Ignorar # ou //</label>
+  </div>
+
+  <div class="row">
+    <button class="btn btn-primary" id="validate">Validar / Pré-visualizar</button>
+    <button class="btn btn-ok" id="open">Abrir URLs</button>
+    <button class="btn btn-warn" id="clear">Limpar</button>
+  </div>
+
+  <div class="progress"><div id="bar"></div></div>
+</div>
+
+<div class="card">
+  <div class="muted">Status</div>
+  <div id="counter" class="mono">0 URLs</div>
+  <div class="list" id="list"></div>
+</div>
+
+</section>
+
+<footer>
+  <div>© <span id="y"></span> Danilo Oliveira Albergardi</div>
+  <div class="muted">HTML puro • Sem pop-up placebo</div>
+</footer>
+
+</div>
+
+<script>
+const els = {
+  urls: document.getElementById('urls'),
+  target: document.getElementById('target'),
+  limit: document.getElementById('limit'),
+  autoHttps: document.getElementById('autoHttps'),
+  dedupe: document.getElementById('dedupe'),
+  ignoreComments: document.getElementById('ignoreComments'),
+  list: document.getElementById('list'),
+  counter: document.getElementById('counter'),
+  bar: document.getElementById('bar')
+};
+
+let parsed = [];
+
+function parseUrls() {
+  let raw = els.urls.value
+    .split(/[\n\s,;]+/)
+    .map(u => u.trim())
+    .filter(Boolean);
+
+  if (els.ignoreComments.checked) {
+    raw = raw.filter(u => !u.startsWith('#') && !u.startsWith('//'));
+  }
+
+  if (els.autoHttps.checked) {
+    raw = raw.map(u =>
+      /^https?:\/\//i.test(u) ? u : 'https://' + u
+    );
+  }
+
+  raw = raw.filter(u => !/^(javascript|data|file|about|chrome):/i.test(u));
+
+  if (els.dedupe.checked) {
+    raw = [...new Set(raw)];
+  }
+
+  return raw;
+}
+
+function validate() {
+  parsed = [];
+  els.list.innerHTML = '';
+  const urls = parseUrls();
+
+  urls.forEach(u => {
+    try {
+      new URL(u);
+      parsed.push(u);
+      els.list.innerHTML += `<div class="item ok"><span>${u}</span><span>válida</span></div>`;
+    } catch {
+      els.list.innerHTML += `<div class="item err"><span>${u}</span><span>inválida</span></div>`;
+    }
+  });
+
+  els.counter.textContent = `${parsed.length} URLs válidas`;
+}
+
+function openUrls() {
+  if (!parsed.length) validate();
+
+  const max = Math.min(parsed.length, Number(els.limit.value));
+  const target = els.target.value;
+
+  for (let i = 0; i < max; i++) {
+    const w = window.open(parsed[i], target);
+
+    if (!w) {
+      alert(
+        'O navegador bloqueou múltiplas abas.\n' +
+        'Permita pop-ups para este site/arquivo.'
+      );
+      break;
+    }
+
+    els.bar.style.width = ((i + 1) / max * 100) + '%';
+  }
+}
+
+document.getElementById('validate').onclick = validate;
+document.getElementById('open').onclick = openUrls;
+document.getElementById('clear').onclick = () => {
+  els.urls.value = '';
+  els.list.innerHTML = '';
+  els.counter.textContent = '0 URLs';
+  els.bar.style.width = '0%';
+};
+
+document.getElementById('y').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
