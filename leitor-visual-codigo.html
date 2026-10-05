@@ -224,29 +224,22 @@
       head.append(nameEl,valueEl);
       card.appendChild(head);
 
+      const repeats=repeatRanges(code);
+
+      if(repeats.length){
+        const repeatSummary=document.createElement('div');
+        repeatSummary.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 8px;font-size:11px;font-weight:800;color:#374151';
+        repeatSummary.textContent=repeats.map(r=>'×'+r.len+' "'+r.digit+'"').join('  •  ');
+        card.appendChild(repeatSummary);
+      }
+
       const grid=document.createElement('div');
       grid.className='digit-grid';
-      const repeats=repeatRanges(code);
 
       for(let pos=0;pos<code.length;pos+=4){
         const part=code.slice(pos,pos+4);
         const chunk=document.createElement('div');
         chunk.className='chunk';
-
-        const exactRepeat=repeats.find(r => r.start===pos && r.len===part.length);
-        const coveringRepeat=repeats.find(r => r.start<=pos && r.end>=pos+part.length-1);
-
-        if(coveringRepeat){
-          const tag=document.createElement('div');
-          tag.className='repeat';
-          tag.textContent='×'+coveringRepeat.len+' "'+coveringRepeat.digit+'"';
-          chunk.appendChild(tag);
-        } else if(exactRepeat){
-          const tag=document.createElement('div');
-          tag.className='repeat';
-          tag.textContent='×'+exactRepeat.len+' "'+exactRepeat.digit+'"';
-          chunk.appendChild(tag);
-        }
 
         const group=document.createElement('div');
         group.className='group';
@@ -282,11 +275,7 @@
     if(preview.querySelector('.code-card')) window.print();
   });
 
-  addEntry({
-    name:'',
-    value:'',
-    code:'26090029325149450583008900000004815930000294343'
-  });
+  addEntry();
 })();
 </script>
 </body>
