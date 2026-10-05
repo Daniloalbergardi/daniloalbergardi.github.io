@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Leitor Visual de Código — Tools For You</title>
+<meta name="description" content="Organize códigos numéricos para leitura e redigitação, com visualização de alto contraste e impressão A4." />
+<style>
+  :root{
+    --bg:#f7fafc; --fg:#0f172a; --muted:#64748b; --accent:#2563eb;
+    --card:#ffffff; --ring:#e2e8f0; --soft:#eef2ff; --soft-border:#c7d2fe;
+    --danger:#b91c1c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+    color:var(--fg);
+    background:linear-gradient(180deg,#fff,var(--bg));
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:20px}
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;margin-bottom:18px
+  }
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{
+    width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
+    background:var(--soft);border:1px solid var(--soft-border);font-weight:800;color:#3730a3
+  }
+  .muted{color:var(--muted);font-size:.9rem}
+  nav{background:var(--soft);border:1px solid var(--soft-border);border-radius:12px;padding:6px 8px}
+  nav a{color:#1e293b;text-decoration:none;padding:8px 10px;border-radius:8px;display:inline-block;font-weight:600}
+  nav a:hover{background:#e0e7ff}
+  nav a[aria-current="page"]{background:#c7d2fe}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  button{
+    appearance:none;border:1px solid #cbd5e1;background:#fff;color:#0f172a;
+    padding:10px 13px;border-radius:10px;cursor:pointer;font-weight:700
+  }
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.danger{color:var(--danger)}
+  button.small{padding:8px 10px;font-size:.85rem}
+
+  #entries{display:grid;gap:10px;margin-bottom:18px}
+  .entry{
+    display:grid;grid-template-columns:minmax(130px,.8fr) minmax(110px,.45fr) minmax(280px,2fr) auto;
+    gap:8px;align-items:end;background:#fff;border:1px solid var(--ring);
+    border-radius:14px;padding:12px;box-shadow:0 6px 20px #0000000a
+  }
+  label{display:grid;gap:5px;font-size:.78rem;font-weight:700;color:#475569}
+  input{
+    width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px 11px;
+    outline:0;background:#fff;color:#0f172a;font-size:1rem
+  }
+  input:focus{border-color:#60a5fa;box-shadow:0 0 0 3px #60a5fa22}
+  .code-input{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  #preview{display:grid;gap:12px}
+  .empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed #cbd5e1;border-radius:12px}
+  .code-card{
+    background:#fff;border:1px solid #cbd5e1;border-radius:14px;padding:13px;
+    break-inside:avoid;page-break-inside:avoid
+  }
+  .code-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:10px}
+  .code-name{font-weight:800;font-size:1rem;min-height:1.2em}
+  .code-value{font-weight:800;font-size:1.05rem;white-space:nowrap}
+  .digit-grid{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-end}
+  .chunk{position:relative;padding-top:17px}
+  .group{display:flex;border:1px solid #cbd5e1;border-radius:7px;overflow:hidden}
+  .digit{
+    width:31px;height:42px;display:grid;place-items:center;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-weight:800;font-size:23px;border-right:1px solid #d1d5db
+  }
+  .digit:last-child{border-right:0}
+  .digit:nth-child(odd){background:#fff}
+  .digit:nth-child(even){background:#eceff1}
+  .repeat{
+    position:absolute;top:0;left:0;right:0;text-align:center;
+    font-size:10px;font-weight:800;color:#374151;white-space:nowrap
+  }
+  .repeat:after{
+    content:"";display:block;margin:2px 3px 0;border-top:2px solid #6b7280
+  }
+
+  @media(max-width:760px){
+    .wrap{padding:12px}
+    .entry{grid-template-columns:1fr 120px}
+    .entry .code-field{grid-column:1/-1}
+    .entry .remove{grid-column:1/-1}
+    .digit{width:29px;height:40px;font-size:22px}
+    nav{width:100%;overflow-x:auto;white-space:nowrap}
+  }
+
+  @media print{
+    @page{size:A4 portrait;margin:8mm}
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .wrap{max-width:none;padding:0}
+    header,.toolbar,#entries{display:none!important}
+    #preview{gap:4mm}
+    .code-card{border:1px solid #9ca3af;border-radius:3mm;padding:3.5mm}
+    .code-head{margin-bottom:2.5mm}
+    .code-name{font-size:10pt}
+    .code-value{font-size:11pt}
+    .digit-grid{gap:1.2mm}
+    .chunk{padding-top:4mm}
+    .digit{width:7mm;height:9mm;font-size:15pt}
+    .repeat{font-size:7pt}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">123</div>
+      <div>
+        <div style="font-weight:800">Leitor Visual de Código</div>
+        <div class="muted">Leitura e impressão</div>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">Sobre</a>
+      <a href="gerador-de-url-para-campanha.html">Gerador UTM</a>
+      <a href="gerador-de-link-whatsapp.html">Link WhatsApp</a>
+      <a href="relax-and-breathe.html">Relax & Breathe</a>
+      <a href="english-practice.html">Praticar Inglês</a>
+      <a href="leitor-visual-codigo.html" aria-current="page">Leitor de Código</a>
+    </nav>
+  </header>
+
+  <div class="toolbar">
+    <button class="primary" id="add">+ Adicionar código</button>
+    <button id="print">Imprimir A4</button>
+    <button class="danger" id="clear">Limpar</button>
+  </div>
+
+  <section id="entries"></section>
+  <section id="preview"></section>
+</div>
+
+<script>
+(() => {
+  const entries = document.getElementById('entries');
+  const preview = document.getElementById('preview');
+
+  function money(v){
+    const raw = String(v || '').trim();
+    if(!raw) return '';
+    let normalized = raw.replace(/\s/g,'').replace(/R\$/gi,'');
+    if(normalized.includes(',')) normalized = normalized.replace(/\./g,'').replace(',','.');
+    const n = Number(normalized);
+    if(Number.isNaN(n)) return raw;
+    return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  }
+
+  function digits(v){ return String(v || '').replace(/\D/g,''); }
+
+  function repeatRanges(code,min=4){
+    const out=[]; let start=0;
+    for(let i=1;i<=code.length;i++){
+      if(i===code.length || code[i]!==code[start]){
+        const len=i-start;
+        if(len>=min) out.push({start,end:i-1,len,digit:code[start]});
+        start=i;
+      }
+    }
+    return out;
+  }
+
+  function addEntry(data={name:'',value:'',code:''}){
+    const row=document.createElement('div');
+    row.className='entry';
+    row.innerHTML=`
+      <label>Nome (opcional)
+        <input class="name" type="text" value="${escapeHtml(data.name)}" placeholder="Ex.: Conta de água">
+      </label>
+      <label>Valor
+        <input class="value" type="text" inputmode="decimal" value="${escapeHtml(data.value)}" placeholder="R$ 0,00">
+      </label>
+      <label class="code-field">Código
+        <input class="code code-input" type="text" inputmode="numeric" value="${escapeHtml(data.code)}" placeholder="Cole o código">
+      </label>
+      <button class="small danger remove" type="button">Remover</button>
+    `;
+    row.querySelectorAll('input').forEach(el=>el.addEventListener('input',render));
+    row.querySelector('.remove').addEventListener('click',()=>{ row.remove(); render(); });
+    entries.appendChild(row);
+    render();
+    return row;
+  }
+
+  function escapeHtml(value){
+    return String(value||'')
+      .replaceAll('&','&amp;').replaceAll('"','&quot;')
+      .replaceAll('<','&lt;').replaceAll('>','&gt;');
+  }
+
+  function render(){
+    preview.innerHTML='';
+    const rows=[...entries.querySelectorAll('.entry')];
+    let valid=0;
+
+    rows.forEach((row,index)=>{
+      const name=row.querySelector('.name').value.trim();
+      const value=row.querySelector('.value').value.trim();
+      const code=digits(row.querySelector('.code').value);
+      if(!code) return;
+      valid++;
+
+      const card=document.createElement('article');
+      card.className='code-card';
+
+      const head=document.createElement('div');
+      head.className='code-head';
+      const nameEl=document.createElement('div');
+      nameEl.className='code-name';
+      nameEl.textContent=name || ('Código ' + (index+1));
+      const valueEl=document.createElement('div');
+      valueEl.className='code-value';
+      valueEl.textContent=money(value);
+      head.append(nameEl,valueEl);
+      card.appendChild(head);
+
+      const grid=document.createElement('div');
+      grid.className='digit-grid';
+      const repeats=repeatRanges(code);
+
+      for(let pos=0;pos<code.length;pos+=4){
+        const part=code.slice(pos,pos+4);
+        const chunk=document.createElement('div');
+        chunk.className='chunk';
+
+        const exactRepeat=repeats.find(r => r.start===pos && r.len===part.length);
+        const coveringRepeat=repeats.find(r => r.start<=pos && r.end>=pos+part.length-1);
+
+        if(coveringRepeat){
+          const tag=document.createElement('div');
+          tag.className='repeat';
+          tag.textContent='×'+coveringRepeat.len+' "'+coveringRepeat.digit+'"';
+          chunk.appendChild(tag);
+        } else if(exactRepeat){
+          const tag=document.createElement('div');
+          tag.className='repeat';
+          tag.textContent='×'+exactRepeat.len+' "'+exactRepeat.digit+'"';
+          chunk.appendChild(tag);
+        }
+
+        const group=document.createElement('div');
+        group.className='group';
+        [...part].forEach(d=>{
+          const cell=document.createElement('div');
+          cell.className='digit';
+          cell.textContent=d;
+          group.appendChild(cell);
+        });
+        chunk.appendChild(group);
+        grid.appendChild(chunk);
+      }
+
+      card.appendChild(grid);
+      preview.appendChild(card);
+    });
+
+    if(!valid) preview.innerHTML='<div class="empty">Cole um código acima.</div>';
+  }
+
+  document.getElementById('add').addEventListener('click',()=>{
+    const row=addEntry();
+    row.querySelector('.name').focus();
+  });
+
+  document.getElementById('clear').addEventListener('click',()=>{
+    entries.innerHTML='';
+    addEntry();
+  });
+
+  document.getElementById('print').addEventListener('click',()=>{
+    render();
+    if(preview.querySelector('.code-card')) window.print();
+  });
+
+  addEntry({
+    name:'',
+    value:'',
+    code:'26090029325149450583008900000004815930000294343'
+  });
+})();
+</script>
+</body>
+</html>
